@@ -1,0 +1,12 @@
+{
+	"dependencies": {
+		"com.unity.entities": "0.0.12-preview.21"
+	},
+	"registry": "https://staging-packages.unity.com",
+	"testables": [
+		"com.unity.collections",
+		"com.unity.entities",
+		"com.unity.jobs"
+	]
+
+}
