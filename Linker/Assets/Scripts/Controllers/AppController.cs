@@ -16,9 +16,15 @@ public class AppController : BaseController {
         getView<AppView>().InitView();
         initChildSys();
         activeProjSys();
+
+        //设置回调事件
+        myProjController_.MyDispearCallBack = () => { activePackageSys(); };
+        myPackageController_.MyDispearCallBack = () => { activeSceneSys(); };
     }
     // ----- 私有方法 -----
+
     private void initChildSys() { myPackageController_.SetParentController(this);myProjController_.SetParentController(this);mySceneController_.SetParentController(this); }
+
     private void activeProjSys() {myProjController_.ActiveController();}
     private void wakeupProjSys() { myProjController_.WakeUpController(); }
     private void dispearProjSys() { myProjController_.DispearController(); }
@@ -33,7 +39,9 @@ public class AppController : BaseController {
     private void wakeupSceneSys() { mySceneController_.WakeUpController(); }
     private void dispearSceneSys() { mySceneController_.DispearController(); }
     private void disposeSceneSys() { mySceneController_.DisposeController(); }
+
     // ----- 对外接口 -----
+
     public void SetTargetPackageInfo(Dictionary<string ,object> info) { this.getData<AppData>().SetTargetPackageInfo(info); }
     public void SetTargetSceneInfo(Dictionary<string,object> info) { this.getData<AppData>().SetTargetSceneInfo(info); }
     public Dictionary<string,object> GetTargetPackageInfo() { return this.getData<AppData>().GetTargetPackageInfo(); }

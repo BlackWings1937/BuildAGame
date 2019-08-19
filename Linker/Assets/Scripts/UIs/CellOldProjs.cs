@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CellOldProjsData {
-    public string myProjPath_;
-    public string myProjName_;
-}
-public delegate void CellOldProjsClick(CellOldProjsData data);
+
+public delegate void CellOldProjsClick(Dictionary<string,object> data);
 public class CellOldProjs : MonoBehaviour {
     // ----- 生命周期方法 -----
     void Start() {
@@ -19,7 +16,7 @@ public class CellOldProjs : MonoBehaviour {
     public Button myBtnClick_ = null;
     private CellOldProjsClick myClickCb_ = null;
     // ----- 私有数据 -----
-    private CellOldProjsData myData_ = null;
+    private Dictionary<string,object> myData_ = null;
     // ----- 私有方法 -----
     private void initView() {
         myBtnClick_.onClick.AddListener(onBtnClick);
@@ -30,11 +27,11 @@ public class CellOldProjs : MonoBehaviour {
         }
     }
     private void updateView() {
-        myTexProjPath_.text = myData_.myProjPath_;
-        myTexProjName_.text = myData_.myProjName_;
+        myTexProjPath_.text = (string)myData_["name"];
+        myTexProjName_.text = (string)myData_["path"];
     }
     // ----- 对外接口 -----
-    public void UpdateData(CellOldProjsData data) {
+    public void UpdateData(Dictionary<string, object> data) {
         myData_ = data;
         updateView();
     }

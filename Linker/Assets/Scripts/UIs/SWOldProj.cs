@@ -11,13 +11,14 @@ public class SWOldProj : MonoBehaviour {
     public VerticalLayoutGroup myVLGContent_ = null;
     public CellOldProjsClick myCellClickCb_ = null;
     // ----- 私有方法 -----
-    private void onCellClick(CellOldProjsData data) { // call view
+    private void onCellClick(Dictionary<string,object> dic) { // call view
         if (myCellClickCb_ != null) {
-            myCellClickCb_(data);
+            //myCellClickCb_(data);
         }
     }
     // ----- 对外接口 -----
-    public void UpdateDatas(List<CellOldProjsData> l) {
+    public void UpdateDatas(Dictionary<string,object> dic) {
+        /*
         // 计算content长度
         var count = l.Count;
         var contentHeight = count * (myPrefabCell_.GetComponent<RectTransform>().sizeDelta.y + myVLGContent_.spacing) - myVLGContent_.spacing;
@@ -34,6 +35,7 @@ public class SWOldProj : MonoBehaviour {
             cell.GetComponent<CellOldProjs>().SetClickCallBack(this.onCellClick);
             cell.transform.SetParent(myRtContent_,false);
         }
+        */
     }
     public void SetCellClickCallBack(CellOldProjsClick cb) { myCellClickCb_ = cb; }
 }

@@ -12,9 +12,6 @@ public class BaseView : MonoBehaviour {
     
     protected virtual void registerViewEvent(){}
 
-    void Awake(){
-        registerViewEvent();
-    }
 
     public virtual void init() { }
     public virtual void wakeup() { }
