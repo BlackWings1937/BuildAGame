@@ -66,6 +66,9 @@
     <Compile Include="Assets\Scenes\scripts\RotationCubeComponent.cs" />
     <Compile Include="Assets\Scenes\scripts\RotationCubeSystem.cs" />
     <Compile Include="Assets\Scenes\scripts\TestPrefab.cs" />
+    <Compile Include="Assets\Scripts\CreateCubeManager.cs" />
+    <Compile Include="Assets\Scripts\Movement.cs" />
+    <Compile Include="Assets\Scripts\MovementSystem.cs" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>C:/Users/X1937/Documents/buildAGame/BuildAGame/LiuGuoZhuEcs/LiuGuoZhuEcs/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
     </Reference>
