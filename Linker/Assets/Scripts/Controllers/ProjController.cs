@@ -36,11 +36,13 @@ public class ProjController : AppChildController {
 
     private void enterOldProjByPath(string path) {
         if (path!= "") {
-            if (File.Exists(path)) {
+            if (File.Exists(path))
+            {
                 var str = File.ReadAllText(path);
                 var projConfigData = JsonUtility.FromJson<ProjConfigData>(str);
                 enterProjAtPath(projConfigData.name, projConfigData.path);
             }
+            else { getData<ProjData>(); }
         }
     }
 

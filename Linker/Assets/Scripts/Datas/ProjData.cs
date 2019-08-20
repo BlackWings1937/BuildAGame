@@ -29,8 +29,30 @@ public class ProjData : BaseData {
     public static readonly string STR_PATH = "path";
     public static readonly string STR_CONFIG_FILE_PATH = "configFilePath";
 
+
+    private static readonly int MAX_OLD_ITEM = 10;//最大显示已经创建的项目数
+
     private ProjsConfig m_ProjsData_;
-    
+
+
+    // 检查项目列表中的项目是否还存在，不存在就将条目删除
+    private void checkProjExist() {
+        for (int i = m_ProjsData_.infos.Count -1; i >=0 ; --i) {
+            var configfilepath = m_ProjsData_.infos[i].configFilePath;
+            if (!File.Exists(configfilepath))
+            {
+                m_ProjsData_.infos.RemoveAt(i);
+            }
+        }
+    }
+    public void CheckProjExist() { checkProjExist(); }
+
+    // 检查项目是否超过最大保存项目值，超过则删除
+    private void checkIsProjOutMaxNum() {
+        if (m_ProjsData_.infos.Count> MAX_OLD_ITEM) {
+            m_ProjsData_.infos.RemoveRange(0,m_ProjsData_.infos.Count - MAX_OLD_ITEM);
+        }
+    }
 
     private void initFromFile() {
 
@@ -39,6 +61,8 @@ public class ProjData : BaseData {
             var str = File.ReadAllText(STR_PROJ_CONFIG);
             var info = JsonUtility.FromJson<ProjsConfig>(str);
             m_ProjsData_ = info;
+            checkProjExist();
+            checkIsProjOutMaxNum();
         }
         else {
             m_ProjsData_ = new ProjsConfig();
