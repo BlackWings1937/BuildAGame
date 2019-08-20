@@ -38,7 +38,7 @@ public class ProjView : BaseView {
             var cell = GameObject.Instantiate(myPrefabCell_) as GameObject;
             cell.GetComponent<CellOldProjs>().UpdateData(dicInfo);
             cell.GetComponent<CellOldProjs>().SetClickCallBack((Dictionary<string,object> dic)=> {
-                Debug.Log("oldProj:"+(string)dic["name"]);
+                GetController<ProjController>().OnEnterProjByFilePath((string)dic[ProjData.STR_CONFIG_FILE_PATH]);
             });
             cell.transform.SetParent(myRtContent_,false);
         }

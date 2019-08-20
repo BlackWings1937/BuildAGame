@@ -22,42 +22,42 @@ public class ProjController : AppChildController {
         }
     }
 
-    public void OnEnterProjByName(string name,string path) {
-
+    public void OnEnterProjByFilePath(string filePath) {
+        enterOldProjByPath(filePath);
     }
 
+    //选择旧项目进入
     public void OnEnterOldProj() {
         var strDir = OpenDialogUtils.OpenFile();
-        if (strDir!= "") {
-            if (File.Exists(strDir)) {
-                var str = File.ReadAllText(strDir);
+        enterOldProjByPath(strDir);
+    }
+
+
+
+    private void enterOldProjByPath(string path) {
+        if (path!= "") {
+            if (File.Exists(path)) {
+                var str = File.ReadAllText(path);
                 var projConfigData = JsonUtility.FromJson<ProjConfigData>(str);
-                enterProjAtPath(projConfigData.name,projConfigData.path);
+                enterProjAtPath(projConfigData.name, projConfigData.path);
             }
         }
     }
 
 
-    private static readonly string STR_FLODER_ANIM = "anim";
-    private static readonly string STR_FLODER_JSON = "json";
-    private static readonly string STR_FLODER_LUASCRIPT = "luascript";
-    private static readonly string STR_FLODER_ANIMCONFIG = "animconfig";
-    private static readonly string STR_FLODER_PRODUCTCONFIG = "productconfig";
-    private static readonly string STR_FILE_CONFIGPROJ = "configProj.json";
-    private static readonly string STR_NAME = "name";
-    private static readonly string STR_PATH = "path";
+
     private string  createDri(string path) {
         path = path + "\\";
-        Directory.CreateDirectory(path+STR_FLODER_ANIM);
-        Directory.CreateDirectory(path+ STR_FLODER_JSON);
-        Directory.CreateDirectory(path+ STR_FLODER_LUASCRIPT);
-        Directory.CreateDirectory(path+ STR_FLODER_ANIMCONFIG);
-        Directory.CreateDirectory(path+ STR_FLODER_PRODUCTCONFIG);
+        Directory.CreateDirectory(path+ ProjData.STR_FLODER_ANIM);
+        Directory.CreateDirectory(path+ ProjData.STR_FLODER_JSON);
+        Directory.CreateDirectory(path+ ProjData.STR_FLODER_LUASCRIPT);
+        Directory.CreateDirectory(path+ ProjData.STR_FLODER_ANIMCONFIG);
+        Directory.CreateDirectory(path+ ProjData.STR_FLODER_PRODUCTCONFIG);
         var p = new ProjConfigData();
         p.name = path;
         p.path = path;
         var str = JsonUtility.ToJson(p);
-        var configFilePath = path + STR_FILE_CONFIGPROJ;
+        var configFilePath = path + ProjData.STR_FILE_CONFIGPROJ;
         File.WriteAllText(configFilePath,str);
         return configFilePath;
     }
@@ -65,16 +65,16 @@ public class ProjController : AppChildController {
     private void createProjAtPath(string name,string path) {
         if (Directory.Exists(path)) {
             var configfilePath = createDri(path);
+            //保存项目到data
             getData<ProjData>().addProjByNameAndPath(name,path, configfilePath);
             enterProjAtPath(name,path);
         }
     }
 
     private void enterProjAtPath(string name,string path) {
-        
         var dic = new Dictionary<string,object>();
-        dic.Add("name",name);
-        dic.Add("path",path);
+        dic.Add(ProjData.STR_NAME, name);
+        dic.Add(ProjData.STR_PATH, path);
         GetParentController().SetTargetPackageInfo(dic);
         DispearController();
     }

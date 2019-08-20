@@ -16,8 +16,18 @@ public class ProjsConfig {
 }
 
 public class ProjData : BaseData {
+    // 创建项目文件夹，项目记录文件，并返回文件路径
+    public static readonly string STR_PROJ_CONFIG = "projConfig.json";
 
-    private static readonly string STR_PROJ_CONFIG = "projConfig.json";
+    public static readonly string STR_FLODER_ANIM = "anim";
+    public static readonly string STR_FLODER_JSON = "json";
+    public static readonly string STR_FLODER_LUASCRIPT = "luascript";
+    public static readonly string STR_FLODER_ANIMCONFIG = "animconfig";
+    public static readonly string STR_FLODER_PRODUCTCONFIG = "productconfig";
+    public static readonly string STR_FILE_CONFIGPROJ = "configProj.json";
+    public static readonly string STR_NAME = "name";
+    public static readonly string STR_PATH = "path";
+    public static readonly string STR_CONFIG_FILE_PATH = "configFilePath";
 
     private ProjsConfig m_ProjsData_;
     
@@ -44,8 +54,9 @@ public class ProjData : BaseData {
             {
                 var d = m_ProjsData_.infos[i];
                 var nowdic = new Dictionary<string, object>();
-                nowdic.Add("name",d.name);
-                nowdic.Add("path",d.path);
+                nowdic.Add(STR_NAME, d.name);
+                nowdic.Add(STR_PATH, d.path);
+                nowdic.Add(STR_CONFIG_FILE_PATH, d.configFilePath);
                 dic.Add(d.name,nowdic);
             }
             eventOfDataUpdates_(dic);
@@ -55,6 +66,7 @@ public class ProjData : BaseData {
         var str = JsonUtility.ToJson(m_ProjsData_);
         File.WriteAllText(STR_PROJ_CONFIG,str);
     }
+
     public void addProjByNameAndPath(string name,string path,string configFIlePath)
     {
         removeProjByNameAndPath(name,path);
@@ -86,13 +98,3 @@ public class ProjData : BaseData {
         initFromFile();
     }
 }
-
-/*
-    private void debugData() {//debug
-        for (int i = 0;i<10;i++) {
-            var d = new CellDataOfProj();
-            d.name = "proj:" + i;
-            d.path = "d:\\Proj" + i;
-            m_ProjsData_.infos.Add(d);
-        }
-    }*/
