@@ -16,6 +16,8 @@ public class ProjView : BaseView {
     public GameObject myPrefabCell_ = null;
     public ScrollRect myScrollView_ = null;
 
+
+
     // ----- 私有方法 -----
 
     public override void UpdateView(Dictionary<string, object> info)
@@ -53,6 +55,8 @@ public class ProjView : BaseView {
     {
         base.init();
         registerViewEvent();
+
     }
+
     // ----- 生命周期方法 -----
 }

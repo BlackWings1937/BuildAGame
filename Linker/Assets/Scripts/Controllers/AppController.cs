@@ -4,13 +4,18 @@ using UnityEngine;
 
 
 public class AppController : BaseController {
+
+    public static Vector2 VISIBLE_SIZE = Vector2.zero;
     // ----- 私有成员 ----- 
     public AppChildController myProjController_ = null;
     public AppChildController myPackageController_ = null;
     public AppChildController mySceneController_ = null;
+
     // ----- 生命周期 -----
     protected override void Start()
     {
+        VISIBLE_SIZE = new Vector2(((RectTransform)transform).sizeDelta.x, ((RectTransform)transform).sizeDelta.y);
+
         base.Start();
         init();
         getView<AppView>().InitView();
@@ -46,4 +51,5 @@ public class AppController : BaseController {
     public void SetTargetSceneInfo(Dictionary<string,object> info) { this.getData<AppData>().SetTargetSceneInfo(info); }
     public Dictionary<string,object> GetTargetPackageInfo() { return this.getData<AppData>().GetTargetPackageInfo(); }
     public Dictionary<string,object> GetTargetSceneInfo() { return this.getData<AppData>().GetTargetSceneInfo(); }
+
 }

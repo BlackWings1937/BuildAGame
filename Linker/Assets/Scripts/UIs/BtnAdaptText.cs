@@ -15,6 +15,7 @@ public class BtnAdaptText : MonoBehaviour
         if (MyText!= null) {
             var length = TextUtils.CaculateTextLength(str, MyText);
             ((RectTransform)transform).sizeDelta = new Vector2(LeftPadding+length+RightPadding, ((RectTransform)transform).sizeDelta.y);
+            MyText.text = str;
         }
     }
 }

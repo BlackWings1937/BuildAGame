@@ -78,6 +78,7 @@
     <Compile Include="Assets\Scripts\SimulatorController.cs" />
     <Compile Include="Assets\Scripts\Tools\OpenDialog.cs" />
     <Compile Include="Assets\Scripts\Tools\TextUtils.cs" />
+    <Compile Include="Assets\Scripts\Tools\TransformUtils.cs" />
     <Compile Include="Assets\Scripts\UIs\BtnAdaptText.cs" />
     <Compile Include="Assets\Scripts\UIs\CellOldProjs.cs" />
     <Compile Include="Assets\Scripts\UIs\SWOldProj.cs" />
