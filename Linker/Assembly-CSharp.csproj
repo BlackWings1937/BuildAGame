@@ -83,6 +83,9 @@
     <Compile Include="Assets\Scripts\UIs\CellOldProjs.cs" />
     <Compile Include="Assets\Scripts\UIs\SWOldProj.cs" />
     <Compile Include="Assets\Scripts\UIs\TapButtonsGroup.cs" />
+    <Compile Include="Assets\Scripts\UIs\Touch.cs" />
+    <Compile Include="Assets\Scripts\UIs\TouchesManager.cs" />
+    <Compile Include="Assets\Scripts\UIs\TouchObject.cs" />
     <Compile Include="Assets\Scripts\Views\AppView.cs" />
     <Compile Include="Assets\Scripts\Views\PackageView.cs" />
     <Compile Include="Assets\Scripts\Views\ProjView.cs" />
