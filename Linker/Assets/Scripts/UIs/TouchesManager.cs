@@ -14,6 +14,8 @@ public class TouchesManager : MonoBehaviour
      */
     private static readonly string STR_INSTANCE_PREFAB_NAME = "TouchesManager";
     private static TouchesManager _instance = null;
+    //判断单例是否被销毁
+    public static bool IsInstanceBeDestroyed() { return _instance == null; }
     public static TouchesManager GetInstance() {
         if (_instance == null) {
             var prefab = Resources.Load("prefab/" + STR_INSTANCE_PREFAB_NAME);
@@ -40,11 +42,31 @@ public class TouchesManager : MonoBehaviour
         });
     }
 
+
+    private bool isMouseKeyDown_ = false;
+
+    private Touch touch_ = null;
+
     private void Update()
     {
         sortTouchObjectsByOrder();
-        // todo update event
 
+        if (Input.GetKeyDown(KeyCode.Mouse0)) {
+            isMouseKeyDown_ = true;
+            touch_ = new Touch();
+            touch_.SetGetTouchObjects(()=> { return myListOfTouchObjects_; });
+            touch_.OnTouchBegan(Input.mousePosition);
+        }
+        if (isMouseKeyDown_) {
+            if (touch_!= null) {  touch_.OnTouchMoved(Input.mousePosition); }
+        }
+        if (Input.GetKeyUp(KeyCode.Mouse0)) {
+            isMouseKeyDown_ = false;
+            if (touch_!=null) {
+                touch_.OnTouchEnded(Input.mousePosition);
+                touch_ = null;
+            }
+        }
     }
 
 

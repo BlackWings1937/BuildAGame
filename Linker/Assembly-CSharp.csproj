@@ -81,6 +81,10 @@
     <Compile Include="Assets\Scripts\Tools\TransformUtils.cs" />
     <Compile Include="Assets\Scripts\UIs\BtnAdaptText.cs" />
     <Compile Include="Assets\Scripts\UIs\CellOldProjs.cs" />
+    <Compile Include="Assets\Scripts\UIs\DoublePointAt.cs" />
+    <Compile Include="Assets\Scripts\UIs\Drag.cs" />
+    <Compile Include="Assets\Scripts\UIs\PointAt.cs" />
+    <Compile Include="Assets\Scripts\UIs\PointAtAndWait.cs" />
     <Compile Include="Assets\Scripts\UIs\SWOldProj.cs" />
     <Compile Include="Assets\Scripts\UIs\TapButtonsGroup.cs" />
     <Compile Include="Assets\Scripts\UIs\Touch.cs" />
