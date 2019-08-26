@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class AppController : BaseController {
 
-    public static Vector2 VISIBLE_SIZE = Vector2.zero;
+    public static Vector2 VISIBLE_SIZE = new Vector2(1280,720);
     // ----- 私有成员 ----- 
     public AppChildController myProjController_ = null;
     public AppChildController myPackageController_ = null;

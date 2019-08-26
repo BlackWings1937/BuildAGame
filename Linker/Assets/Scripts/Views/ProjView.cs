@@ -16,10 +16,6 @@ public class ProjView : BaseView {
     public GameObject myPrefabCell_ = null;
     public ScrollRect myScrollView_ = null;
 
-
-    //debug
-    public PointAtAndWait pw_ = null;
-
     // ----- 私有方法 -----
 
     public override void UpdateView(Dictionary<string, object> info)
@@ -59,10 +55,7 @@ public class ProjView : BaseView {
         registerViewEvent();
 
 
-        // debug
-        pw_.SetPointAndWaitCallBack((Vector2 worldPos)=> {
-            Debug.Log("SetPointAndWaitCallBack");
-        });
+
     }
 
     // ----- 生命周期方法 -----
