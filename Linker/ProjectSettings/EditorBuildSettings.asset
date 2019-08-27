@@ -4,4 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/sceneUploadMod.unity
+    guid: 5c3397c3f10deff47b5d3357b6ea82c8
+  m_configObjects: {}
