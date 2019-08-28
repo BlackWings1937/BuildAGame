@@ -27,6 +27,22 @@ public class ParseToParam1 {
     public int device;
 }
 
+[Serializable]
+public class ParseToParam2 {
+    public int csmInUs;
+    public int patchts;
+    public string res;
+}
+
+[Serializable]
+public class ParseToParam3 {
+    public int rc;
+    public int tm;
+    public ParseToParam2 info;
+}
+
+public delegate void UploadComplieCallBack();
+
 public class UploadManager : MonoBehaviour
 {
     [SerializeField]
@@ -40,12 +56,43 @@ public class UploadManager : MonoBehaviour
     [SerializeField]
     private Text texLogBoard_;
 
+
+    [SerializeField]
+    private InputField myIFVerisonNum_;
+
+
+    [SerializeField]
+    private Dropdown selectDeviceDropType_;
+
+
+    /// <summary>
+    /// 描述上传设备类型的枚举
+    /// </summary>
     private enum EnumUploadDeviceType {
         E_Android = 0,// 安卓
         E_Apple ,     // 苹果
         E_All,
     }
     private EnumUploadDeviceType myUploadDeviceType_;
+
+
+    /// <summary>
+    /// 描述目前上传的资源类型
+    /// </summary>
+    public enum EnumResState {
+        E_WaitToUpLoadState = 0,    //等待上传
+        E_WaitToUpdateState,        //等待更新
+    }
+    private EnumResState myResState_;
+    public EnumResState MyResState {
+        get { return myResState_; }
+        set {
+            if (value == EnumResState.E_WaitToUpLoadState) {
+                this.uploadCdnResUrl_ = "";
+            }
+            this.myResState_ = value;
+        }
+    }
 
 
     private void registerEvents() {
@@ -66,10 +113,12 @@ public class UploadManager : MonoBehaviour
             texSelectFilePath_.text = path;
         }
     }
+
+    private string strLog_ = "";
     private void setLogBoard(string word) {
+        strLog_ = strLog_+"\n" + word;
         if (texLogBoard_) {
-            texLogBoard_.text = "";
-            texLogBoard_.text = word;
+            texLogBoard_.text = strLog_;
         }
     }
 
@@ -77,126 +126,144 @@ public class UploadManager : MonoBehaviour
     {
         myUploadDeviceType_ = (EnumUploadDeviceType)selectDeviceDropType_.value;
         registerEvents();
-
-        StartCoroutine(updateResToCloudAndroid("https://testxblapi.youban.com/srcupdate/addnewsrc",
-            "https:\\/\\/youbansrc.youban.com\\/upsource\\/srcurl1566892472.zip", "8.5.7"));
     }
 
     private void selectUploadFile() {
         var path = OpenDialogUtils.OpenFile();
         if (path != "") {
             setSelectFilePath(path);
+
+            // 将当前状态记录为等待上传状态
+            MyResState = EnumResState.E_WaitToUpLoadState;
         }
     }
 
-
-    [SerializeField]
-    private Dropdown selectDeviceDropType_;
+    /// <summary>
+    /// 更新设备类型UI 事件
+    /// </summary>
     public void UpdateSelectDeviceType() {
         if (selectDeviceDropType_ != null) {
-            Debug.Log("value:"+ selectDeviceDropType_.value);
             myUploadDeviceType_ = (EnumUploadDeviceType)selectDeviceDropType_.value;
         }
     }
 
 
     private readonly static string STR_UPLOADRESULTFILE = "uploadResultConfigFlie.json";
-
+    /// <summary>
+    /// 保存上传结果文件
+    /// </summary>
+    /// <param name="str">上传结果的内容</param>
     private void saveResultFile(string str) {
         UploadResult r = new UploadResult();
         r.Url = str;
         string strJson = JsonUtility.ToJson(r);
         File.WriteAllText(STR_UPLOADRESULTFILE,strJson);
     }
-    /*
-    public static IEnumerator PostHttpRequest(object requestBody, HandleResponse handler)
-    {
-        string body = JsonUtils.ObjectToJson(requestBody);
-        byte[] rawData = Encoding.UTF8.GetBytes(body);
 
-        WWWForm form = new WWWForm();
-        Hashtable headers = form.headers;
-        headers["Content-Type"] = "application/json";
-        headers["Accept"] = "application/json";
+    // 更新资源请求的URL
+    private readonly static string STR_UPDATE_RES_URL = "https://testxblapi.youban.com/srcupdate/addnewsrc";
 
-
-        //request的body有压缩 
-        //headers["Content-Encoding"] = "gzip"; 
-        //客户端支持response body的压缩,接收到客户端的Accept-Encoding:gzip后,服务端根据实际情况对response的body进行gzip压缩 
-        //headers["Accept-Encoding"] = "gzip"; 
-
-
-        WWW www = new WWW(url, rawData, headers);
-
-
-        yield return www;
-
-
-        if (www.error != null)
-        {
-            handler(new XHttpResponseObject { code = -32767, id = -32767, desc = www.error });
-        }
-        else
-        {
-            Dictionary<string, string> responseHeader = www.responseHeaders;
-            XHttpResponseObject response = JsonUtils.JsonToObject<XHttpResponseObject>(www.text);
-            handler(response);
-        }
-    }
-    */
-
-
-
-    private IEnumerator updateResToCloudAndroid(string url,string resurl,string ver) {
+    /// <summary>
+    /// 更新补丁网址的方法
+    /// </summary>
+    /// <param name="resurl">要更新资源cdn的下载地址</param>
+    /// <param name="ver">要更新补丁的目标版本</param>
+    /// <returns></returns>
+    private IEnumerator updateResToCloudAndroid(string resurl,string ver ) {
+        setLogBoard("目标版本:" + ver);
+        setLogBoard("开始更新安卓补丁:"+resurl);
         ParseToParam1 p = new ParseToParam1();
         p.device = 1;
         p.ver = ver;
         p.srcurl = resurl;
         var str = JsonUtility.ToJson(p);
-        Debug.Log("向服务器发送请求：" + str);
         byte[] bodyRaw = Encoding.UTF8.GetBytes(str);
-        UnityWebRequest request = new UnityWebRequest(url, "POST");
+        UnityWebRequest request = new UnityWebRequest(STR_UPDATE_RES_URL, "POST");
         request.uploadHandler = new UploadHandlerRaw(bodyRaw);
         request.SetRequestHeader("Content-Type", "application/json;charset=utf-8");
         request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
         yield return request.SendWebRequest();
         if (request.isNetworkError)
         {
-            // todo request fail
+            setLogBoard("失败 更新安卓补丁到线上失败！");
         }
         else
         {
-            // 
-            string result = request.downloadHandler.text;
-            Debug.Log("result:"+result);
+            ParseToParam3 p3 = JsonUtility.FromJson<ParseToParam3>(request.downloadHandler.text);
+            if (p3 != null)
+            {
+                if (p3.info != null)
+                {
+                    if (p3.info.res == "OK")
+                    {
+                        setLogBoard("成功 更新安卓补丁到线上成功");
+                    }
+                    else { setLogBoard("失败 更新安卓补丁到线上失败！"); }
+                }
+                else { setLogBoard("失败 更新安卓补丁到线上失败！"); }
+            }
+            else { setLogBoard("失败 更新安卓补丁到线上失败！"); }
         }
     }
 
-    private IEnumerator updateResToCloudApple(string url, string resurl, string ver)
+    /// <summary>
+    /// 更新补丁网址的方法
+    /// </summary>
+    /// <param name="resurl">要更新资源cdn的下载地址</param>
+    /// <param name="ver">要更新补丁的目标版本</param>
+    /// <returns></returns>
+    private IEnumerator updateResToCloudApple( string resurl, string ver)
     {
-        WWWForm form = new WWWForm();
-        form.AddField("srcurl", resurl);
-        form.AddField("ver", ver);
-        form.AddField("device", 0);
-        UnityWebRequest req = UnityWebRequest.Post(url, form);
-        req.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
-        yield return req.SendWebRequest();
-        if (req.isHttpError || req.isNetworkError)
+        setLogBoard("目标版本:" + ver);
+        setLogBoard("开始更新苹果补丁:" + resurl);
+        ParseToParam1 p = new ParseToParam1();
+        p.device = 0;
+        p.ver = ver;
+        p.srcurl = resurl;
+        var str = JsonUtility.ToJson(p);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(str);
+        UnityWebRequest request = new UnityWebRequest(STR_UPDATE_RES_URL, "POST");
+        request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+        request.SetRequestHeader("Content-Type", "application/json;charset=utf-8");
+        request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
+        yield return request.SendWebRequest();
+        if (request.isNetworkError)
         {
-            setLogBoard("网络错误 上传失败");
+            setLogBoard("失败 更新苹果补丁到线上失败！");
         }
         else
         {
-            Debug.Log(req.downloadHandler.text);
+            ParseToParam3 p3 = JsonUtility.FromJson<ParseToParam3>(request.downloadHandler.text);
+            if (p3 != null)
+            {
+                if (p3.info != null)
+                {
+                    if (p3.info.res == "OK")
+                    {
+                        setLogBoard("成功 更新苹果补丁到线上成功");
+                    }
+                    else { setLogBoard("失败 更新苹果补丁到线上失败！"); }
+                }
+                else { setLogBoard("失败 更新苹果补丁到线上失败！"); }
+            }
+            else { setLogBoard("失败 更新苹果补丁到线上失败！"); }
         }
     }
 
-    private IEnumerator UploadFile(string url,string path) {
+    // 上传文件到cdn 请求的URL
+    private static readonly string STR_UPLOAD_REQ_URL = "http://testxblapi.youban.com/common/upload";
+    //上传后资源的地址
+    private string uploadCdnResUrl_ = "";
+    /// <summary>
+    /// 上传文件的请求
+    /// </summary>
+    /// <param name="path">上传文件的绝对路径</param>
+    /// <returns></returns>
+    private IEnumerator UploadFile(string path, UploadComplieCallBack cb) {
         byte[] b = File.ReadAllBytes(path);
         WWWForm form = new WWWForm();
         form.AddBinaryData("xblfile",b);
-        //form.AddField("xblfile",);
-        UnityWebRequest req = UnityWebRequest.Post(url,form);
+        UnityWebRequest req = UnityWebRequest.Post(STR_UPLOAD_REQ_URL, form);
         req.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
         yield return req.SendWebRequest();
         if (req.isHttpError||req.isNetworkError) {
@@ -206,12 +273,44 @@ public class UploadManager : MonoBehaviour
             setLogBoard("上传成功"+ p.srcurl);
             Debug.Log("上传成功"+ p.srcurl);
             saveResultFile(p.srcurl);
+            uploadCdnResUrl_ = p.srcurl;
+
+            // 将当前状态记录为等待更新状态
+            MyResState = EnumResState.E_WaitToUpdateState;
+
+
+            if (cb!=null) {
+                cb();
+            }
+
+
         }
     }
 
-    [SerializeField]
-    private InputField myIFVerisonNum_;
+    /// <summary>
+    /// 更新资源到目标
+    /// </summary>
+    private void updateResToOnline() {
+        // 更新文件到目标平台
+        if (this.myUploadDeviceType_ == EnumUploadDeviceType.E_All)
+        {
+            StartCoroutine(updateResToCloudApple(uploadCdnResUrl_, this.myIFVerisonNum_.text));// 加个回调？
+            StartCoroutine(updateResToCloudAndroid(uploadCdnResUrl_, this.myIFVerisonNum_.text));
+        }
+        else if (this.myUploadDeviceType_ == EnumUploadDeviceType.E_Android)
+        {
+            StartCoroutine(updateResToCloudAndroid(uploadCdnResUrl_, this.myIFVerisonNum_.text));
+        }
+        else if (this.myUploadDeviceType_ == EnumUploadDeviceType.E_Apple)
+        {
+            StartCoroutine(updateResToCloudApple(uploadCdnResUrl_, this.myIFVerisonNum_.text));// 加个回调？
+        }
+    }
 
+    /// <summary>
+    /// 检查上传配置是否ok
+    /// </summary>
+    /// <returns></returns>
     private bool checkCouldUpload() {
         if (texSelectFilePath_.text == "") {
             setLogBoard("上传文件路径不能为空，请填写上传文件路径");
@@ -230,14 +329,29 @@ public class UploadManager : MonoBehaviour
         return true;
     }
 
+    /// <summary>
+    /// 是否正在上传文件的标记 防止上传过程中又上传内容
+    /// </summary>
+    private bool isUploading_ = false;
+
+    /// <summary>
+    /// 上传文件的指令
+    /// </summary>
     private void uploadFile() {
-        if (checkCouldUpload())
-        {
-            StartCoroutine(UploadFile("http://testxblapi.youban.com/common/upload", texSelectFilePath_.text));
-
-        }
-        else {
-
+        if (checkCouldUpload()) {
+            if (this.MyResState == EnumResState.E_WaitToUpLoadState) {
+                if (!isUploading_) {
+                    isUploading_ = true;
+                    StartCoroutine(UploadFile(texSelectFilePath_.text, () => {
+                        this.updateResToOnline();
+                        isUploading_ = false;
+                    }));
+                }
+            } else if (this.MyResState == EnumResState.E_WaitToUpdateState) {
+                if (this.uploadCdnResUrl_ != "") {
+                    updateResToOnline();
+                }
+            }
         }
     }
 }

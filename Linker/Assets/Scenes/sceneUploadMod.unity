@@ -497,6 +497,7 @@ MonoBehaviour:
   btnUploadFile_: {fileID: 1860808506}
   texSelectFilePath_: {fileID: 588678586}
   texLogBoard_: {fileID: 1414475366}
+  myIFVerisonNum_: {fileID: 2075573262}
   selectDeviceDropType_: {fileID: 57266139}
 --- !u!1 &179624324
 GameObject:
@@ -1638,8 +1639,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 212, y: 152}
-  m_SizeDelta: {x: 320, y: 30}
+  m_AnchoredPosition: {x: 217, y: -146.29}
+  m_SizeDelta: {x: 320, y: 292.59}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1414475366
 MonoBehaviour:
@@ -1668,7 +1669,7 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 10
     m_MaxSize: 40
-    m_Alignment: 4
+    m_Alignment: 7
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
