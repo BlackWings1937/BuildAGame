@@ -90,6 +90,9 @@
     <Compile Include="Assets\Scripts\UIs\Touch.cs" />
     <Compile Include="Assets\Scripts\UIs\TouchesManager.cs" />
     <Compile Include="Assets\Scripts\UIs\TouchObject.cs" />
+    <Compile Include="Assets\Scripts\UploadManager\BuildModCheckFIles.cs" />
+    <Compile Include="Assets\Scripts\UploadManager\CanvasManager.cs" />
+    <Compile Include="Assets\Scripts\UploadManager\CreateModManager.cs" />
     <Compile Include="Assets\Scripts\UploadManager\UploadManager.cs" />
     <Compile Include="Assets\Scripts\Views\AppView.cs" />
     <Compile Include="Assets\Scripts\Views\PackageView.cs" />
@@ -327,6 +330,9 @@
     </Reference>
     <Reference Include="UnityEngine.XRModule">
       <HintPath>E:/unityDownload/2019.2.0f1/Editor/Data/Managed/UnityEngine/UnityEngine.XRModule.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>C:/Users/X1937/Documents/buildAGame/BuildAGame/Linker/Assets/Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Analytics.Editor">
       <HintPath>C:/Users/X1937/Documents/buildAGame/BuildAGame/Linker/Library/PackageCache/com.unity.analytics@3.3.2/Unity.Analytics.Editor.dll</HintPath>

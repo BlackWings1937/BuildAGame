@@ -64,6 +64,15 @@ public class UploadManager : MonoBehaviour
     [SerializeField]
     private Dropdown selectDeviceDropType_;
 
+    [SerializeField]
+    private Text texAimVersion_;
+
+    [SerializeField]
+    private Button btnCreateLocalTestCase_;
+
+
+    private CanvasManager parentManager_ = null;
+    public void SetParentManager(CanvasManager p) { parentManager_ = p; }
 
     /// <summary>
     /// 描述上传设备类型的枚举
@@ -106,7 +115,18 @@ public class UploadManager : MonoBehaviour
                 uploadFile();
             });
         }
+        if (btnCreateLocalTestCase_) {
+            btnCreateLocalTestCase_.onClick.AddListener(()=> {
+                if (this.parentManager_ != null) {
+                    this.parentManager_.GenerateWin32AimModFile(this.PathXBLProj,this.VersionXBLMod);
+                    this.parentManager_.GenerateDiffConfig(this.PathXBLProj,this.VersionXBLMod);
+                }
+                //todo: 生成压缩包准备上传
+            });
+        }
     }
+
+  
 
     private void setSelectFilePath(string path) {
         if (texSelectFilePath_) {
@@ -354,4 +374,13 @@ public class UploadManager : MonoBehaviour
             }
         }
     }
+
+
+    // ----- 对外接口 -----
+    public string PathXBLProj { get; set; }
+    private string versionXBLMod_ = "";
+    public string VersionXBLMod { get { return versionXBLMod_; } set {
+            this.versionXBLMod_ = value;
+            if (this.texAimVersion_ != null) { this.texAimVersion_.text = this.versionXBLMod_; }
+        } }
 }

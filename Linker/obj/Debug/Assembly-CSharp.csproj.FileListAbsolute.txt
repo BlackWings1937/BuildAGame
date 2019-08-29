@@ -288,3 +288,4 @@ C:\Users\X1937\Documents\buildAGame\BuildAGame\Linker\obj\Debug\Assembly-CSharp.
 C:\Users\X1937\Documents\buildAGame\BuildAGame\Linker\obj\Debug\Assembly-CSharp.csproj.CopyComplete
 C:\Users\X1937\Documents\buildAGame\BuildAGame\Linker\obj\Debug\Assembly-CSharp.dll
 C:\Users\X1937\Documents\buildAGame\BuildAGame\Linker\obj\Debug\Assembly-CSharp.pdb
+C:\Users\X1937\Documents\buildAGame\BuildAGame\Linker\Temp\bin\Debug\Newtonsoft.Json.dll
