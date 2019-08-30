@@ -120,6 +120,10 @@ public class UploadManager : MonoBehaviour
                 if (this.parentManager_ != null) {
                     this.parentManager_.GenerateWin32AimModFile(this.PathXBLProj,this.VersionXBLMod);
                     this.parentManager_.GenerateDiffConfig(this.PathXBLProj,this.VersionXBLMod);
+
+                    // debug
+                   CanvasManager.RunCmd("cd D:/Users/X1937/AppData/Local/Programs/Microsoft VS Code");
+                    CanvasManager.RunCmd("Code E:/xblTempPackage5/xiaobanlong/xiaobanlong5.2.0/Win32TestRes/Mod/8.5.7");
                 }
                 //todo: 生成压缩包准备上传
             });

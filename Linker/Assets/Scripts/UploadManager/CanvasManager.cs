@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using System;
 using System.IO;
 using Newtonsoft.Json;
-
+using System.Diagnostics;
 [Serializable]
 public class ParseToAimModWin32ConfigFile {
     public string Version;
@@ -32,7 +32,7 @@ public class CanvasManager : MonoBehaviour
         setCanvasManagerToChildManager();
         EnterOpenModPanel();
 
-   
+
     }
 
 
@@ -72,6 +72,8 @@ public class CanvasManager : MonoBehaviour
         // 设置数据
         myEditModPanel_.GetComponent<UploadManager>().PathXBLProj = xblProjPath;
         myEditModPanel_.GetComponent<UploadManager>().VersionXBLMod = xblAimVersion;
+
+
     }
 
 
@@ -101,11 +103,43 @@ public class CanvasManager : MonoBehaviour
     /// <param name="xblProjPath">小伴龙项目根目录</param>
     /// <param name="xblAimVersion">小伴龙Mod目标版本</param>
     public void GenerateDiffConfig(string xblProjPath,string xblAimVersion) {
-        Debug.Log("GenerateDiffConfig1");
+        //Debug.Log("GenerateDiffConfig1");
         if (myFileChecker_!= null) {
-            Debug.Log("GenerateDiffConfig2");
+          //  Debug.Log("GenerateDiffConfig2");
 
             myFileChecker_.BuildFile(xblProjPath+"\\"+ STR_MODPATH+"\\"+ xblAimVersion, xblProjPath+"\\"+ STR_PROJRESOURCEPATH);
         }
     }
+
+    private static string CmdPath = @"C:\Windows\System32\cmd.exe";
+    public static string RunCmd(string cmd)
+     {
+        UnityEngine.Debug.Log("RunCmd1");
+         cmd = cmd.Trim().TrimEnd('&') + "&exit";//说明：不管命令是否成功均执行exit命令，否则当调用ReadToEnd()方法时，会处于假死状态
+         using (Process p = new Process())
+         {
+            UnityEngine.Debug.Log("RunCmd2");
+
+            p.StartInfo.FileName = CmdPath;
+             p.StartInfo.UseShellExecute = false;        //是否使用操作系统shell启动
+             p.StartInfo.RedirectStandardInput = true;   //接受来自调用程序的输入信息
+             p.StartInfo.RedirectStandardOutput = true;  //由调用程序获取输出信息
+             p.StartInfo.RedirectStandardError = true;   //重定向标准错误输出
+             p.StartInfo.CreateNoWindow = true;          //不显示程序窗口
+             p.Start();//启动程序
+ 
+             //向cmd窗口写入命令
+             p.StandardInput.WriteLine(cmd);
+             p.StandardInput.AutoFlush = true;
+ 
+             //获取cmd窗口的输出信息
+             string output = p.StandardOutput.ReadToEnd();
+            // p.WaitForExit();//等待程序执行完退出进程
+            // p.Close();
+            UnityEngine.Debug.Log("RunCmd3");
+
+            return output;
+         }
+    }
+     
 }
