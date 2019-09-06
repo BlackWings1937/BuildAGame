@@ -9,6 +9,7 @@ using System.IO;
 public class AppConfigParse {
     public string XblProjPath;
     public string XblModAimVersion;
+    public string VsCodePath;
 }
 
 public class CreateModManager : MonoBehaviour
@@ -29,6 +30,14 @@ public class CreateModManager : MonoBehaviour
     [SerializeField]
     private Button btnCreateMod_ = null;
 
+    //vscode 路径
+    [SerializeField]
+    private Text texVSCodePath_ = null;
+
+    //按钮选择vscode 路径
+    [SerializeField]
+    private Button btnSelectVsCodePath_ = null;
+
     // ----- init Data -----
     private AppConfigParse myAppConfigData_ = null;
     private static readonly string STR_APPCONFIG_FILE_NAME = "appConfigFile.json";
@@ -42,6 +51,7 @@ public class CreateModManager : MonoBehaviour
             myAppConfigData_ = new AppConfigParse();
             myAppConfigData_.XblModAimVersion = "";
             myAppConfigData_.XblProjPath = "";
+            myAppConfigData_.VsCodePath = "";
             saveAppConfigDataToFile();
         }
         dataUpdated();
@@ -64,6 +74,13 @@ public class CreateModManager : MonoBehaviour
         }
     }
 
+    private void setVsCodePath(string p) {
+        if (myAppConfigData_!= null) {
+            myAppConfigData_.VsCodePath = p;
+            dataUpdated();
+        }
+    }
+
     private void setXBLAimVersion(string p) {
         if (myAppConfigData_!=null) {
             myAppConfigData_.XblModAimVersion = p;
@@ -79,6 +96,9 @@ public class CreateModManager : MonoBehaviour
         btnCreateMod_.onClick.AddListener(()=> {
             onBtnClickCreateMod();
         });
+        btnSelectVsCodePath_.onClick.AddListener(()=> {
+            onBtnClickSelectVsCodePath();
+        });
     }
 
     private void initUi() {
@@ -91,6 +111,7 @@ public class CreateModManager : MonoBehaviour
         {
             texXBLProjPath_.text = myAppConfigData_.XblProjPath;
             ifXBLVersion_.text = myAppConfigData_.XblModAimVersion;
+            texVSCodePath_.text = myAppConfigData_.VsCodePath;
         }
     }
 
@@ -131,7 +152,16 @@ public class CreateModManager : MonoBehaviour
             return;
         }
         if (parentManager_!= null && myAppConfigData_ != null) {
-            parentManager_.EnterEditModPanel(myAppConfigData_.XblProjPath,myAppConfigData_.XblModAimVersion);
+            //debug
+            Debug.Log("vscodepath:"+myAppConfigData_.VsCodePath);
+            parentManager_.EnterEditModPanel(myAppConfigData_.XblProjPath,myAppConfigData_.XblModAimVersion,myAppConfigData_.VsCodePath);
+        }
+    }
+
+    private void onBtnClickSelectVsCodePath() {
+        var path = OpenDialogUtils.OpenFile();
+        if (path!= "") {
+            setVsCodePath(path);
         }
     }
 

@@ -70,6 +70,12 @@ public class UploadManager : MonoBehaviour
     [SerializeField]
     private Button btnCreateLocalTestCase_;
 
+    [SerializeField]
+    private Button btnEditModFiles_;
+
+    [SerializeField]
+    private Button btnGenOnlineTest_;
+
 
     private CanvasManager parentManager_ = null;
     public void SetParentManager(CanvasManager p) { parentManager_ = p; }
@@ -104,6 +110,7 @@ public class UploadManager : MonoBehaviour
     }
 
 
+
     private void registerEvents() {
         if (btnSelectFile_) {
             btnSelectFile_.onClick.AddListener(()=> {
@@ -112,20 +119,48 @@ public class UploadManager : MonoBehaviour
         }
         if (btnUploadFile_) {
             btnUploadFile_.onClick.AddListener(()=> {
-                uploadFile();
+                //删除配置文件
+                this.parentManager_.DeleteAllConfigFIle(this.PathXBLProj, this.VersionXBLMod);
+                //压缩文件
+                this.parentManager_.GenerateModZipPackageToUploadCache(this.PathXBLProj, this.VersionXBLMod);
+                //重新生成配置文件
+               // this.parentManager_.GenerateDiffConfig(this.PathXBLProj, this.VersionXBLMod);
+                //this.parentManager_.GenerateModAllFilesConfig(this.PathXBLProj, this.VersionXBLMod);
+                this.parentManager_.GenerateDownloadComplieFile(this.PathXBLProj, this.VersionXBLMod);
+                // 上传压缩包
+                var path = this.PathXBLProj + "\\xiaobanlong5.2.0\\Win32TestRes\\Mod\\readyToUploadMod.zip";
+                if (File.Exists(path))
+                {
+                    Debug.Log("path Exist:" + path);
+                    uploadFile2(path);
+                    
+                }
+                else {
+                    Debug.Log("path not exist"+path);
+                }
             });
         }
         if (btnCreateLocalTestCase_) {
             btnCreateLocalTestCase_.onClick.AddListener(()=> {
                 if (this.parentManager_ != null) {
-                    this.parentManager_.GenerateWin32AimModFile(this.PathXBLProj,this.VersionXBLMod);
+                    this.parentManager_.GenerateWin32AimModFile(this.PathXBLProj,this.VersionXBLMod,false);
                     this.parentManager_.GenerateDiffConfig(this.PathXBLProj,this.VersionXBLMod);
-
-                    // debug
-                   CanvasManager.RunCmd("cd D:/Users/X1937/AppData/Local/Programs/Microsoft VS Code");
-                    CanvasManager.RunCmd("Code E:/xblTempPackage5/xiaobanlong/xiaobanlong5.2.0/Win32TestRes/Mod/8.5.7");
+                    this.parentManager_.GenerateModAllFilesConfig(this.PathXBLProj,this.VersionXBLMod);
+                    this.parentManager_.GenerateDownloadComplieFile(this.PathXBLProj, this.VersionXBLMod);
+                   
                 }
-                //todo: 生成压缩包准备上传
+            });
+        }
+        if (btnGenOnlineTest_) {
+            btnGenOnlineTest_.onClick.AddListener(()=> {
+                this.parentManager_.GenerateWin32AimModFile(this.PathXBLProj, this.VersionXBLMod, true);
+            });
+        }
+        if (btnEditModFiles_!= null) {
+            btnEditModFiles_.onClick.AddListener(()=> {
+                if (this.parentManager_ != null) {
+                    this.parentManager_.OpenVSCodeToEditMod(this.PathXBLProj, this.VersionXBLMod);
+                }
             });
         }
     }
@@ -213,6 +248,7 @@ public class UploadManager : MonoBehaviour
         }
         else
         {
+            Debug.Log("update result"+ request.downloadHandler.text);
             ParseToParam3 p3 = JsonUtility.FromJson<ParseToParam3>(request.downloadHandler.text);
             if (p3 != null)
             {
@@ -284,6 +320,8 @@ public class UploadManager : MonoBehaviour
     /// <param name="path">上传文件的绝对路径</param>
     /// <returns></returns>
     private IEnumerator UploadFile(string path, UploadComplieCallBack cb) {
+        Debug.Log("uploadFile2 3");
+
         byte[] b = File.ReadAllBytes(path);
         WWWForm form = new WWWForm();
         form.AddBinaryData("xblfile",b);
@@ -291,8 +329,12 @@ public class UploadManager : MonoBehaviour
         req.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
         yield return req.SendWebRequest();
         if (req.isHttpError||req.isNetworkError) {
+            Debug.Log("uploadFile2 4");
+
             setLogBoard("网络错误 上传失败");
         } else {
+            Debug.Log("uploadFile2 5");
+
             parseUploadRes p = JsonUtility.FromJson<parseUploadRes>(req.downloadHandler.text);
             setLogBoard("上传成功"+ p.srcurl);
             Debug.Log("上传成功"+ p.srcurl);
@@ -328,6 +370,22 @@ public class UploadManager : MonoBehaviour
         else if (this.myUploadDeviceType_ == EnumUploadDeviceType.E_Apple)
         {
             StartCoroutine(updateResToCloudApple(uploadCdnResUrl_, this.myIFVerisonNum_.text));// 加个回调？
+        }
+    }
+
+    private void updateResToOnline2() {
+        if (this.myUploadDeviceType_ == EnumUploadDeviceType.E_All)
+        {
+            StartCoroutine(updateResToCloudApple(uploadCdnResUrl_, this.VersionXBLMod));// 加个回调？
+            StartCoroutine(updateResToCloudAndroid(uploadCdnResUrl_, this.VersionXBLMod));
+        }
+        else if (this.myUploadDeviceType_ == EnumUploadDeviceType.E_Android)
+        {
+            StartCoroutine(updateResToCloudAndroid(uploadCdnResUrl_, this.VersionXBLMod));
+        }
+        else if (this.myUploadDeviceType_ == EnumUploadDeviceType.E_Apple)
+        {
+            StartCoroutine(updateResToCloudApple(uploadCdnResUrl_, this.VersionXBLMod));// 加个回调？
         }
     }
 
@@ -376,6 +434,20 @@ public class UploadManager : MonoBehaviour
                     updateResToOnline();
                 }
             }
+        }
+    }
+
+    private void uploadFile2(string zipPath) {
+        Debug.Log("uploadFile2 1"+ zipPath);
+        if (!isUploading_)
+        {
+            Debug.Log("uploadFile2 2");
+
+            isUploading_ = true;
+            StartCoroutine(UploadFile(zipPath, () => {
+                this.updateResToOnline2();
+                isUploading_ = false;
+            }));
         }
     }
 

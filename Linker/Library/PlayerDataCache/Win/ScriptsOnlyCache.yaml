@@ -1,6 +1,8 @@
 ScriptsOnlyBuild:
   usedScripts:
     Assembly-CSharp.dll:
+    - CanvasManager
+    - CreateModManager
     - TouchesManager
     - UploadManager
     Unity.2D.Tilemap.Editor.dll:
@@ -30,7 +32,7 @@ ScriptsOnlyBuild:
     - UnityEngine.Networking.NetworkCallbacks
     - UnityEngine.Networking.NetworkIdentity
   sceneClasses:
-    Assets/Scenes/sceneUploadMod.unity:
+    Assets/Scenes/sceneUploadModVersionTwo.unity:
     - Class: 1
       Script: {instanceID: 0}
     - Class: 4
@@ -56,51 +58,55 @@ ScriptsOnlyBuild:
     - Class: 104
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 9678}
+      Script: {instanceID: 9684}
     - Class: 114
-      Script: {instanceID: 9720}
+      Script: {instanceID: 9726}
     - Class: 114
-      Script: {instanceID: 9818}
+      Script: {instanceID: 9824}
     - Class: 114
-      Script: {instanceID: 9820}
+      Script: {instanceID: 9826}
     - Class: 114
-      Script: {instanceID: 9880}
-    - Class: 114
-      Script: {instanceID: 9884}
+      Script: {instanceID: 9888}
     - Class: 114
       Script: {instanceID: 9892}
     - Class: 114
-      Script: {instanceID: 9920}
+      Script: {instanceID: 9900}
     - Class: 114
-      Script: {instanceID: 9930}
+      Script: {instanceID: 9928}
     - Class: 114
-      Script: {instanceID: 10146}
+      Script: {instanceID: 9938}
     - Class: 114
-      Script: {instanceID: 10304}
+      Script: {instanceID: 10154}
     - Class: 114
-      Script: {instanceID: 10430}
+      Script: {instanceID: 10316}
     - Class: 114
-      Script: {instanceID: 10668}
+      Script: {instanceID: 10442}
     - Class: 114
-      Script: {instanceID: 10788}
+      Script: {instanceID: 10680}
     - Class: 114
-      Script: {instanceID: 10810}
+      Script: {instanceID: 10800}
     - Class: 114
-      Script: {instanceID: 10852}
+      Script: {instanceID: 10822}
     - Class: 114
-      Script: {instanceID: 10918}
+      Script: {instanceID: 10864}
     - Class: 114
-      Script: {instanceID: 11140}
+      Script: {instanceID: 10930}
     - Class: 114
-      Script: {instanceID: 11296}
+      Script: {instanceID: 11154}
     - Class: 114
-      Script: {instanceID: 11480}
+      Script: {instanceID: 11276}
     - Class: 114
-      Script: {instanceID: 11918}
+      Script: {instanceID: 11316}
     - Class: 114
-      Script: {instanceID: 11934}
+      Script: {instanceID: 11500}
     - Class: 114
-      Script: {instanceID: 11950}
+      Script: {instanceID: 11940}
+    - Class: 114
+      Script: {instanceID: 11956}
+    - Class: 114
+      Script: {instanceID: 11972}
+    - Class: 114
+      Script: {instanceID: 12014}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -344,6 +350,12 @@ ScriptsOnlyBuild:
     className: AnimationPlayableAsset
   - hash:
       serializedVersion: 2
+      Hash: 11bdd61587db747672b66c52442395d8
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: Assets.SimpleZip
+    className: Example
+  - hash:
+      serializedVersion: 2
       Hash: aba7b2852ef61d175dd9602e7723d5e5
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.UI
@@ -506,7 +518,7 @@ ScriptsOnlyBuild:
     className: TMP_SpriteAnimator
   - hash:
       serializedVersion: 2
-      Hash: 6b91a3d8ee201ecd1679ed597751af97
+      Hash: f69ada05682f95f91e1fceb643637dfe
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: UploadManager
@@ -630,6 +642,12 @@ ScriptsOnlyBuild:
     assemblyName: com.unity.multiplayer-hlapi.Runtime.dll
     namespaceName: UnityEngine.Networking
     className: NetworkMigrationManager
+  - hash:
+      serializedVersion: 2
+      Hash: 8b798fe32bc28298a24b6213f8a9f420
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: CreateModManager
   - hash:
       serializedVersion: 2
       Hash: c1933cc0a2f4ff6eb13333347497beb3
@@ -830,11 +848,17 @@ ScriptsOnlyBuild:
     className: ToggleGroup
   - hash:
       serializedVersion: 2
+      Hash: f8cf5c0b2be8c1d7a6b2c56d7600d0a8
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: CanvasManager
+  - hash:
+      serializedVersion: 2
       Hash: c3d3430df9e3ea95e3e3d587961390fb
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: PlayableTrack
   platform: 5
   scenePathNames:
-  - Assets/Scenes/sceneUploadMod.unity
-  playerPath: C:/Users/X1937/Documents/buildAGame/BuildAGame/Linker/LinkerUploadFile/Linker.exe
+  - Assets/Scenes/sceneUploadModVersionTwo.unity
+  playerPath: C:/Users/X1937/Desktop/LinkerUploadFile2/Linker.exe
