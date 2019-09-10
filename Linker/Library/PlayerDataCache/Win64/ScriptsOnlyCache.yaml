@@ -518,7 +518,7 @@ ScriptsOnlyBuild:
     className: TMP_SpriteAnimator
   - hash:
       serializedVersion: 2
-      Hash: f69ada05682f95f91e1fceb643637dfe
+      Hash: 129287c7c90a67634db2026bd9b9d7ed
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: UploadManager

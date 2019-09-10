@@ -339,6 +339,9 @@
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>C:/Users/X1937/Documents/buildAGame/BuildAGame/Linker/Assets/ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>C:/Users/X1937/Documents/buildAGame/BuildAGame/Linker/Assets/Plugins/x86_64/Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="Ionic.Zlib.CF">
       <HintPath>C:/Users/X1937/Documents/buildAGame/BuildAGame/Linker/Assets/SimpleZip/Plugins/Ionic.Zlib.CF.dll</HintPath>
     </Reference>
@@ -350,9 +353,6 @@
     </Reference>
     <Reference Include="Unity.Analytics.Tracker">
       <HintPath>C:/Users/X1937/Documents/buildAGame/BuildAGame/Linker/Library/PackageCache/com.unity.analytics@3.3.2/Unity.Analytics.Tracker.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>C:/Users/X1937/Documents/buildAGame/BuildAGame/Linker/Assets/Plugins/x86_64/Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib">
       <HintPath>E:/unityDownload/2019.2.0f1/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/mscorlib.dll</HintPath>

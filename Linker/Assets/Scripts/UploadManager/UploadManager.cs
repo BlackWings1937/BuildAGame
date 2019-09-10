@@ -65,6 +65,9 @@ public class UploadManager : MonoBehaviour
     private Dropdown selectDeviceDropType_;
 
     [SerializeField]
+    private Dropdown selectModType_;
+
+    [SerializeField]
     private Text texAimVersion_;
 
     [SerializeField]
@@ -75,6 +78,8 @@ public class UploadManager : MonoBehaviour
 
     [SerializeField]
     private Button btnGenOnlineTest_;
+
+
 
 
     private CanvasManager parentManager_ = null;
@@ -119,25 +124,64 @@ public class UploadManager : MonoBehaviour
         }
         if (btnUploadFile_) {
             btnUploadFile_.onClick.AddListener(()=> {
+
+
+
+                this.parentManager_.GenerateShipStone(this.PathXBLProj, this.VersionXBLMod);
+
                 //删除配置文件
                 this.parentManager_.DeleteAllConfigFIle(this.PathXBLProj, this.VersionXBLMod);
-                //压缩文件
-                this.parentManager_.GenerateModZipPackageToUploadCache(this.PathXBLProj, this.VersionXBLMod);
-                //重新生成配置文件
-               // this.parentManager_.GenerateDiffConfig(this.PathXBLProj, this.VersionXBLMod);
-                //this.parentManager_.GenerateModAllFilesConfig(this.PathXBLProj, this.VersionXBLMod);
-                this.parentManager_.GenerateDownloadComplieFile(this.PathXBLProj, this.VersionXBLMod);
-                // 上传压缩包
-                var path = this.PathXBLProj + "\\xiaobanlong5.2.0\\Win32TestRes\\Mod\\readyToUploadMod.zip";
-                if (File.Exists(path))
+                //看情况生成测试mod 标识文件
+                if (selectModType_.value == 0)
                 {
-                    Debug.Log("path Exist:" + path);
-                    uploadFile2(path);
-                    
+                    //test
+                    this.parentManager_.GenerateTestModFile(this.PathXBLProj, this.VersionXBLMod);
+                    //生成checkfile
+                    this.parentManager_.GenerateDiffConfig(this.PathXBLProj, this.VersionXBLMod);
+                    this.parentManager_.GenerateModAllFilesConfig(this.PathXBLProj, this.VersionXBLMod);
+                    //压缩文件
+                    this.parentManager_.GenerateModZipPackageToUploadCache(this.PathXBLProj, this.VersionXBLMod);
+                    //重新生成配置文件
+                    // this.parentManager_.GenerateDiffConfig(this.PathXBLProj, this.VersionXBLMod);
+                    //this.parentManager_.GenerateModAllFilesConfig(this.PathXBLProj, this.VersionXBLMod);
+                    //this.parentManager_.GenerateDownloadComplieFile(this.PathXBLProj, this.VersionXBLMod);
+                    // 上传压缩包
+                    var path = this.PathXBLProj + "\\xiaobanlong5.2.0\\Win32TestRes\\Mod\\readyToUploadMod.zip";
+                    if (File.Exists(path))
+                    {
+                        Debug.Log("path Exist:" + path);
+                       uploadFile2(path);
+                    }
+                    else
+                    {
+                        Debug.Log("path not exist" + path);
+                    }
                 }
                 else {
-                    Debug.Log("path not exist"+path);
+                    //format
+                    this.parentManager_.DeleteTestModFile(this.PathXBLProj, this.VersionXBLMod);
+                    this.parentManager_.CacheToUploadMod(this.PathXBLProj, this.VersionXBLMod);
+                    this.parentManager_.GenerateEncryptLuaScript(this.PathXBLProj, this.VersionXBLMod);
+                    //生成checkfile
+                    this.parentManager_.GenerateDiffConfig(this.PathXBLProj, this.VersionXBLMod);
+                    this.parentManager_.GenerateModAllFilesConfig(this.PathXBLProj, this.VersionXBLMod);
+                    //压缩文件
+                    this.parentManager_.GenerateModZipPackageToUploadCache(this.PathXBLProj, this.VersionXBLMod);
+                    this.parentManager_.RecoverToUploadMod(this.PathXBLProj, this.VersionXBLMod);
+                    // 上传压缩包
+                    var path = this.PathXBLProj + "\\xiaobanlong5.2.0\\Win32TestRes\\Mod\\readyToUploadMod.zip";
+                    if (File.Exists(path))
+                    {
+                        Debug.Log("path Exist:" + path);
+                        uploadFile2(path);
+                    }
+                    else
+                    {
+                        Debug.Log("path not exist" + path);
+                    }
                 }
+                
+
             });
         }
         if (btnCreateLocalTestCase_) {
@@ -147,7 +191,7 @@ public class UploadManager : MonoBehaviour
                     this.parentManager_.GenerateDiffConfig(this.PathXBLProj,this.VersionXBLMod);
                     this.parentManager_.GenerateModAllFilesConfig(this.PathXBLProj,this.VersionXBLMod);
                     this.parentManager_.GenerateDownloadComplieFile(this.PathXBLProj, this.VersionXBLMod);
-                   
+                    this.parentManager_.GenerateShipStone(this.PathXBLProj, this.VersionXBLMod);
                 }
             });
         }
