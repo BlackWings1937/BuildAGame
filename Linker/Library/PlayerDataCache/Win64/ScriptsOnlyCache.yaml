@@ -518,7 +518,7 @@ ScriptsOnlyBuild:
     className: TMP_SpriteAnimator
   - hash:
       serializedVersion: 2
-      Hash: 129287c7c90a67634db2026bd9b9d7ed
+      Hash: eb20488daf78269d9d7c142e2c4536b1
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: UploadManager
@@ -861,4 +861,4 @@ ScriptsOnlyBuild:
   platform: 19
   scenePathNames:
   - Assets/Scenes/sceneUploadModVersionTwo.unity
-  playerPath: C:/Users/X1937/Desktop/LinkerUploadFile2/Linker.exe
+  playerPath: C:/Users/X1937/Desktop/updatetool/Linker.exe

@@ -68,6 +68,9 @@ public class UploadManager : MonoBehaviour
     private Dropdown selectModType_;
 
     [SerializeField]
+    private Dropdown selectUploadType_;
+
+    [SerializeField]
     private Text texAimVersion_;
 
     [SerializeField]
@@ -114,7 +117,16 @@ public class UploadManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 上传网址类型
+    /// </summary>
+    private EnumUploadUrlType myUploadUrlType_;
+    public enum EnumUploadUrlType {
+        E_Test = 0,
+        E_Format,
+    }
 
+    //
 
     private void registerEvents() {
         if (btnSelectFile_) {
@@ -124,8 +136,6 @@ public class UploadManager : MonoBehaviour
         }
         if (btnUploadFile_) {
             btnUploadFile_.onClick.AddListener(()=> {
-
-
 
                 this.parentManager_.GenerateShipStone(this.PathXBLProj, this.VersionXBLMod);
 
@@ -265,6 +275,7 @@ public class UploadManager : MonoBehaviour
 
     // 更新资源请求的URL
     private readonly static string STR_UPDATE_RES_URL = "https://testxblapi.youban.com/srcupdate/addnewsrc";
+    private readonly static string STR_UPDATE_RES_URL_FORMAT = "https://xblapi.youban.com/srcupdate/addnewsrc";
 
     /// <summary>
     /// 更新补丁网址的方法
@@ -281,7 +292,19 @@ public class UploadManager : MonoBehaviour
         p.srcurl = resurl;
         var str = JsonUtility.ToJson(p);
         byte[] bodyRaw = Encoding.UTF8.GetBytes(str);
-        UnityWebRequest request = new UnityWebRequest(STR_UPDATE_RES_URL, "POST");
+
+        var uploadurl = "";
+        if (selectUploadType_.value == (int)EnumUploadUrlType.E_Format)
+        {
+            uploadurl = STR_UPDATE_RES_URL_FORMAT;
+        }
+        else
+        {
+            uploadurl = STR_UPDATE_RES_URL;
+        }
+       // uploadurl = STR_UPDATE_RES_URL;
+        Debug.Log("uploadUrl:"+ uploadurl);
+        UnityWebRequest request = new UnityWebRequest(uploadurl, "POST");
         request.uploadHandler = new UploadHandlerRaw(bodyRaw);
         request.SetRequestHeader("Content-Type", "application/json;charset=utf-8");
         request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
@@ -326,7 +349,15 @@ public class UploadManager : MonoBehaviour
         p.srcurl = resurl;
         var str = JsonUtility.ToJson(p);
         byte[] bodyRaw = Encoding.UTF8.GetBytes(str);
-        UnityWebRequest request = new UnityWebRequest(STR_UPDATE_RES_URL, "POST");
+        //mark
+        var uploadurl = "";
+        if (selectUploadType_.value == (int)EnumUploadUrlType.E_Format) {
+            uploadurl = STR_UPDATE_RES_URL_FORMAT;
+        } else {
+            uploadurl = STR_UPDATE_RES_URL;
+        }
+
+        UnityWebRequest request = new UnityWebRequest(uploadurl, "POST");
         request.uploadHandler = new UploadHandlerRaw(bodyRaw);
         request.SetRequestHeader("Content-Type", "application/json;charset=utf-8");
         request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
@@ -356,6 +387,7 @@ public class UploadManager : MonoBehaviour
 
     // 上传文件到cdn 请求的URL
     private static readonly string STR_UPLOAD_REQ_URL = "http://testxblapi.youban.com/common/upload";
+    private static readonly string STR_UPLOAD_REQ_URL_FORMAT = "http://xblapi.youban.com/common/upload";
     //上传后资源的地址
     private string uploadCdnResUrl_ = "";
     /// <summary>
@@ -369,9 +401,21 @@ public class UploadManager : MonoBehaviour
         byte[] b = File.ReadAllBytes(path);
         WWWForm form = new WWWForm();
         form.AddBinaryData("xblfile",b);
+        var uploadUrl = "";
+        if (selectUploadType_.value == (int)EnumUploadUrlType.E_Format)
+        {
+            uploadUrl = STR_UPLOAD_REQ_URL_FORMAT;
+        }
+        else
+        {
+            uploadUrl = STR_UPLOAD_REQ_URL;
+        }
+
         UnityWebRequest req = UnityWebRequest.Post(STR_UPLOAD_REQ_URL, form);
         req.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
         yield return req.SendWebRequest();
+        setLogBoard("上传结果" + req.downloadHandler.text);
+
         if (req.isHttpError||req.isNetworkError) {
             Debug.Log("uploadFile2 4");
 
