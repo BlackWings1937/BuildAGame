@@ -41,7 +41,7 @@ public class Touch
             var count = listOfTouchObjects.Count;
             for (int i = 0; i < count; ++i)
             {
-                //listOfTouchObjects[i].OnTouchMoved(worldPos);
+                listOfTouchObjects[i].OnTouchMoved(worldPos);
             }
         } else {
             swallowTouchObj_.OnTouchMoved(worldPos);
@@ -56,7 +56,7 @@ public class Touch
             var count = listOfTouchObjects.Count;
             for (int i = 0; i < count; ++i)
             {
-               // listOfTouchObjects[i].OnTouchEnded(worldPos);
+               listOfTouchObjects[i].OnTouchEnded(worldPos);
             }
         } else {
             swallowTouchObj_.OnTouchEnded(worldPos);

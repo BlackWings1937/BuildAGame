@@ -17,13 +17,14 @@ public class PointAt : TouchObject
         orignalPos_ = worldPos;
         if (isTouchInTouchObject(worldPos)) {
             invokeCallBack(pointDownCallBack_,worldPos);
-            return true;
+            return IsSwallowTouch;
         } else {
             return false;
         } 
     }
     public override void OnTouchMoved(Vector2 worldPos)
     {
+
         base.OnTouchMoved(worldPos);
     }
     public override void OnTouchEnded(Vector2 worldPos)

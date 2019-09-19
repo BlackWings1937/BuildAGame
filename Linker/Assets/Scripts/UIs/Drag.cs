@@ -31,7 +31,7 @@ public class Drag : TouchObject
         if (isTouchInTouchObject(worldPos)) {
             startPos_ = transform.localPosition;
             startTouchPos_ = TransformUtils.WorldPosToNodePos(worldPos, transform.parent);
-            return true;
+            return IsSwallowTouch;
         } else {
             return false;
         }
@@ -49,6 +49,7 @@ public class Drag : TouchObject
 
     public override void OnTouchMoved(Vector2 worldPos)
     {
+
         var nowTouchPos = TransformUtils.WorldPosToNodePos(worldPos,transform.parent);
         var diff = new Vector2(nowTouchPos.x - startTouchPos_.x,nowTouchPos.y - startTouchPos_.y);
         setLocalPosition(transform,new Vector2(startPos_.x + diff.x, startPos_.y + diff.y));
@@ -56,6 +57,7 @@ public class Drag : TouchObject
 
     public override void OnTouchEnded(Vector2 worldPos)
     {
+
         var nowTouchPos = TransformUtils.WorldPosToNodePos(worldPos, transform.parent);
         var diff = new Vector2(nowTouchPos.x - startTouchPos_.x, nowTouchPos.y - startTouchPos_.y);
         setLocalPosition(transform, new Vector2(startPos_.x + diff.x, startPos_.y + diff.y));

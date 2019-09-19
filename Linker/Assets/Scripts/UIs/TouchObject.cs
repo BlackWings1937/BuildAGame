@@ -10,6 +10,12 @@ public class TouchObject : MonoBehaviour
     private int order_ = 0;
     public int Order { get { return order_; } set { order_ = value; } }
 
+    /// <summary>
+    /// 是否吞噬触碰
+    /// </summary>
+    private bool isSwallowTouch_ = false;
+    public bool IsSwallowTouch { get { return isSwallowTouch_; } set { isSwallowTouch_ = value; } }
+
     //检查触碰区域是否再节点返回内
     protected bool isTouchInTouchObject(Vector2 worldpos) {
         var rectTransform = (RectTransform)transform; 

@@ -30,8 +30,8 @@ public class PackageView : BaseView
     private TapButtonsGroup m_tapBtnsGroups_;
 
     // 内容层
-   // [SerializeField]
-   // private PointAt contentlayerPointAt_;
+    [SerializeField]
+    private PointAt contentlayerPointAt_;
 
     [SerializeField]
     private Drag contentlayerDrag_;
@@ -39,14 +39,16 @@ public class PackageView : BaseView
     //重写UI注册事件
     protected override void registerViewEvent()
     {
-        //if (contentlayerPointAt_ != null)
-        //{
-        //    contentlayerPointAt_.SetPointUpCallBack((Vector2 worldPos) => {
-        //        Debug.Log("worldPos:" + worldPos.x + " y:" + worldPos.y);
-        //    });
-        //}
+        if (contentlayerPointAt_ != null)
+        {
+            contentlayerDrag_.IsSwallowTouch = false;
+            contentlayerPointAt_.SetPointUpCallBack((Vector2 worldPos) => {
+                Debug.Log("point worldPos:" + worldPos.x + " y:" + worldPos.y);
+            });
+        }
 
         if (contentlayerDrag_ != null) {
+            contentlayerDrag_.IsSwallowTouch = false;
             contentlayerDrag_.SetAllowArea(
                 contentlayerDrag_.GetComponent<RectTransform>().sizeDelta.x/2,
                 contentlayerDrag_.GetComponent<RectTransform>().sizeDelta.y/2,
@@ -54,7 +56,7 @@ public class PackageView : BaseView
                 - contentlayerDrag_.GetComponent<RectTransform>().sizeDelta.y/2 + AppController.VISIBLE_SIZE.y
                 );
             contentlayerDrag_.SetDragComplieCallBack((Vector2 worldPos)=> {
-
+                Debug.Log("drag worldPos:" + worldPos.x + " y:" + worldPos.y);
             });
         }
     }
