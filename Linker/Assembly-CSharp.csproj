@@ -74,6 +74,7 @@
     <Compile Include="Assets\Scripts\Datas\AppData.cs" />
     <Compile Include="Assets\Scripts\Datas\PackageData.cs" />
     <Compile Include="Assets\Scripts\Datas\ProjData.cs" />
+    <Compile Include="Assets\Scripts\DebugScript.cs" />
     <Compile Include="Assets\Scripts\Line.cs" />
     <Compile Include="Assets\Scripts\SimulatorController.cs" />
     <Compile Include="Assets\Scripts\Tools\OpenDialog.cs" />
@@ -86,11 +87,14 @@
     <Compile Include="Assets\Scripts\UIs\Drag.cs" />
     <Compile Include="Assets\Scripts\UIs\PointAt.cs" />
     <Compile Include="Assets\Scripts\UIs\PointAtAndWait.cs" />
+    <Compile Include="Assets\Scripts\UIs\SceneNode.cs" />
     <Compile Include="Assets\Scripts\UIs\SWOldProj.cs" />
     <Compile Include="Assets\Scripts\UIs\TapButtonsGroup.cs" />
+    <Compile Include="Assets\Scripts\UIs\TestScriptUI.cs" />
     <Compile Include="Assets\Scripts\UIs\Touch.cs" />
     <Compile Include="Assets\Scripts\UIs\TouchesManager.cs" />
     <Compile Include="Assets\Scripts\UIs\TouchObject.cs" />
+    <Compile Include="Assets\Scripts\UIs\VerticalTextItemGroup.cs" />
     <Compile Include="Assets\Scripts\UploadManager\BuildModCheckFIles.cs" />
     <Compile Include="Assets\Scripts\UploadManager\CanvasManager.cs" />
     <Compile Include="Assets\Scripts\UploadManager\CreateModManager.cs" />

@@ -11,10 +11,12 @@ public class BtnAdaptText : MonoBehaviour
     public Text MyText;
     public float LeftPadding = 0;
     public float RightPadding = 0;
+    public float UpPadding = 0;
+    public float BottomPadding = 0;
     public void SetText(string str) {
         if (MyText!= null) {
             var length = TextUtils.CaculateTextLength(str, MyText);
-            ((RectTransform)transform).sizeDelta = new Vector2(LeftPadding+length+RightPadding, ((RectTransform)transform).sizeDelta.y);
+            ((RectTransform)transform).sizeDelta = new Vector2(LeftPadding+length+RightPadding, ((RectTransform)MyText.transform).sizeDelta.y + UpPadding+BottomPadding);//((RectTransform)transform).sizeDelta.y
             MyText.text = str;
         }
     }

@@ -24,28 +24,38 @@ public class TapButtonsGroup : MonoBehaviour
     public RectTransform BtnsContent;
     public HorizontalLayoutGroup MyHorizontalLayoutGroup;
 
-    [SerializeField]
-    private Button btnCancle_ = null;
+    //[SerializeField]
+    //private Button btnCancle_ = null;
 
+    /// <summary>
+    /// tapButton group的touchOrder
+    /// </summary>
+    [SerializeField]
+    private int touchOrder_ = 0;
+    public int TouchOrder { get { return touchOrder_; } set { touchOrder_ = value; } }
+
+    [SerializeField]
+    private RectTransform rtPoint_;
     //
     private Dictionary<string, TapButtonCallBack> myInfo_;
 
     private void Start()
     {
+        /*
         if (btnCancle_ != null) {
             btnCancle_.onClick.AddListener(() => {
                 if (myInfo_.ContainsKey(STR_KEY_CANCLE)){
                     myInfo_[STR_KEY_CANCLE]();
                 }
             });
-        }
+        }*/
     }
     private bool isDefaultEvent(string str) { return ((str == TapButtonsGroup.STR_KEY_CANCLE));  }
     // 设置tapButoonGroup 事件面板
     public void SetEventByDic(Dictionary<string, TapButtonCallBack> dic) {
         clearBeforeItem();
         myInfo_ = dic;
-
+       // Debug.Log("SetEventByDic..");
         if (BtnsContent != null && PrefabBtn != null ) {
 
             var lengthOfContent = 0f;
@@ -70,14 +80,21 @@ public class TapButtonsGroup : MonoBehaviour
                 btnItem.transform.SetParent(BtnsContent,false);
                 btnsLength = btnsLength + ((RectTransform)btnItem.transform).sizeDelta.x;
                 btnHeight = ((RectTransform)btnItem.transform).sizeDelta.y;
-                //注册按钮方法
-                btnItem.GetComponent<Button>().onClick.AddListener(() =>
-                {
-                    if (cb!=null) { cb(); }
-                }); 
 
-                //累加按钮数量
-                itemCount = itemCount + 1;
+                //注册按钮方法
+                btnItem.GetComponent<BtnAdaptText>().MyText.gameObject.AddComponent<PointAt>().SetPointUpCallBack((Vector2 point)=> {
+                    Debug.Log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx2");
+                    if (gameObject.activeSelf == true) {
+                        if (cb != null) { cb(); }
+                        this.gameObject.SetActive(false);
+                    }
+                 });
+
+                //设置触碰优先级
+                btnItem.GetComponent<BtnAdaptText>().MyText.gameObject.GetComponent<PointAt>().Order = touchOrder_;
+                btnItem.GetComponent<BtnAdaptText>().MyText.gameObject.GetComponent<PointAt>().IsSwallowTouch = true;
+               //累加按钮数量
+               itemCount = itemCount + 1;
             }
 
             // 计算按钮间隔长度
@@ -87,13 +104,24 @@ public class TapButtonsGroup : MonoBehaviour
             lengthOfContent = paddingOfTapBtnsGroup + btnsLength + btnsSpacing; // 内容大小
 
             BtnsContent.sizeDelta = new Vector2(lengthOfContent, btnHeight);
+            rtPoint_.localPosition = new Vector3(rtPoint_.localPosition.x, -btnHeight / 2 - rtPoint_.sizeDelta.y/2, rtPoint_.localPosition.z);  
             ((RectTransform)transform).sizeDelta = BtnsContent.sizeDelta;
         }
     }
 
+    public void SetPosition(Vector3 pos) {
+        var height = ((RectTransform)this.transform).sizeDelta.y;
+        var heightOfPoint = rtPoint_.sizeDelta.y;
+        this.transform.localPosition = new Vector3(pos.x, pos.y + height/2 + heightOfPoint, pos.z);
+    }
+
     private void clearBeforeItem() {
+       // Debug.Log("clearBeforeItem1");
         if (BtnsContent!= null) {
+           // Debug.Log("clearBeforeItem2");
             for (int i = 0;i<BtnsContent.childCount;++i) {
+           //     Debug.Log("clearBeforeItem3:"+i);// 没有立刻删除
+                BtnsContent.GetChild(i).gameObject.GetComponent<BtnAdaptText>().MyText.gameObject.GetComponent<PointAt>().SetPointUpCallBack((Vector2 point) => { });
                 GameObject.Destroy(BtnsContent.GetChild(i).gameObject);
             }
         }

@@ -26,15 +26,19 @@ public class Drag : TouchObject
     public void SetAllowArea(float minx, float miny, float maxx, float maxy) { minX_ = minx; minY_ = miny; maxX_ = maxx; maxY_ = maxy; isActiveAllowArea_ = false; }
     public bool IsActiveAllowArea{get{ return isActiveAllowArea_; } set { isActiveAllowArea_ = value; } }
 
+
+    private bool backResult_ = false;
+    private bool isDragStart = false;
     public override bool OnTouchBegan(Vector2 worldPos)
     {
+        backResult_ = false;
         if (isTouchInTouchObject(worldPos)) {
             startPos_ = transform.localPosition;
             startTouchPos_ = TransformUtils.WorldPosToNodePos(worldPos, transform.parent);
-            return IsSwallowTouch;
+            isDragStart = true;
         } else {
-            return false;
         }
+        return backResult_;
     }
 
     private void setLocalPosition(Transform t,Vector2 pos) {
@@ -47,21 +51,33 @@ public class Drag : TouchObject
         }
     }
 
-    public override void OnTouchMoved(Vector2 worldPos)
+    public override bool OnTouchMoved(Vector2 worldPos)
     {
+        if (isDragStart) {
+            var nowTouchPos = TransformUtils.WorldPosToNodePos(worldPos, transform.parent);
+            var diff = new Vector2(nowTouchPos.x - startTouchPos_.x, nowTouchPos.y - startTouchPos_.y);
+            setLocalPosition(transform, new Vector2(startPos_.x + diff.x, startPos_.y + diff.y));
 
-        var nowTouchPos = TransformUtils.WorldPosToNodePos(worldPos,transform.parent);
-        var diff = new Vector2(nowTouchPos.x - startTouchPos_.x,nowTouchPos.y - startTouchPos_.y);
-        setLocalPosition(transform,new Vector2(startPos_.x + diff.x, startPos_.y + diff.y));
+            var distance = Mathf.Sqrt(diff.x * diff.x + diff.y * diff.y);
+            if (distance > 0)
+            {
+                backResult_ = IsSwallowTouch;
+            }
+            return backResult_;
+        }
+        return false;
     }
 
-    public override void OnTouchEnded(Vector2 worldPos)
+    public override bool OnTouchEnded(Vector2 worldPos)
     {
-
-        var nowTouchPos = TransformUtils.WorldPosToNodePos(worldPos, transform.parent);
-        var diff = new Vector2(nowTouchPos.x - startTouchPos_.x, nowTouchPos.y - startTouchPos_.y);
-        setLocalPosition(transform, new Vector2(startPos_.x + diff.x, startPos_.y + diff.y));
-        //通知事件
-        invokeCallBack(dragComplieCallBack_,worldPos);
+        if (isDragStart) {
+            var nowTouchPos = TransformUtils.WorldPosToNodePos(worldPos, transform.parent);
+            var diff = new Vector2(nowTouchPos.x - startTouchPos_.x, nowTouchPos.y - startTouchPos_.y);
+            setLocalPosition(transform, new Vector2(startPos_.x + diff.x, startPos_.y + diff.y));
+            //通知事件
+            invokeCallBack(dragComplieCallBack_, worldPos);
+        }
+        isDragStart = false;
+        return false ;
     }
 }

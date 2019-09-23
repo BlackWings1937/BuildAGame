@@ -21,13 +21,17 @@ public class TouchesManager : MonoBehaviour
             var prefab = Resources.Load("prefab/" + STR_INSTANCE_PREFAB_NAME);
             var instanceGameObj = GameObject.Instantiate(prefab) as GameObject;
             _instance = instanceGameObj.GetComponent<TouchesManager>();
+
         }
         return _instance;
     }
-    private TouchesManager(){ myListOfTouchObjects_ = new List<TouchObject>(); }
+    private TouchesManager(){ myListOfTouchObjects_ = new List<TouchObject>(); cacheAddTouchObjects_ = new List<TouchObject>(); }
 
     // touchobjects list
     private List<TouchObject> myListOfTouchObjects_;
+
+    private List<TouchObject> cacheAddTouchObjects_;
+    private bool isLock_ = false;
 
     // 排序touchobject 根据 order
     private void sortTouchObjectsByOrder() {
@@ -41,6 +45,12 @@ public class TouchesManager : MonoBehaviour
             }
         });
     }
+    private void updateByCache() {
+       // for (int i = 0;i<cacheAddTouchObjects_.Count;++i) {
+      //      myListOfTouchObjects_.Add(cacheAddTouchObjects_[i]);
+      //  }
+      //  cacheAddTouchObjects_.Clear();
+    }
 
 
     private bool isMouseKeyDown_ = false;
@@ -49,6 +59,9 @@ public class TouchesManager : MonoBehaviour
 
     private void Update()
     {
+       // Debug.Log("update start1");
+        isLock_ = true;
+       // updateByCache();
         sortTouchObjectsByOrder();
 
         if (Input.GetKeyDown(KeyCode.Mouse0)) {
@@ -67,19 +80,37 @@ public class TouchesManager : MonoBehaviour
                 touch_ = null;
             }
         }
+       // Debug.Log("update start2 end");
+        isLock_ = false;
     }
 
 
     // ----- 对外接口 -----
     public void Add(TouchObject t,int order = 0) {
+       // Debug.Log("add  function1");
+
         if (t == null) { return; }
-        myListOfTouchObjects_.Add(t);
+       // Debug.Log("add  function2");
+       // if (isLock_)
+        {
+       //    Debug.Log("add to cache");
+        //    cacheAddTouchObjects_.Add(t);
+        }
+        // else 
+        {
+          //  Debug.Log("add to Format");
+            myListOfTouchObjects_.Add(t);
+        }
     }
     public void Remove(TouchObject t) {
         if (t == null||(!myListOfTouchObjects_.Contains(t))) { return; }
         myListOfTouchObjects_.Remove(t);
+        //cacheAddTouchObjects_.Remove(t);
     }
-    public void RemoveAll() { myListOfTouchObjects_.RemoveRange(0, myListOfTouchObjects_.Count); }
+    public void RemoveAll() {
+        myListOfTouchObjects_.RemoveRange(0, myListOfTouchObjects_.Count);
+       // cacheAddTouchObjects_.RemoveRange(0, cacheAddTouchObjects_.Count);
+    }
     public void Dispose() { RemoveAll(); }
 
 

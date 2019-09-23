@@ -9,19 +9,21 @@ public class PointAtAndWait : TouchObject
         CancelInvoke("invokeEvent");
         return true;
     }
-    public override void OnTouchMoved(Vector2 worldPos)
+    public override bool OnTouchMoved(Vector2 worldPos)
     {
         if (!isTouchInTouchObject(worldPos))
         {
             CancelInvoke("invokeEvent");
         }
+        return false;
     }
-    public override void OnTouchEnded(Vector2 worldPos)
+    public override bool OnTouchEnded(Vector2 worldPos)
     {
         if (isTouchInTouchObject(worldPos))
         {
             Invoke("invokeEvent",waitTime_);
         }
+        return false;
     }
 
     private void invokeEvent() {

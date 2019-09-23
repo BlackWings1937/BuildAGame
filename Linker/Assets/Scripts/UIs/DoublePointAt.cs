@@ -12,7 +12,7 @@ public class DoublePointAt : TouchObject
             return false;
         }
     }
-    public override void OnTouchEnded(Vector2 worldPos)
+    public override bool OnTouchEnded(Vector2 worldPos)
     {
         if (isTouchInTouchObject(worldPos))
         {
@@ -21,6 +21,7 @@ public class DoublePointAt : TouchObject
         else
         {
         }
+        return false;
     }
 
     //等待第二次点击的标记值

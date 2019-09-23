@@ -18,7 +18,7 @@ public class TouchObject : MonoBehaviour
 
     //检查触碰区域是否再节点返回内
     protected bool isTouchInTouchObject(Vector2 worldpos) {
-        var rectTransform = (RectTransform)transform; 
+        var rectTransform = (RectTransform)transform;
         var localPos = TransformUtils.WorldPosToNodePos(worldpos,transform);
         return (-rectTransform.sizeDelta.x / 2 < localPos.x) && (-rectTransform.sizeDelta.y / 2 < localPos.y) &&
             (localPos.x<rectTransform.sizeDelta.x/2)&&(localPos.y<rectTransform.sizeDelta.y/2);
@@ -34,8 +34,8 @@ public class TouchObject : MonoBehaviour
 
     // 触碰开始，返回是否吞噬触碰的信号
     public virtual bool OnTouchBegan(Vector2 worldPos) { return false; }
-    public virtual void OnTouchMoved(Vector2 worldPos) { }
-    public virtual void OnTouchEnded(Vector2 worldPos) { }
+    public virtual bool OnTouchMoved(Vector2 worldPos) { return false; }
+    public virtual bool OnTouchEnded(Vector2 worldPos) { return false; }
     
 
 

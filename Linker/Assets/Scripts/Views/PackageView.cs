@@ -41,14 +41,15 @@ public class PackageView : BaseView
     {
         if (contentlayerPointAt_ != null)
         {
-            contentlayerDrag_.IsSwallowTouch = false;
+            contentlayerDrag_.IsSwallowTouch = true;
             contentlayerPointAt_.SetPointUpCallBack((Vector2 worldPos) => {
-                Debug.Log("point worldPos:" + worldPos.x + " y:" + worldPos.y);
+                //Debug.Log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx1");
+                GetController<PackageController>().ShowTapBtnsGroup(worldPos);
             });
         }
 
         if (contentlayerDrag_ != null) {
-            contentlayerDrag_.IsSwallowTouch = false;
+            contentlayerDrag_.IsSwallowTouch = true;
             contentlayerDrag_.SetAllowArea(
                 contentlayerDrag_.GetComponent<RectTransform>().sizeDelta.x/2,
                 contentlayerDrag_.GetComponent<RectTransform>().sizeDelta.y/2,
@@ -56,7 +57,7 @@ public class PackageView : BaseView
                 - contentlayerDrag_.GetComponent<RectTransform>().sizeDelta.y/2 + AppController.VISIBLE_SIZE.y
                 );
             contentlayerDrag_.SetDragComplieCallBack((Vector2 worldPos)=> {
-                Debug.Log("drag worldPos:" + worldPos.x + " y:" + worldPos.y);
+               // Debug.Log("drag worldPos:" + worldPos.x + " y:" + worldPos.y);
             });
         }
     }
@@ -69,16 +70,21 @@ public class PackageView : BaseView
 
 
     // ----- 对外接口 -----
-    public void ShowBtnsGroupByDic(Dictionary<string, TapButtonCallBack> dic) {
-        if (m_tapBtnsGroups_ != null) {
-            m_tapBtnsGroups_.SetEventByDic(dic);
-            Vector2 pos = Input.mousePosition;
-            Vector2 worldPos = TransformUtils.ScreenPosToWorldPos(pos);
-            Vector2 nodePoint = TransformUtils.WorldPosToNodePos(worldPos, cuiLayer_);
-            m_tapBtnsGroups_.transform.localPosition = new Vector3(nodePoint.x, nodePoint.y,m_tapBtnsGroups_.transform.position.z);
-            m_tapBtnsGroups_.gameObject.SetActive(true);
+    public void ShowBtnsGroupByDic(Vector2 touchWorldPos, Dictionary<string, TapButtonCallBack> dic) {
+        if (m_tapBtnsGroups_ != null)
+        {
+            if (m_tapBtnsGroups_.gameObject.activeSelf == false)
+            {
+                m_tapBtnsGroups_.SetEventByDic(dic);
+                Vector2 worldPos = touchWorldPos;
+                Vector2 nodePoint = TransformUtils.WorldPosToNodePos(worldPos, cuiLayer_);
+                m_tapBtnsGroups_.gameObject.GetComponent<TapButtonsGroup>().SetPosition(new Vector3(nodePoint.x, nodePoint.y, m_tapBtnsGroups_.transform.position.z));
+                m_tapBtnsGroups_.gameObject.SetActive(true);
+            }
+            else {
+                m_tapBtnsGroups_.gameObject.SetActive(false);
+            }
         }
-        //isActiveUpdateTouch_ = false;
     }
     public void CloseBtnsGroup() {
     //    closeTapBtnGroups();

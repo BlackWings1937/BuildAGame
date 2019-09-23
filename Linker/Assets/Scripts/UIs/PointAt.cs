@@ -10,34 +10,50 @@ public class PointAt : TouchObject
     // 记录点击时的世界点
     private Vector2 orignalPos_;
     // 单点最后偏移值
-    private readonly static float MAX_MOVE_DIFF = 2F; 
-
+    private readonly static float MAX_MOVE_DIFF = 2F;
+    //是否移动过的标记
+    private bool isTouchMoved_ = false;
+    //是否点击在区域内
+    private bool isTouchInArea_ = false;
     public override bool OnTouchBegan(Vector2 worldPos)
     {
+        isTouchInArea_ = false;
+        isTouchMoved_ = false;
         orignalPos_ = worldPos;
         if (isTouchInTouchObject(worldPos)) {
+            isTouchInArea_ = true;
             invokeCallBack(pointDownCallBack_,worldPos);
             return IsSwallowTouch;
         } else {
+            isTouchInArea_ = false;
             return false;
         } 
     }
-    public override void OnTouchMoved(Vector2 worldPos)
+    public override bool OnTouchMoved(Vector2 worldPos)
     {
-
+        var diff = Mathf.Sqrt((worldPos.x - orignalPos_.x) * (worldPos.x - orignalPos_.x) + (worldPos.y - orignalPos_.y) * (worldPos.y - orignalPos_.y));
+        if (diff > MAX_MOVE_DIFF)
+        {
+            isTouchMoved_ = true;
+        }
         base.OnTouchMoved(worldPos);
+        return false;
     }
-    public override void OnTouchEnded(Vector2 worldPos)
+    public override bool OnTouchEnded(Vector2 worldPos)
     {
         var diff = Mathf.Sqrt((worldPos.x-orignalPos_.x)* (worldPos.x - orignalPos_.x) + (worldPos.y - orignalPos_.y) * (worldPos.y - orignalPos_.y));
-        if (diff<=MAX_MOVE_DIFF)
+        if (diff <= MAX_MOVE_DIFF && isTouchMoved_ == false)
         {
-            invokeCallBack(pointUpCallBack_, worldPos);
+            if (isTouchInTouchObject(worldPos)) {
+                invokeCallBack(pointUpCallBack_, worldPos);
+                isTouchMoved_ = false;
+                return false;
+            }
         }
-        else
-        {
-            invokeCallBack(pointCancleCallBack_, worldPos);
-        }
+
+        invokeCallBack(pointCancleCallBack_,worldPos);
+        isTouchMoved_ = false;
+        return false;
     }
 
 

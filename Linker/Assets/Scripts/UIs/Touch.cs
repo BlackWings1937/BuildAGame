@@ -21,6 +21,7 @@ public class Touch
             var listOfTouchObjects = getTouchObjects_();
             var count = listOfTouchObjects.Count;
             for (int i = count-1; 0<=i;--i) {
+                if (listOfTouchObjects[i].gameObject.activeSelf == false) { continue; }
                 var result = listOfTouchObjects[i].OnTouchBegan(worldPos);
                 if (result)
                 {
@@ -41,6 +42,7 @@ public class Touch
             var count = listOfTouchObjects.Count;
             for (int i = 0; i < count; ++i)
             {
+                if (listOfTouchObjects[i].gameObject.activeSelf == false) { continue; }
                 listOfTouchObjects[i].OnTouchMoved(worldPos);
             }
         } else {
@@ -56,7 +58,8 @@ public class Touch
             var count = listOfTouchObjects.Count;
             for (int i = 0; i < count; ++i)
             {
-               listOfTouchObjects[i].OnTouchEnded(worldPos);
+                if (listOfTouchObjects[i].gameObject.activeSelf == false) { continue; }
+                listOfTouchObjects[i].OnTouchEnded(worldPos);
             }
         } else {
             swallowTouchObj_.OnTouchEnded(worldPos);
