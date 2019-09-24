@@ -85,12 +85,17 @@
     <Compile Include="Assets\Scripts\UIs\CellOldProjs.cs" />
     <Compile Include="Assets\Scripts\UIs\DoublePointAt.cs" />
     <Compile Include="Assets\Scripts\UIs\Drag.cs" />
+    <Compile Include="Assets\Scripts\UIs\DrawLine.cs" />
+    <Compile Include="Assets\Scripts\UIs\DrawLineManager.cs" />
+    <Compile Include="Assets\Scripts\UIs\GPoint.cs" />
     <Compile Include="Assets\Scripts\UIs\PointAt.cs" />
     <Compile Include="Assets\Scripts\UIs\PointAtAndWait.cs" />
+    <Compile Include="Assets\Scripts\UIs\PointParent.cs" />
     <Compile Include="Assets\Scripts\UIs\SceneNode.cs" />
     <Compile Include="Assets\Scripts\UIs\SWOldProj.cs" />
     <Compile Include="Assets\Scripts\UIs\TapButtonsGroup.cs" />
     <Compile Include="Assets\Scripts\UIs\TestScriptUI.cs" />
+    <Compile Include="Assets\Scripts\UIs\TextItem.cs" />
     <Compile Include="Assets\Scripts\UIs\Touch.cs" />
     <Compile Include="Assets\Scripts\UIs\TouchesManager.cs" />
     <Compile Include="Assets\Scripts\UIs\TouchObject.cs" />
