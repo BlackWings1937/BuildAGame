@@ -5,26 +5,21 @@ using UnityEngine;
 public class TextItem : PointParent
 {
     // Start is called before the first frame update
-    void Start()
-    {
-        //InitPoints();
-    }
-
     protected override void InitPoints()
     {
-        var p1 = generatePointByLocalPos(new Vector2(0, 0));
-        var p2 = generatePointByLocalPos(new Vector2(10, 0));
+        var rt = (RectTransform)transform;
+        var p1 = generatePointByLocalPos(new Vector2(-rt.sizeDelta.x / 2, -rt.sizeDelta.y / 2));
+        var p2 = generatePointByLocalPos(new Vector2(rt.sizeDelta.x / 2, -rt.sizeDelta.y / 2));
         listPoints_.Add(p1);
         listPoints_.Add(p2);
     }
-    public void InitNow()
-    {
-        InitPoints();
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+    // ----- 对外接口 -----
+    private Dictionary<string, object> data_;
+    public void InitTextItemByData(Dictionary<string ,object> data) {
+        data_ = data;
+        InitPoints();
+        var btnAdapt = GetComponent<BtnAdaptText>();
+        btnAdapt.SetText(data["Name"] as string);
     }
 }

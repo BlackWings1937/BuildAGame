@@ -13,5 +13,7 @@ public class PointParent : MonoBehaviour
         return  gp1.AddComponent<GPoint>();
     }
     public int GetPointCount() { return listPoints_.Count; }
-    public GPoint GetPointByIndex( int index) { return listPoints_[index]; }
+    public GPoint GetPointByIndex( int index) {
+        if (index<0||index>=listPoints_.Count) { return null; }
+        return listPoints_[index]; }
 }
