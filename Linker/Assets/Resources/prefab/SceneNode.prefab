@@ -568,7 +568,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 243b408601859ab46b17e497d53c323f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  order_: 0
+  order_: 2
 --- !u!114 &2326025889245296195
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -608,11 +608,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2326025889245296196}
     m_Modifications:
-    - target: {fileID: 7282045569574978129, guid: 9ac970bb9f9ec2347bd50364007498b5,
-        type: 3}
-      propertyPath: m_Name
-      value: VerticalTextItemGroup
-      objectReference: {fileID: 0}
     - target: {fileID: 7282045569574978128, guid: 9ac970bb9f9ec2347bd50364007498b5,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -717,6 +712,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7282045569574978129, guid: 9ac970bb9f9ec2347bd50364007498b5,
+        type: 3}
+      propertyPath: m_Name
+      value: VerticalTextItemGroup
       objectReference: {fileID: 0}
     - target: {fileID: 7282045569574978141, guid: 9ac970bb9f9ec2347bd50364007498b5,
         type: 3}

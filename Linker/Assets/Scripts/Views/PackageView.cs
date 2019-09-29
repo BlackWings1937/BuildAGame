@@ -68,6 +68,34 @@ public class PackageView : BaseView
         registerViewEvent();
     }
 
+    private List<SceneNode> listOfScenesNode_ = new List<SceneNode>();
+    public override void UpdateView(object data)
+    {
+
+        PackageInfoData pData = data as PackageInfoData;
+        Debug.Log("update view..");
+
+        List<SceneNodeData> scenesList = pData.ScenesList;
+
+        //清理之前创建出来的节点
+        var count = listOfScenesNode_.Count;
+        for (int i = 0;i<count;++i) {
+            var sceneNode = listOfScenesNode_[i];
+            sceneNode.Dispose();
+            GameObject.Destroy(sceneNode);
+        }
+
+        //清理之前创建的连接线段
+        Debug.Log("scenesListCount:"+scenesList.Count);
+        //生成新的节点
+        //count = scenesList.Length;
+        for (int i = 0;i<scenesList.Count;++i) {
+            var sceneData = scenesList[i];
+            var sceneNode = SceneNode.CreateSceneByData(sceneData,contentLayer_);
+            listOfScenesNode_.Add(sceneNode);
+        }
+        //生成新的连接线段
+    }
 
     // ----- 对外接口 -----
     public void ShowBtnsGroupByDic(Vector2 touchWorldPos, Dictionary<string, TapButtonCallBack> dic) {

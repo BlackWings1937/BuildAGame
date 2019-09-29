@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public delegate void DataUpdate(Dictionary<string,object> dic);
+public delegate void DataUpdate(object obj);
+//public delegate void DataUpdateParamObject<T>(T obj);
 
 public class BaseData : MonoBehaviour {
     private BaseController myController_ = null;
@@ -17,4 +18,5 @@ public class BaseData : MonoBehaviour {
     public virtual void dispose() { }
 
     public DataUpdate eventOfDataUpdates_;
+   // public DataUpdateParamObject
 }

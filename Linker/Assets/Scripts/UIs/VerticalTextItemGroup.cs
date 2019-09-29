@@ -11,7 +11,7 @@ public class VerticalTextItemGroup : MonoBehaviour
 
     private List<GameObject> listOfTextItem_ = new List<GameObject>();
 
-    public void UpdateTextItemsByStringList(List<Dictionary<string ,object>> l) {
+    public void UpdateTextItemsByStringList(List<OutputPortData> l) {
         // 删除之前的节点
         listOfTextItem_.Clear();
         var childCount = transform.childCount;
@@ -25,7 +25,7 @@ public class VerticalTextItemGroup : MonoBehaviour
             var g = GameObject.Instantiate(myTextItemPrefab_) as GameObject;
             g.transform.SetParent(this.transform,false);
             listOfTextItem_.Add(g);
-            g.GetComponent<TextItem>().InitTextItemByData(l[i]);
+            g.GetComponent<TextItem>().InitTextItemByData(l[i],i);
         }
     }
 

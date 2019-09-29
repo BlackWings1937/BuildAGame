@@ -31,6 +31,7 @@ public class Drag : TouchObject
     private bool isDragStart = false;
     public override bool OnTouchBegan(Vector2 worldPos)
     {
+        Debug.Log("Drag start:"+gameObject.name);
         backResult_ = false;
         if (isTouchInTouchObject(worldPos)) {
             startPos_ = transform.localPosition;
@@ -53,6 +54,7 @@ public class Drag : TouchObject
 
     public override bool OnTouchMoved(Vector2 worldPos)
     {
+        Debug.Log("Drag Move:" + gameObject.name);
         if (isDragStart) {
             var nowTouchPos = TransformUtils.WorldPosToNodePos(worldPos, transform.parent);
             var diff = new Vector2(nowTouchPos.x - startTouchPos_.x, nowTouchPos.y - startTouchPos_.y);
@@ -70,6 +72,7 @@ public class Drag : TouchObject
 
     public override bool OnTouchEnded(Vector2 worldPos)
     {
+        Debug.Log("Drag end:" + gameObject.name);
         if (isDragStart) {
             var nowTouchPos = TransformUtils.WorldPosToNodePos(worldPos, transform.parent);
             var diff = new Vector2(nowTouchPos.x - startTouchPos_.x, nowTouchPos.y - startTouchPos_.y);

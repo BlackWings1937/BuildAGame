@@ -18,8 +18,9 @@ public class ProjView : BaseView {
 
     // ----- 私有方法 -----
 
-    public override void UpdateView(Dictionary<string, object> info)
+    public override void UpdateView(object obj)
     {
+        Dictionary<string, object> info = obj as Dictionary<string,object>;
         base.UpdateView(info);
         // delete cell
         var childCount = myRtContent_.childCount;

@@ -18,7 +18,7 @@ public class BaseView : MonoBehaviour {
     public virtual void dispear() { }
     public virtual void dispose() { }
 
-    public virtual void UpdateView(Dictionary<string,object> info) { }
+    public virtual void UpdateView(object info) { }
 
 
 }

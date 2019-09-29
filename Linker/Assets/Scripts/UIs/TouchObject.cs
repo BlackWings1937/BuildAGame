@@ -13,6 +13,7 @@ public class TouchObject : MonoBehaviour
     /// <summary>
     /// 是否吞噬触碰
     /// </summary>
+    [SerializeField]
     private bool isSwallowTouch_ = false;
     public bool IsSwallowTouch { get { return isSwallowTouch_; } set { isSwallowTouch_ = value; } }
 

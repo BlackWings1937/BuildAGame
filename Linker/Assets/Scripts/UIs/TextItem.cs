@@ -12,14 +12,15 @@ public class TextItem : PointParent
         var p2 = generatePointByLocalPos(new Vector2(rt.sizeDelta.x / 2, -rt.sizeDelta.y / 2));
         listPoints_.Add(p1);
         listPoints_.Add(p2);
+
     }
 
     // ----- 对外接口 -----
-    private Dictionary<string, object> data_;
-    public void InitTextItemByData(Dictionary<string ,object> data) {
+    private OutputPortData data_;
+    public void InitTextItemByData(OutputPortData data,int index) {
         data_ = data;
-        InitPoints();
+        InitPoints();//data.
         var btnAdapt = GetComponent<BtnAdaptText>();
-        btnAdapt.SetText(data["Name"] as string);
+        btnAdapt.SetText("出口:"+index);
     }
 }

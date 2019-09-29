@@ -55,11 +55,13 @@ public class SceneNode : PointParent
         }
     }
 
+   
 
     private void Start()
     {
         registerEvent();
-
+        GetComponent<Drag>().IsSwallowTouch = true;
+        GetComponent<BtnAdaptText>().MyText.GetComponent<PointAt>().IsSwallowTouch = true ;
 
     }
 
@@ -130,7 +132,7 @@ public class SceneNode : PointParent
     }
 
     //设置出口列表
-    private void setOutPutItemList(List<Dictionary<string,object>> l)
+    private void setOutPutItemList(List<OutputPortData> l)
     {
         if (myOutPutBroard_ != null)
         {
@@ -160,35 +162,47 @@ public class SceneNode : PointParent
     }
 
     // ----- 对外接口 -----
-
+    /// <summary>
+    /// 清理节点管理的所有东西
+    /// </summary>
+    public void Dispose()
+    {
+        ClearInternalLine();
+    }
     /// <summary>
     /// 通过data 创建sceneNode
     /// </summary>
     /// <param name="data">用于创建节点的信息</param>
     /// <returns></returns>
-    public static SceneNode CreateSceneByData(Dictionary<string ,object> data) {
+    public static SceneNode CreateSceneByData(SceneNodeData data,Transform parent) {
         var g = GameObject.Instantiate(Resources.Load("prefab/SceneNode")) as GameObject;
-        g.GetComponent<SceneNode>().InitSceneByData(data);
+        g.GetComponent<SceneNode>().InitSceneByData(data, parent);
         return g.GetComponent<SceneNode>();
     }
 
     /// <summary>
     /// 初始化节点的data
     /// </summary>
-    private Dictionary<string, object> data_;
+    private SceneNodeData data_;
 
     /// <summary>
     /// 通过data初始化节点
     /// </summary>
     /// <param name="data"></param>
-    public void InitSceneByData(Dictionary<string, object> data) {
+    public void InitSceneByData(SceneNodeData data,Transform parent) {
         if (data!= null) {
             data_ = data;
 
             InitPoints();
-            setText((string)data_["Name"]);
-
-            var portInfo = (List<Dictionary<string, object>>)data_["LinkerInfo"];
+            setText(data.Name);
+            this.transform.SetParent(parent,false);
+            var x = data.X;
+            var y = data.Y;
+            var z = data.Z;
+            transform.position = new Vector3(x,y,z);
+            transform.localPosition = new Vector3(transform.localPosition.x,transform.localPosition.y,0);
+            //(List<Dictionary<string, object>>)
+            var portInfo = data.LinkersInfo;
             setOutPutItemList(portInfo);
         }
     }

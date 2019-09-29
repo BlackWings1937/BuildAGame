@@ -5,6 +5,8 @@ using UnityEngine;
 using System.IO;
 using Newtonsoft.Json;
 
+
+
 public class PackageData : BaseData
 {
     //常量声明
@@ -17,6 +19,9 @@ public class PackageData : BaseData
     public static readonly string STR_OUTPUT_CHINA = "出口";
     public static readonly string STR_EMPTY = "Empty";
     public static readonly string STR_OBJ = "Obj";
+    public static readonly string STR_X = "X";
+    public static readonly string STR_Y = "Y";
+    public static readonly string STR_Z = "Z";
 
 
     public override void init()
@@ -28,7 +33,8 @@ public class PackageData : BaseData
 
     public static readonly string STR_PACKAGE_DATA_FILE_NAME = "projData.json";
 
-    private Dictionary<string, object> data_;
+
+    private PackageInfoData data_;
     private Dictionary<string, object> projData_;
     private void initPackageData() {
         UnityEngine.Debug.Log("packagedata initPackageData..");
@@ -37,10 +43,11 @@ public class PackageData : BaseData
         projData_ = appController.GetTargetPackageInfo();//mark
 
         //加载数据
-        var path = projData_[ProjData.STR_PATH] + STR_PACKAGE_DATA_FILE_NAME;
+        var path = projData_[ProjData.STR_PATH]+"\\" + STR_PACKAGE_DATA_FILE_NAME;
         if (File.Exists(path)) {
-            var strData = File.ReadAllText(path);
-            data_ = JsonConvert.DeserializeObject(strData) as Dictionary<string,object>; //JsonConvert.SerializeObject(dicall)
+            var strData = File.ReadAllText(path);//as Dictionary<string,object>;
+            data_ = JsonUtility.FromJson<PackageInfoData>(strData); //JsonConvert.SerializeObject(dicall)
+
             UnityEngine.Debug.Log("packagedata initPackageData load data success..");
         }
         else {
@@ -60,7 +67,7 @@ public class PackageData : BaseData
     /// </summary>
     private void saveData() {
         var strData = JsonConvert.SerializeObject(data_);
-        var path = projData_[ProjData.STR_PATH] + STR_PACKAGE_DATA_FILE_NAME;
+        var path = projData_[ProjData.STR_PATH]+"\\" + STR_PACKAGE_DATA_FILE_NAME;
         File.WriteAllText(path,strData);
     }
 
@@ -69,12 +76,11 @@ public class PackageData : BaseData
     /// 生成空场景包信息
     /// </summary>
     /// <returns></returns>
-    private Dictionary<string,object> generateEmptyPackageData() {
-        var dic = new Dictionary<string, object>();
-        var scenesList = new List<Dictionary<string, object>>();
-        dic.Add(STR_SCENELIST, scenesList);
-        return dic;
+    private PackageInfoData generateEmptyPackageData() {
+        return new PackageInfoData();
     }
+
+
 
     /// <summary>
     /// 获取时间戳
@@ -92,14 +98,22 @@ public class PackageData : BaseData
     /// 生成空的sceneData
     /// </summary>
     /// <returns></returns>
-    public Dictionary<string, object> GenerateEmptySceneData() {
-        var data = new Dictionary<string, object>();
-        var timeStamp = GetTimeStamp();
-        Debug.Log("timeStan:"+timeStamp);
-        data.Add(STR_ID, timeStamp);
-        data.Add(STR_NAME, STR_NONAME_CHINA);
-        data.Add(STR_LINKERSINFO, new Dictionary<string,object>());
-        data.Add(STR_SCENEINFO, new Dictionary<string,object>());
+    public SceneNodeData GenerateEmptySceneData() {
+        return GenerateEmptySceneDataByWorldPos(Vector3.zero);
+    }
+
+    /// <summary>
+    /// 创建节点数据通过世界坐标
+    /// </summary>
+    /// <param name="worldPos"></param>
+    /// <returns></returns>
+    public SceneNodeData GenerateEmptySceneDataByWorldPos(Vector3 worldPos) {
+        var data = new SceneNodeData(); //new Dictionary<string, object>();
+        data.ID = GetTimeStamp();
+        data.Name = STR_NONAME_CHINA;
+        data.X = worldPos.x;
+        data.Y = worldPos.y;
+        data.Z = worldPos.z;
         return data;
     }
 
@@ -111,13 +125,10 @@ public class PackageData : BaseData
     /// <param name="data"></param>
     /// <returns></returns>
     /// 
-    public Dictionary<string, object> AddOutputPortToData(Dictionary<string,object> data) {
-        var linkersInfo = data[STR_LINKERSINFO] as List<Dictionary<string,object>>;
-        var count = linkersInfo.Count;
-        var info = new Dictionary<string, object>();
-        info.Add(STR_NAME, STR_OUTPUT_CHINA + count);
-        info.Add(STR_OBJ, STR_EMPTY);
-        linkersInfo.Add(info);
+    public SceneNodeData AddOutputPortToData(SceneNodeData data) {
+        var linkersInfo = data.LinkersInfo;
+        var newOutputPort = new OutputPortData();
+        linkersInfo.Add(newOutputPort);
         callUpdateEvent();
         saveData();
         return data;
@@ -129,12 +140,8 @@ public class PackageData : BaseData
     /// <param name="data"></param>
     /// <param name="index"></param>
     /// <returns></returns>
-    public Dictionary<string, object> RemoveOutputPortForData(Dictionary<string,object> data,int index) {
-        var linkersInfo = data[STR_LINKERSINFO] as List<Dictionary<string,object>>;
-        linkersInfo.RemoveAt(index -1);
-        for (int i = 0;i<linkersInfo.Count;++i) {
-            linkersInfo[i][STR_NAME] = STR_OUTPUT_CHINA + (i + 1);
-        }
+    public SceneNodeData RemoveOutputPortForData(SceneNodeData data, int index) {
+        data.LinkersInfo.RemoveAt(index);
         callUpdateEvent();
         saveData();
         return data;
@@ -144,24 +151,29 @@ public class PackageData : BaseData
     /// 添加SceneData 到列表
     /// </summary>
     /// <param name="data"></param>
-    public void AddSceneData(Dictionary<string,object> data) {
-        var scenesList = data_[STR_SCENELIST] as List<Dictionary<string,object>>;
+    public void AddSceneData(SceneNodeData data) {
+        var scenesList = data_.ScenesList;
         scenesList.Add(data);
         callUpdateEvent();
         saveData();
     }
 
-    public void RemoveSceneData(Dictionary<string,object> data) {
-        var dataId = data[STR_ID] as string;
-        var scenesList = data_[STR_SCENELIST] as List<Dictionary<string,object>>;
-        for (int i = 0;i<scenesList.Count;++i) {
+    /// <summary>
+    /// 移除一个SceneNode节点
+    /// </summary>
+    /// <param name="data"></param>
+    public void RemoveSceneData(SceneNodeData data) {
+        var dataId = data.ID;
+        var scenesList = data_.ScenesList;
+        for (int i =0;i<scenesList.Count;++i) {
             var nowSceneData = scenesList[i];
-            var nowId = nowSceneData[STR_ID] as string;
+            var nowId = nowSceneData.ID;
             if (dataId == nowId) {
                 scenesList.RemoveAt(i);
                 break;
             }
         }
+
         callUpdateEvent();
         saveData();
     }
@@ -172,10 +184,11 @@ public class PackageData : BaseData
     /// 获取目前的场景列表
     /// </summary>
     /// <returns></returns>
+    /*
     public List<Dictionary<string, object>> GetScenesList() {
         if (data_!=null) {
             return data_[STR_SCENELIST] as List<Dictionary<string,object>>;
         }
         return new List<Dictionary<string, object>>();
-    }
+    }*/
 }

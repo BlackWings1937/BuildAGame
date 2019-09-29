@@ -40,10 +40,15 @@ public class Touch
         if (swallowTouchObj_ == null) {
             var listOfTouchObjects = getTouchObjects_();
             var count = listOfTouchObjects.Count;
-            for (int i = 0; i < count; ++i)
+            for (int i = count - 1; 0 <= i; --i)
             {
                 if (listOfTouchObjects[i].gameObject.activeSelf == false) { continue; }
-                listOfTouchObjects[i].OnTouchMoved(worldPos);
+                var result = listOfTouchObjects[i].OnTouchMoved(worldPos);
+                if (result)
+                {
+                    swallowTouchObj_ = listOfTouchObjects[i];
+                    break;
+                }
             }
         } else {
             swallowTouchObj_.OnTouchMoved(worldPos);
@@ -56,10 +61,15 @@ public class Touch
         if (swallowTouchObj_ == null) {
             var listOfTouchObjects = getTouchObjects_();
             var count = listOfTouchObjects.Count;
-            for (int i = 0; i < count; ++i)
+            for (int i = count - 1; 0 <= i; --i)
             {
                 if (listOfTouchObjects[i].gameObject.activeSelf == false) { continue; }
-                listOfTouchObjects[i].OnTouchEnded(worldPos);
+                var result = listOfTouchObjects[i].OnTouchEnded(worldPos);
+                if (result)
+                {
+                    swallowTouchObj_ = listOfTouchObjects[i];
+                    break;
+                }
             }
         } else {
             swallowTouchObj_.OnTouchEnded(worldPos);
