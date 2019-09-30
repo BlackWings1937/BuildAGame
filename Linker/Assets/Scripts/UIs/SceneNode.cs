@@ -14,6 +14,13 @@ public class SceneNode : PointParent
     [SerializeField]
     private VerticalTextItemGroup myOutPutBroard_;
 
+    //package界面
+    private PackageView packageView_ = null;
+    public PackageView PackageView {
+        get { return packageView_; }
+        set { packageView_ = value; }
+    }
+
 
     // 初始化自身连接点
     protected override void InitPoints()
@@ -32,37 +39,50 @@ public class SceneNode : PointParent
     {
         var btnAdapt = GetComponent<BtnAdaptText>();
         var text = btnAdapt.MyText;
-        var pointAt = text.GetComponent<PointAt>();
+        var pointAt = text.GetComponent<PointAtEndCall>();
         if (pointAt != null)
         {
             pointAt.SetPointUpCallBack((Vector2 wp) =>
             {
+                Debug.Log("point end call");
                 showInputField();
+                //packageView_.AddPortToSceneNodeBySceneData(data_);
             });
             pointAt.SetPointCancleCallBack((Vector2 wp) =>
             {
+                if (myInputField_.gameObject.activeSelf) {
+                    setText(myInputField_.text);
+                    
+                }
                 closeInputField();
-                setText(myInputField_.text);
+               
             });
         }
         if (myInputField_ != null)
         {
             myInputField_.onEndEdit.AddListener((string word) =>
             {
+                if (myInputField_.gameObject.activeSelf)
+                {
+                    setText(myInputField_.text);
+                }
                 closeInputField();
-                setText(myInputField_.text);
             });
         }
+        GetComponent<Drag>().SetDragComplieCallBack((Vector2 v)=> {
+            Debug.Log("saveData...");
+            data_.X = transform.position.x;
+            data_.Y = transform.position.y;
+            packageView_.SaveData();
+        });
     }
-
-   
 
     private void Start()
     {
         registerEvent();
         GetComponent<Drag>().IsSwallowTouch = true;
-        GetComponent<BtnAdaptText>().MyText.GetComponent<PointAt>().IsSwallowTouch = true ;
-
+       GetComponent<BtnAdaptText>().MyText.GetComponent<PointAtEndCall>().IsSwallowTouch = true ;
+        //GetComponent<BtnAdaptText>().
     }
 
     // 绘制内部连接线段
@@ -129,6 +149,11 @@ public class SceneNode : PointParent
         //重绘内部线段
         ClearInternalLine();
         DrawInternalLine();
+
+        if (data_!=null &&packageView_!= null) {
+            data_.Name = t;
+            packageView_.SaveData();
+        }
     }
 
     //设置出口列表

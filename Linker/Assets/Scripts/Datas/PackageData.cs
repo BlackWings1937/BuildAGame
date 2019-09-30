@@ -48,12 +48,10 @@ public class PackageData : BaseData
             var strData = File.ReadAllText(path);//as Dictionary<string,object>;
             data_ = JsonUtility.FromJson<PackageInfoData>(strData); //JsonConvert.SerializeObject(dicall)
 
-            UnityEngine.Debug.Log("packagedata initPackageData load data success..");
         }
         else {
             data_ = generateEmptyPackageData();
             saveData();
-            UnityEngine.Debug.Log("packagedata initPackageData create empty data success..");
         }
         callUpdateEvent();
     }
@@ -66,11 +64,14 @@ public class PackageData : BaseData
     /// 存储packageData 到文件
     /// </summary>
     private void saveData() {
+
         var strData = JsonConvert.SerializeObject(data_);
+        Debug.Log("save data:"+strData);
         var path = projData_[ProjData.STR_PATH]+"\\" + STR_PACKAGE_DATA_FILE_NAME;
         File.WriteAllText(path,strData);
     }
 
+    public void SaveData() { saveData(); }
 
     /// <summary>
     /// 生成空场景包信息
@@ -128,6 +129,7 @@ public class PackageData : BaseData
     public SceneNodeData AddOutputPortToData(SceneNodeData data) {
         var linkersInfo = data.LinkersInfo;
         var newOutputPort = new OutputPortData();
+        Debug.Log("addPortInfo count:"+linkersInfo.Count);
         linkersInfo.Add(newOutputPort);
         callUpdateEvent();
         saveData();

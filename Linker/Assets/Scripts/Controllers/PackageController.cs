@@ -18,4 +18,15 @@ public class PackageController : AppChildController {
         dic.Add(TapButtonsGroup.STR_KEY_CANCLE,()=> { Debug.Log("取消");  getView<PackageView>().CloseBtnsGroup(); });
         getView<PackageView>().ShowBtnsGroupByDic(touchWorldPos, dic);
     }
+
+    /// <summary>
+    /// 保存当前packageInfo 信息到文件
+    /// </summary>
+    public void SaveData() {
+        getData<PackageData>().SaveData();
+    }
+
+    public void AddPortToSceneNodeBySceneData(SceneNodeData data) {
+        getData<PackageData>().AddOutputPortToData(data);
+    }
 }

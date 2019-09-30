@@ -91,6 +91,7 @@
     <Compile Include="Assets\Scripts\UIs\GPoint.cs" />
     <Compile Include="Assets\Scripts\UIs\PointAt.cs" />
     <Compile Include="Assets\Scripts\UIs\PointAtAndWait.cs" />
+    <Compile Include="Assets\Scripts\UIs\PointAtEndCall.cs" />
     <Compile Include="Assets\Scripts\UIs\PointParent.cs" />
     <Compile Include="Assets\Scripts\UIs\SceneNode.cs" />
     <Compile Include="Assets\Scripts\UIs\SWOldProj.cs" />

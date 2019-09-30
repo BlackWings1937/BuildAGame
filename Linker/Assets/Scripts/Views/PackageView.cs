@@ -82,7 +82,8 @@ public class PackageView : BaseView
         for (int i = 0;i<count;++i) {
             var sceneNode = listOfScenesNode_[i];
             sceneNode.Dispose();
-            GameObject.Destroy(sceneNode);
+            Debug.Log("destroy gameObject:"+ sceneNode.gameObject.name);
+            GameObject.Destroy(sceneNode.gameObject);
         }
 
         //清理之前创建的连接线段
@@ -92,12 +93,28 @@ public class PackageView : BaseView
         for (int i = 0;i<scenesList.Count;++i) {
             var sceneData = scenesList[i];
             var sceneNode = SceneNode.CreateSceneByData(sceneData,contentLayer_);
+            sceneNode.PackageView = this;
             listOfScenesNode_.Add(sceneNode);
         }
         //生成新的连接线段
     }
 
     // ----- 对外接口 -----
+
+    /// <summary>
+    /// 添加出口
+    /// </summary>
+    /// <param name="data"></param>
+    public void AddPortToSceneNodeBySceneData(SceneNodeData data)
+    {
+        GetController<PackageController>().AddPortToSceneNodeBySceneData(data);
+    }
+
+    /// <summary>
+    /// 显示点击菜单栏
+    /// </summary>
+    /// <param name="touchWorldPos"></param>
+    /// <param name="dic"></param>
     public void ShowBtnsGroupByDic(Vector2 touchWorldPos, Dictionary<string, TapButtonCallBack> dic) {
         if (m_tapBtnsGroups_ != null)
         {
@@ -116,6 +133,10 @@ public class PackageView : BaseView
     }
     public void CloseBtnsGroup() {
     //    closeTapBtnGroups();
+    }
+
+    public void SaveData() {
+        GetController<PackageController>().SaveData();
     }
 
 }
