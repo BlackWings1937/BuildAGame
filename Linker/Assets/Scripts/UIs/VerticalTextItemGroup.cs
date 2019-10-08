@@ -11,7 +11,11 @@ public class VerticalTextItemGroup : MonoBehaviour
 
     private List<GameObject> listOfTextItem_ = new List<GameObject>();
 
-    public void UpdateTextItemsByStringList(List<OutputPortData> l) {
+    private PackageView pv_;
+
+    public void SetPackageView(PackageView pv) { pv_ = pv; }
+
+    public void UpdateTextItemsByStringList(List<OutputPortData> l,SceneNodeData sd) {
         // 删除之前的节点
         listOfTextItem_.Clear();
         var childCount = transform.childCount;
@@ -25,7 +29,16 @@ public class VerticalTextItemGroup : MonoBehaviour
             var g = GameObject.Instantiate(myTextItemPrefab_) as GameObject;
             g.transform.SetParent(this.transform,false);
             listOfTextItem_.Add(g);
-            g.GetComponent<TextItem>().InitTextItemByData(l[i],i);
+            g.GetComponent<TextItem>().InitTextItemByData(l[i],i,pv_,sd);
+        }
+    }
+
+    public void InfoItemToDrawLines() {
+        var childCount = transform.childCount;
+        for (int i = 0; i < childCount; ++i)
+        {
+            var child = transform.GetChild(i);
+            child.GetComponent<TextItem>().DrawLine();
         }
     }
 

@@ -11,7 +11,7 @@ public class OutputPortData {
         E_Full = 1,
     }
     public PortState State = PortState.E_Empty;
-    public int SceneNodeID = -1;
+    public string SceneNodeID = "-1";
 }
 
 [Serializable]

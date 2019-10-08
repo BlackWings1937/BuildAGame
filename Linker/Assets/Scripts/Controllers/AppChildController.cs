@@ -17,12 +17,20 @@ public class AppChildController : ChildController {
     private void invokeEvent(ControllerEventCallBack cb) {
         if (cb!= null) { cb(); }
     }
+
+    /// <summary>
+    /// 初始化系统，每一次调用前，要确保系统是被dispose后的状态
+    /// </summary>
     public override void ActiveController()
     {
         gameObject.SetActive(true);
+        // 初始化控制器
         init();
+        //初始化view（控件事件这些东西）
         getView<BaseView>().init();
+        //注册更新事件
         getData<BaseData>().eventOfDataUpdates_ += getView<BaseView>().UpdateView;
+        //初始化数据（数据更新自动到view）
         getData<BaseData>().init();
         invokeEvent(MyActiveCallBack);
     }
@@ -43,6 +51,9 @@ public class AppChildController : ChildController {
         invokeEvent(MyWakeUpCallBack);
     }
 
+    /// <summary>
+    /// 撤销系统的方法
+    /// </summary>
     public override void DisposeController()
     {
         dispose();

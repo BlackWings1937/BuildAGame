@@ -52,10 +52,10 @@ public class SceneNode : PointParent
             {
                 if (myInputField_.gameObject.activeSelf) {
                     setText(myInputField_.text);
-                    
+
                 }
                 closeInputField();
-               
+
             });
         }
         if (myInputField_ != null)
@@ -69,10 +69,10 @@ public class SceneNode : PointParent
                 closeInputField();
             });
         }
-        GetComponent<Drag>().SetDragComplieCallBack((Vector2 v)=> {
+        GetComponent<Drag>().SetDragComplieCallBack((Vector2 v) => {
             Debug.Log("saveData...");
-            data_.X = transform.position.x;
-            data_.Y = transform.position.y;
+            data_.X = transform.localPosition.x;
+            data_.Y = transform.localPosition.y;
             packageView_.SaveData();
         });
     }
@@ -81,7 +81,7 @@ public class SceneNode : PointParent
     {
         registerEvent();
         GetComponent<Drag>().IsSwallowTouch = true;
-       GetComponent<BtnAdaptText>().MyText.GetComponent<PointAtEndCall>().IsSwallowTouch = true ;
+        GetComponent<BtnAdaptText>().MyText.GetComponent<PointAtEndCall>().IsSwallowTouch = true;
         //GetComponent<BtnAdaptText>().
     }
 
@@ -150,7 +150,7 @@ public class SceneNode : PointParent
         ClearInternalLine();
         DrawInternalLine();
 
-        if (data_!=null &&packageView_!= null) {
+        if (data_ != null && packageView_ != null) {
             data_.Name = t;
             packageView_.SaveData();
         }
@@ -162,8 +162,20 @@ public class SceneNode : PointParent
         if (myOutPutBroard_ != null)
         {
             ClearInternalLine();
-            myOutPutBroard_.UpdateTextItemsByStringList(l);
+            myOutPutBroard_.UpdateTextItemsByStringList(l,data_);
             DrawInternalLine();
+        }
+    }
+
+    private void setPackageViewToOutPutItemList(PackageView pv) {
+        if (myOutPutBroard_ != null) {
+            myOutPutBroard_.SetPackageView(pv);
+        }
+    }
+
+    private void infoOutPutItemDrawLines() {
+        if (myOutPutBroard_ != null) {
+            myOutPutBroard_.InfoItemToDrawLines();
         }
     }
 
@@ -187,6 +199,31 @@ public class SceneNode : PointParent
     }
 
     // ----- 对外接口 -----
+
+    /// <summary>
+    /// 通过data 创建sceneNode
+    /// </summary>
+    /// <param name="data">用于初始化的数据</param>
+    /// <param name="parent">SceneNode的母节点</param>
+    /// <param name="packageView">packageView</param>
+    /// <returns></returns>
+    public static SceneNode CreateSceneByData(SceneNodeData data, Transform parent, PackageView pv)
+    {
+        var f = PrefabsFactoryManager.GetInstance().GetFactoryByPrefabName("SceneNode");
+        if (f == null) { Debug.LogError("create scene Node fail"); return null; }
+        var g = PrefabsFactoryManager.GetInstance().GetFactoryByPrefabName("SceneNode").Get();
+        g.GetComponent<SceneNode>().InitSceneByData(data, parent, pv);
+        return g.GetComponent<SceneNode>();
+    }
+
+    public static void DestroyObj(SceneNode n)
+    {
+        if (n == null) { Debug.LogError(" param scenenode is null"); return; }
+        var f = PrefabsFactoryManager.GetInstance().GetFactoryByPrefabName("SceneNode");
+        if (f == null) { Debug.LogError("destroy scene Node fail"); return; }
+        f.Recycle(n.gameObject);
+    }
+
     /// <summary>
     /// 清理节点管理的所有东西
     /// </summary>
@@ -194,40 +231,37 @@ public class SceneNode : PointParent
     {
         ClearInternalLine();
     }
-    /// <summary>
-    /// 通过data 创建sceneNode
-    /// </summary>
-    /// <param name="data">用于创建节点的信息</param>
-    /// <returns></returns>
-    public static SceneNode CreateSceneByData(SceneNodeData data,Transform parent) {
-        var g = GameObject.Instantiate(Resources.Load("prefab/SceneNode")) as GameObject;
-        g.GetComponent<SceneNode>().InitSceneByData(data, parent);
-        return g.GetComponent<SceneNode>();
-    }
+
 
     /// <summary>
     /// 初始化节点的data
     /// </summary>
     private SceneNodeData data_;
 
+    public SceneNodeData Data { get { return data_; } }
+
     /// <summary>
-    /// 通过data初始化节点
+    /// 初始化sceneNode
     /// </summary>
-    /// <param name="data"></param>
-    public void InitSceneByData(SceneNodeData data,Transform parent) {
+    /// <param name="data">用于初始化的数据</param>
+    /// <param name="parent">SceneNode的母节点</param>
+    /// <param name="packageView">packageView</param>
+    public void InitSceneByData(SceneNodeData data,Transform parent,PackageView packageView) {
         if (data!= null) {
             data_ = data;
 
             InitPoints();
             setText(data.Name);
             this.transform.SetParent(parent,false);
-            var x = data.X;
+            var x = data.X;//todo 将坐标转换成母节点的本地坐标
             var y = data.Y;
             var z = data.Z;
-            transform.position = new Vector3(x,y,z);
-            transform.localPosition = new Vector3(transform.localPosition.x,transform.localPosition.y,0);
+            //transform.position = new Vector3(x,y,z);
+            Debug.Log("sceneNode local pos:"+x+"y:"+y);
+            transform.localPosition = new Vector3(x,y,0);
             //(List<Dictionary<string, object>>)
             var portInfo = data.LinkersInfo;
+            setPackageViewToOutPutItemList(packageView);
             setOutPutItemList(portInfo);
         }
     }
@@ -238,6 +272,10 @@ public class SceneNode : PointParent
         var textItems = myOutPutBroard_.GetTextItems();
         if (i < 0 || i >= textItems.Count) return null; 
         return textItems[i].GetComponent<GPoint>();
+    }
+
+    public void DrawLineToLinkerSceneNode() {
+        infoOutPutItemDrawLines();
     }
 }
 
