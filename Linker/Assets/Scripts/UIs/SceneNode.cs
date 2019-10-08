@@ -34,6 +34,29 @@ public class SceneNode : PointParent
         listPoints_.Add(p3);
     }
 
+    // 点击触发区域
+    [SerializeField]
+    private PointAt pointAt_ = null;
+
+    // 显示弹出选项
+    private void showTapBtns() {
+        if (pv_ != null)
+        {
+            var dic = new Dictionary<string, TapButtonCallBack>();
+            dic.Add("复制场景",()=> {
+                if (pv_!= null) {
+                    pv_.RemoveSceneData(data_);
+                }
+            });
+            dic.Add("删除场景", () => { });
+            var size = (transform as RectTransform).sizeDelta;
+            var pos =  transform.TransformPoint(0, 0 + size.y / 2, 0);
+            
+            pv_.ShowTapBtnsGroupByDicAndWorldPos(dic,new Vector2(pos.x,pos.y));//
+        }
+    }
+
+
     // 注册触控事件
     private void registerEvent()
     {
@@ -46,7 +69,7 @@ public class SceneNode : PointParent
             {
                 Debug.Log("point end call");
                 showInputField();
-                //packageView_.AddPortToSceneNodeBySceneData(data_);
+               
             });
             pointAt.SetPointCancleCallBack((Vector2 wp) =>
             {
@@ -58,6 +81,14 @@ public class SceneNode : PointParent
 
             });
         }
+
+        if (pointAt_ != null) {
+            pointAt_.SetPointUpCallBack((Vector2 wp)=> {
+                
+                showTapBtns();
+            });
+        }
+
         if (myInputField_ != null)
         {
             myInputField_.onEndEdit.AddListener((string word) =>
@@ -146,6 +177,9 @@ public class SceneNode : PointParent
         // 更新连接点位置
         updatePoints();
 
+        // 更新触发器大小
+        (pointAt_.transform as RectTransform).sizeDelta = (transform as RectTransform).sizeDelta;
+
         //重绘内部线段
         ClearInternalLine();
         DrawInternalLine();
@@ -197,7 +231,7 @@ public class SceneNode : PointParent
             myInputField_.gameObject.SetActive(false);
         }
     }
-
+    private PackageView pv_;
     // ----- 对外接口 -----
 
     /// <summary>
@@ -209,6 +243,7 @@ public class SceneNode : PointParent
     /// <returns></returns>
     public static SceneNode CreateSceneByData(SceneNodeData data, Transform parent, PackageView pv)
     {
+        
         var f = PrefabsFactoryManager.GetInstance().GetFactoryByPrefabName("SceneNode");
         if (f == null) { Debug.LogError("create scene Node fail"); return null; }
         var g = PrefabsFactoryManager.GetInstance().GetFactoryByPrefabName("SceneNode").Get();
@@ -249,7 +284,7 @@ public class SceneNode : PointParent
     public void InitSceneByData(SceneNodeData data,Transform parent,PackageView packageView) {
         if (data!= null) {
             data_ = data;
-
+            pv_ = packageView;
             InitPoints();
             setText(data.Name);
             this.transform.SetParent(parent,false);

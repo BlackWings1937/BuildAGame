@@ -172,6 +172,10 @@ public class PackageView : BaseView
         GetController<PackageController>().ShowTapBtnsGroupByDicAndWorldPos(dic, wp);
     }
 
+
+    public void RemoveSceneData(SceneNodeData data) {
+        GetController<PackageController>().RemoveSceneData(data);
+    }
     /// <summary>
     /// 检查是否点在某个sceneNode 中，是的化返回sceneNodeData
     /// </summary>

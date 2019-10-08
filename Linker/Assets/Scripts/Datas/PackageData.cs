@@ -100,6 +100,40 @@ public class PackageData : BaseData
         return new PackageInfoData();
     }
 
+    /// <summary>
+    /// 断开scene和其他scene的连接
+    /// </summary>
+    /// <param name="data"></param>
+    private void removeAllLinkerSceneNode(SceneNodeData data) {
+        var id = data.ID;
+        var count = data_.ScenesList.Count;
+        for (int i = 0;i<count;++i) {
+            var ns = data_.ScenesList[i];
+            if (ns != data)
+            {
+                var pCount = ns.LinkersInfo.Count;
+                for (int z = 0; z < pCount; ++z)
+                {
+                    var op = ns.LinkersInfo[z];
+                    if (op.SceneNodeID == id && op.State == OutputPortData.PortState.E_Full)
+                    {
+                        op.SceneNodeID = "-1";
+                        op.State = OutputPortData.PortState.E_Empty;
+                    }
+                }
+            }
+            else {
+                var pCount = ns.LinkersInfo.Count;
+                for (int z = 0; z < pCount; ++z)
+                {
+                    var op = ns.LinkersInfo[z];
+                    op.SceneNodeID = "-1";
+                    op.State = OutputPortData.PortState.E_Empty;
+                }
+            }
+        }
+    }
+
     // ----- 对外接口 -----
 
     /// <summary>
@@ -210,6 +244,7 @@ public class PackageData : BaseData
     /// </summary>
     /// <param name="data"></param>
     public void RemoveSceneData(SceneNodeData data) {
+        removeAllLinkerSceneNode(data);
         var dataId = data.ID;
         var scenesList = data_.ScenesList;
         for (int i =0;i<scenesList.Count;++i) {
@@ -220,7 +255,6 @@ public class PackageData : BaseData
                 break;
             }
         }
-
         callUpdateEvent();
         saveData();
     }

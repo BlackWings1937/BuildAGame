@@ -6,6 +6,9 @@ public class PackageController : AppChildController {
 
 
     // ----- 对外接口 -----
+    public void RemoveSceneData(SceneNodeData data) {
+        getData<PackageData>().RemoveSceneData(data);
+    }
     public void LinkerOutputToScene(OutputPortData o1,SceneNodeData d2) {
         getData<PackageData>().LinkerOutputToScene(o1,d2);
     }
