@@ -46,13 +46,15 @@ public class PackageView : BaseView
         if (contentlayerPointAt_ != null)
         {
             contentlayerDrag_.IsSwallowTouch = true;
-            contentlayerPointAt_.SetPointUpCallBack((Vector2 worldPos) => {
+            contentlayerPointAt_.SetPointUpCallBack((Vector2 worldPos) =>
+            {
                 var pos = TransformUtils.WorldPosToNodePos(worldPos, contentlayerDrag_.transform);
                 GetController<PackageController>().ShowTapBtnsGroup(worldPos, pos);
             });
         }
 
-        if (contentlayerDrag_ != null) {
+        if (contentlayerDrag_ != null)
+        {
             contentlayerDrag_.IsSwallowTouch = true;
             contentlayerDrag_.SetAllowArea(
                 contentlayerDrag_.GetComponent<RectTransform>().sizeDelta.x / 2,
@@ -60,7 +62,8 @@ public class PackageView : BaseView
                 -contentlayerDrag_.GetComponent<RectTransform>().sizeDelta.x / 2 + AppController.VISIBLE_SIZE.x,
                 -contentlayerDrag_.GetComponent<RectTransform>().sizeDelta.y / 2 + AppController.VISIBLE_SIZE.y
                 );
-            contentlayerDrag_.SetDragComplieCallBack((Vector2 worldPos) => {
+            contentlayerDrag_.SetDragComplieCallBack((Vector2 worldPos) =>
+            {
                 // Debug.Log("drag worldPos:" + worldPos.x + " y:" + worldPos.y);
             });
         }
@@ -74,32 +77,61 @@ public class PackageView : BaseView
     }
 
 
-    private void clearAllLinesBetweenSceneNodes() {
+    private void clearAllLinesBetweenSceneNodes()
+    {
         var count = listOfLinesBetweenSceneNodes_.Count;
-        for (int i = 0; i < count; ++i) {
+        for (int i = 0; i < count; ++i)
+        {
             var l = listOfLinesBetweenSceneNodes_[i];
             GameObject.Destroy(l.gameObject);
         }
         listOfLinesBetweenSceneNodes_.Clear();
     }
 
-    private void generateAllLinesBetweenSceneNodes() {
+    private void generateAllLinesBetweenSceneNodes()
+    {
         var count = listOfScenesNode_.Count;
-        for (int i = 0;i<count;++i) {
+        for (int i = 0; i < count; ++i)
+        {
             var sn = listOfScenesNode_[i];
             sn.DrawLineToLinkerSceneNode();
         }
     }
 
-    private void generateLineBetweenSceneNodesByPoints(GPoint gp1,GPoint gp2) {
-        var l = DrawLine.Create(gp1,gp2,Color.green,0.04f);
+    private void generateLineBetweenSceneNodesByPoints(GPoint gp1, GPoint gp2)
+    {
+        var l = DrawLine.Create(gp1, gp2, Color.green, 0.04f);
         listOfLinesBetweenSceneNodes_.Add(l);
     }
-    
 
-   
+    private void clearSceneNodes()
+    {
+        var count = listOfScenesNode_.Count;
+        for (int i = 0; i < count; ++i)
+        {
+            var sceneNode = listOfScenesNode_[i];
+            sceneNode.Dispose();
+            SceneNode.DestroyObj(sceneNode);
+        }
+        listOfScenesNode_.Clear();
+    }
+
+    private void generateSceneNodes(PackageInfoData pData)
+    {
+        List<SceneNodeData> scenesList = pData.ScenesList;
+        for (int i = 0; i < scenesList.Count; ++i)
+        {
+            var sceneData = scenesList[i];
+            var sceneNode = SceneNode.CreateSceneByData(sceneData, contentLayer_, this);
+            sceneNode.PackageView = this;
+            listOfScenesNode_.Add(sceneNode);
+        }
+    }
+
+
     public override void UpdateView(object data)
     {
+        if (gameObject.activeSelf == false) { return; }
 
         PackageInfoData pData = data as PackageInfoData;
 
@@ -109,59 +141,54 @@ public class PackageView : BaseView
         clearAllLinesBetweenSceneNodes();
 
         //清理之前创建出来的节点
-        var count = listOfScenesNode_.Count;
-        for (int i = 0;i<count;++i) {
-            var sceneNode = listOfScenesNode_[i];
-            sceneNode.Dispose();
-            Debug.Log("destroy gameObject:"+ sceneNode.gameObject.name);
-            //GameObject.Destroy(sceneNode.gameObject);
-            //PrefabsFactoryManager.GetInstance().GetFactoryByPrefabName()
-            SceneNode.DestroyObj(sceneNode);
-        }
-        listOfScenesNode_.Clear();
+        clearSceneNodes();
 
-        //清理之前创建的连接线段
-        Debug.Log("scenesListCount:"+scenesList.Count);
         //生成新的节点
-        //count = scenesList.Length;
-        for (int i = 0;i<scenesList.Count;++i) {
-            var sceneData = scenesList[i];
-            var sceneNode = SceneNode.CreateSceneByData(sceneData,contentLayer_,this);
-            sceneNode.PackageView = this;
-            listOfScenesNode_.Add(sceneNode);
-        }
+        generateSceneNodes(pData);
         //生成新的连接线段
         generateAllLinesBetweenSceneNodes();
     }
 
-    private SceneNode findSceneNodeById(string id) {
+    private SceneNode findSceneNodeById(string id)
+    {
         var count = listOfScenesNode_.Count;
-        for (int i = 0; i < count; ++i) {
+        for (int i = 0; i < count; ++i)
+        {
             var sn = listOfScenesNode_[i];
             var data = sn.Data;
-            if (data.ID == id) {
+            if (data.ID == id)
+            {
                 return sn;
             }
         }
         return null;
     }
-
+    private void closeBtnsGroup()
+    {
+        if (m_tapBtnsGroups_.gameObject.activeSelf == true)
+            m_tapBtnsGroups_.gameObject.SetActive(false);
+    }
     // ----- 对外接口 -----
-    public void GenerateLineBetweenSceneNodeByGPAndID(GPoint g1,string Id) {
+    public void GenerateLineBetweenSceneNodeByGPAndID(GPoint g1, string Id)
+    {
         var aimSceneNode = findSceneNodeById(Id);
-        if (aimSceneNode != null && g1 != null) {
+        if (aimSceneNode != null && g1 != null)
+        {
             var aimPoint = aimSceneNode.GetSceneHeadPoint();
-            if (aimPoint != null && g1 != null) {
-                generateLineBetweenSceneNodesByPoints(g1,aimPoint);
+            if (aimPoint != null && g1 != null)
+            {
+                generateLineBetweenSceneNodesByPoints(g1, aimPoint);
             }
         }
     }
 
-    public void LinkerOutputToScene(OutputPortData o1,SceneNodeData d2) {
+    public void LinkerOutputToScene(OutputPortData o1, SceneNodeData d2)
+    {
         GetController<PackageController>().LinkerOutputToScene(o1, d2);
     }
 
-    public void BreakOutputToScene(OutputPortData o1 ) {
+    public void BreakOutputToScene(OutputPortData o1)
+    {
         SceneNodeData d2 = findSceneNodeById(o1.SceneNodeID).Data;
         GetController<PackageController>().BreakOutputToScene(o1, d2);
     }
@@ -173,16 +200,29 @@ public class PackageView : BaseView
     }
 
 
-    public void RemoveSceneData(SceneNodeData data) {
+    public void RemoveSceneData(SceneNodeData data)
+    {
         GetController<PackageController>().RemoveSceneData(data);
     }
 
-    public void CopySceneData(SceneNodeData data) {
+    public void CopySceneData(SceneNodeData data)
+    {
         GetController<PackageController>().CopySceneData(data);
     }
 
-    public void EnterEditSceneSys() {
-        GetController<PackageController>().EnterEditSceneSys();
+    public void EnterEditSceneSys(SceneNodeData data)
+    {
+        GetController<PackageController>().EnterEditSceneSys(data);
+    }
+
+    public void PrepareToOtherView()
+    {
+        // 关闭按钮组
+        closeBtnsGroup();
+        // 清理创建出来的线段
+        clearAllLinesBetweenSceneNodes();
+        //清理之前创建出来的节点
+        clearSceneNodes();
     }
 
     /// <summary>
@@ -190,16 +230,19 @@ public class PackageView : BaseView
     /// </summary>
     /// <param name="wp"></param>
     /// <returns></returns>
-    public SceneNodeData CheckSceneNodesContentWorldPos(Vector2 wp) {
+    public SceneNodeData CheckSceneNodesContentWorldPos(Vector2 wp)
+    {
         SceneNodeData data = null;
-        var localpos = TransformUtils.WorldPosToNodePos(wp,contentlayerDrag_.transform);
+        var localpos = TransformUtils.WorldPosToNodePos(wp, contentlayerDrag_.transform);
         var count = listOfScenesNode_.Count;
-        for (int i = 0;i<count;++i) {
+        for (int i = 0; i < count; ++i)
+        {
             var ns = listOfScenesNode_[i];
             var posNow = ns.transform.localPosition;
             var sizeNow = (ns.transform as RectTransform).sizeDelta;
-            Rect r = new Rect(posNow.x-sizeNow.x/2,posNow.y - sizeNow.y/2,sizeNow.x,sizeNow.y);
-            if (r.Contains(localpos)) {
+            Rect r = new Rect(posNow.x - sizeNow.x / 2, posNow.y - sizeNow.y / 2, sizeNow.x, sizeNow.y);
+            if (r.Contains(localpos))
+            {
                 data = ns.Data;
                 break;
             }
@@ -221,7 +264,8 @@ public class PackageView : BaseView
     /// </summary>
     /// <param name="touchWorldPos"></param>
     /// <param name="dic"></param>
-    public void ShowBtnsGroupByDic(Vector2 touchWorldPos, Dictionary<string, TapButtonCallBack> dic) {
+    public void ShowBtnsGroupByDic(Vector2 touchWorldPos, Dictionary<string, TapButtonCallBack> dic)
+    {
         if (m_tapBtnsGroups_ != null)
         {
             if (m_tapBtnsGroups_.gameObject.activeSelf == false)
@@ -232,16 +276,19 @@ public class PackageView : BaseView
                 m_tapBtnsGroups_.gameObject.GetComponent<TapButtonsGroup>().SetPosition(new Vector3(nodePoint.x, nodePoint.y, m_tapBtnsGroups_.transform.position.z));
                 m_tapBtnsGroups_.gameObject.SetActive(true);
             }
-            else {
+            else
+            {
                 m_tapBtnsGroups_.gameObject.SetActive(false);
             }
         }
     }
-    public void CloseBtnsGroup() {
-    //    closeTapBtnGroups();
+    public void CloseBtnsGroup()
+    {
+        closeBtnsGroup();
     }
 
-    public void SaveData() {
+    public void SaveData()
+    {
         GetController<PackageController>().SaveData();
     }
 

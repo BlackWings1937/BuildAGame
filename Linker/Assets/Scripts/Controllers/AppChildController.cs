@@ -56,10 +56,11 @@ public class AppChildController : ChildController {
     /// </summary>
     public override void DisposeController()
     {
-        dispose();
+        
         getData<BaseData>().eventOfDataUpdates_ -= getView<BaseView>().UpdateView;
         getData<BaseData>().dispose();
         getView<BaseView>().dispose();
+        dispose();
         gameObject.SetActive(false);
         invokeEvent(MyDisposeCallBack);
     }

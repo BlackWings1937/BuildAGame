@@ -5,9 +5,19 @@ using UnityEngine;
 public class PackageController : AppChildController {
 
 
+    // ----- 私有方法 -----
+    public void showTapBtns(Vector2 wp, Dictionary<string, TapButtonCallBack> dic) {
+        if (gameObject.activeSelf) {
+            getView<PackageView>().ShowBtnsGroupByDic(wp, dic);
+        }
+    }
+
+
     // ----- 对外接口 -----
-    public void EnterEditSceneSys() {
-        Debug.Log("EnterEditSceneSys");
+    public void EnterEditSceneSys(SceneNodeData data) {
+        getParentController<AppController>().SetTargetSceneInfo(data);
+        getView<PackageView>().PrepareToOtherView();
+        DispearController();
     }
 
     public void CopySceneData(SceneNodeData data) {
@@ -27,19 +37,17 @@ public class PackageController : AppChildController {
     public void ShowTapBtnsGroup(Vector2 touchWorldPos,Vector2 posLocal) {
         var dic = new Dictionary<string, TapButtonCallBack>();
         dic.Add("创建场景",()=> {
-            Debug.Log("创建场景 方法回调");//GenerateTwoPortSceneDataByWorldPos
-            //var data = getData<PackageData>().GenerateEmptySceneDataByWorldPos(posLocal);//debug
             var data = getData<PackageData>().GenerateTwoPortSceneDataByWorldPos(posLocal);
             getData<PackageData>().AddSceneData(data);
         });
-        //debug
-        dic.Add("粘贴",()=> { Debug.Log("粘贴节点  方法回调"); getView<PackageView>().CloseBtnsGroup(); });
+        dic.Add("粘贴",()=> { getView<PackageView>().CloseBtnsGroup(); });
         dic.Add(TapButtonsGroup.STR_KEY_CANCLE,()=> { Debug.Log("取消");  getView<PackageView>().CloseBtnsGroup(); });
-        getView<PackageView>().ShowBtnsGroupByDic(touchWorldPos, dic);
+       // getView<PackageView>().ShowBtnsGroupByDic(touchWorldPos, dic);
+        showTapBtns(touchWorldPos, dic);
     }
 
     public void ShowTapBtnsGroupByDicAndWorldPos(Dictionary<string, TapButtonCallBack> dic,Vector2 wp) {
-        getView<PackageView>().ShowBtnsGroupByDic(wp, dic);
+        showTapBtns(wp, dic);
     }
 
     /// <summary>

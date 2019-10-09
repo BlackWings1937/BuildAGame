@@ -83,7 +83,6 @@ public class TapButtonsGroup : MonoBehaviour
 
                 //注册按钮方法
                 btnItem.GetComponent<BtnAdaptText>().MyText.gameObject.AddComponent<PointAt>().SetPointUpCallBack((Vector2 point)=> {
-                    Debug.Log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx2");
                     if (gameObject.activeSelf == true) {
                         if (cb != null) { cb(); }
                         this.gameObject.SetActive(false);

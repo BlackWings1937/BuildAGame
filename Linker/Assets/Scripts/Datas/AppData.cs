@@ -6,11 +6,11 @@ public class AppData : BaseData {
 
     // ----- 私有成员 -----
     private Dictionary<string, object> cachePackageInfo_;
-    private Dictionary<string, object> cacheSceneInfo_;
+    private SceneNodeData cacheSceneInfo_;
 
     // ----- 对外接口 -----
     public void SetTargetPackageInfo(Dictionary<string, object> info) { cachePackageInfo_ = info; }
-    public void SetTargetSceneInfo(Dictionary<string, object> info) { cacheSceneInfo_ = info; }
+    public void SetTargetSceneInfo(SceneNodeData data) { cacheSceneInfo_ = data; }
     public Dictionary<string, object> GetTargetPackageInfo() { return cachePackageInfo_; }
-    public Dictionary<string, object> GetTargetSceneInfo() { return cacheSceneInfo_; }
+    public SceneNodeData GetTargetSceneInfo() { return cacheSceneInfo_; }
 }

@@ -74,6 +74,7 @@
     <Compile Include="Assets\Scripts\Datas\AppData.cs" />
     <Compile Include="Assets\Scripts\Datas\PackageData.cs" />
     <Compile Include="Assets\Scripts\Datas\ProjData.cs" />
+    <Compile Include="Assets\Scripts\Datas\SceneData.cs" />
     <Compile Include="Assets\Scripts\Datas\SerializeData.cs" />
     <Compile Include="Assets\Scripts\DebugScript.cs" />
     <Compile Include="Assets\Scripts\Line.cs" />
@@ -113,6 +114,7 @@
     <Compile Include="Assets\Scripts\Views\AppView.cs" />
     <Compile Include="Assets\Scripts\Views\PackageView.cs" />
     <Compile Include="Assets\Scripts\Views\ProjView.cs" />
+    <Compile Include="Assets\Scripts\Views\SceneView.cs" />
     <Compile Include="Assets\SimpleZip\Example.cs" />
     <Compile Include="Assets\SimpleZip\Zip.cs" />
     <None Include="Assets\SimpleZip\Readme.txt" />

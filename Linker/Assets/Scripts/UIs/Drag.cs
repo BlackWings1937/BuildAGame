@@ -14,8 +14,16 @@ public class Drag : TouchObject
     // 拖拽完成的回调
     private TouchObjectCallBack dragComplieCallBack_;
 
+    // 拖拽开始的回掉
+    private TouchObjectCallBack dragStartCallBack_;
+
     //设施拖拽完成的事件
     public void SetDragComplieCallBack(TouchObjectCallBack cb) { dragComplieCallBack_ = cb; }
+
+    //设置拖拽开始的回掉
+    public void SetDragStartCallBack(TouchObjectCallBack cb) {
+        dragStartCallBack_ = cb;
+    }
 
     //物体拖拽允许区间
     private float minX_ = 0;
@@ -37,6 +45,7 @@ public class Drag : TouchObject
             startPos_ = transform.localPosition;
             startTouchPos_ = TransformUtils.WorldPosToNodePos(worldPos, transform.parent);
             isDragStart = true;
+            invokeCallBack(dragStartCallBack_, worldPos);
         } else {
         }
         return backResult_;

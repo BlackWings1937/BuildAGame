@@ -56,8 +56,12 @@ public class SceneNode : PointParent
             });
             dic.Add("编辑场景",()=> {
                 if (pv_ !=null) {
-                    pv_.EnterEditSceneSys();
+                    pv_.EnterEditSceneSys(data_);
                 }
+            });
+            dic.Add("重命名场景", () =>
+            {
+                showInputField();
             });
             var size = (transform as RectTransform).sizeDelta;
             var pos =  transform.TransformPoint(0, 0 + size.y / 2, 0);
@@ -115,6 +119,9 @@ public class SceneNode : PointParent
             data_.X = transform.localPosition.x;
             data_.Y = transform.localPosition.y;
             packageView_.SaveData();
+        });
+        GetComponent<Drag>().SetDragStartCallBack((Vector2 v)=> {
+            if (pv_ != null) { pv_.CloseBtnsGroup(); }
         });
     }
 
@@ -275,6 +282,7 @@ public class SceneNode : PointParent
     public void Dispose()
     {
         ClearInternalLine();
+        DisposePoints();
     }
 
 

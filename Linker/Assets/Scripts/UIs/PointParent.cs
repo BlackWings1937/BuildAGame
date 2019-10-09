@@ -6,12 +6,22 @@ public class PointParent : MonoBehaviour
 {
     protected List<GPoint> listPoints_ = new List<GPoint>();
     protected virtual void InitPoints() { }
+    protected void DisposePoints()
+    {
+        var count = listPoints_.Count;
+        for (int i = 0; i < count; ++i)
+        {
+            GameObject.Destroy(listPoints_[i].gameObject);
+        }
+        listPoints_.Clear();
+    }
     protected GPoint generatePointByLocalPos(Vector2 localPos) {
         var gp1 = new GameObject();
         gp1.transform.SetParent(this.transform, false);
         gp1.transform.localPosition = localPos;
         return  gp1.AddComponent<GPoint>();
     }
+
     public int GetPointCount() { return listPoints_.Count; }
     public GPoint GetPointByIndex( int index) {
         if (index<0||index>=listPoints_.Count) { return null; }

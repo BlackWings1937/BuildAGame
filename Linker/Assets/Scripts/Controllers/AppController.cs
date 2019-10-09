@@ -25,6 +25,8 @@ public class AppController : BaseController {
         //设置回调事件
         myProjController_.MyDispearCallBack = () => { activePackageSys(); };
         myPackageController_.MyDispearCallBack = () => { activeSceneSys(); };
+        myPackageController_.MyDisposeCallBack = ()=> { wakeupProjSys(); };
+        mySceneController_.MyDisposeCallBack = () => { wakeupPackageSys(); };
     }
     // ----- 私有方法 -----
 
@@ -48,8 +50,8 @@ public class AppController : BaseController {
     // ----- 对外接口 -----
 
     public void SetTargetPackageInfo(Dictionary<string ,object> info) { this.getData<AppData>().SetTargetPackageInfo(info); }
-    public void SetTargetSceneInfo(Dictionary<string,object> info) { this.getData<AppData>().SetTargetSceneInfo(info); }
+    public void SetTargetSceneInfo(SceneNodeData data) { this.getData<AppData>().SetTargetSceneInfo(data); }
     public Dictionary<string,object> GetTargetPackageInfo() { return this.getData<AppData>().GetTargetPackageInfo(); }
-    public Dictionary<string,object> GetTargetSceneInfo() { return this.getData<AppData>().GetTargetSceneInfo(); }
+    public SceneNodeData GetTargetSceneInfo() { return this.getData<AppData>().GetTargetSceneInfo(); }
 
 }

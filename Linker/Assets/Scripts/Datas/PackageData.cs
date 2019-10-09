@@ -72,6 +72,10 @@ public class PackageData : BaseData
         // 初始化数据
         initPackageData();
     }
+    public override void wakeup()
+    {
+        callUpdateEvent();
+    }
 
     /// <summary>
     /// 更新数据给监听者
@@ -161,12 +165,13 @@ public class PackageData : BaseData
         data.X = worldPos.x;
         data.Y = worldPos.y;
         data.Z = worldPos.z;
+        data.MySceneInfoData = new SceneInfoData();
+        data.MySceneInfoData.SceneNodeID = data.ID;
         return data;
     }
 
     public SceneNodeData GenerateTwoPortSceneDataByWorldPos(Vector3 worldPos) {
         SceneNodeData d = this.GenerateEmptySceneDataByWorldPos(worldPos);
-        Debug.Log("gen Data local pos:"+worldPos.x+"y:"+worldPos.y);
         this.AddOutputPortToData(d);
         this.AddOutputPortToData(d);
         return d;
@@ -208,7 +213,6 @@ public class PackageData : BaseData
     public SceneNodeData AddOutputPortToData(SceneNodeData data) {
         var linkersInfo = data.LinkersInfo;
         var newOutputPort = new OutputPortData();
-        Debug.Log("addPortInfo count:"+linkersInfo.Count);
         linkersInfo.Add(newOutputPort);
         callUpdateEvent();
         saveData();
