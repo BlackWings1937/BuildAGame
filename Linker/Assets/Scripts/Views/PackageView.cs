@@ -176,6 +176,15 @@ public class PackageView : BaseView
     public void RemoveSceneData(SceneNodeData data) {
         GetController<PackageController>().RemoveSceneData(data);
     }
+
+    public void CopySceneData(SceneNodeData data) {
+        GetController<PackageController>().CopySceneData(data);
+    }
+
+    public void EnterEditSceneSys() {
+        GetController<PackageController>().EnterEditSceneSys();
+    }
+
     /// <summary>
     /// 检查是否点在某个sceneNode 中，是的化返回sceneNodeData
     /// </summary>

@@ -240,6 +240,17 @@ public class PackageData : BaseData
     }
 
     /// <summary>
+    /// 复制一个节点
+    /// </summary>
+    /// <param name="data"></param>
+    public void CopySceneData(SceneNodeData data) {
+        var copy = SceneNodeData.Copy(data);
+        data_.ScenesList.Add(copy);
+        callUpdateEvent();
+        saveData();
+    }
+
+    /// <summary>
     /// 移除一个SceneNode节点
     /// </summary>
     /// <param name="data"></param>

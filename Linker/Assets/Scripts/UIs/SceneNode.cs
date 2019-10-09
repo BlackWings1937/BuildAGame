@@ -45,10 +45,20 @@ public class SceneNode : PointParent
             var dic = new Dictionary<string, TapButtonCallBack>();
             dic.Add("复制场景",()=> {
                 if (pv_!= null) {
+                    pv_.CopySceneData(data_);
+                }
+            });
+            dic.Add("删除场景", () => {
+                if (pv_ != null)
+                {
                     pv_.RemoveSceneData(data_);
                 }
             });
-            dic.Add("删除场景", () => { });
+            dic.Add("编辑场景",()=> {
+                if (pv_ !=null) {
+                    pv_.EnterEditSceneSys();
+                }
+            });
             var size = (transform as RectTransform).sizeDelta;
             var pos =  transform.TransformPoint(0, 0 + size.y / 2, 0);
             

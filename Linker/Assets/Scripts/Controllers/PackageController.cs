@@ -6,6 +6,13 @@ public class PackageController : AppChildController {
 
 
     // ----- 对外接口 -----
+    public void EnterEditSceneSys() {
+        Debug.Log("EnterEditSceneSys");
+    }
+
+    public void CopySceneData(SceneNodeData data) {
+        getData<PackageData>().CopySceneData(data);
+    }
     public void RemoveSceneData(SceneNodeData data) {
         getData<PackageData>().RemoveSceneData(data);
     }
