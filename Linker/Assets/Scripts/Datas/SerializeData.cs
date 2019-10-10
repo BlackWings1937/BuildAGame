@@ -6,25 +6,60 @@ using System;
 
 [Serializable]
 public class NpcOption {
+    public const  string STR_WaitForPointCN = "等待点击";
+    public const string STR_PlayJsonCN = "播放Json:";
+    public const string STR_NoneCN = "空操作";
     public enum State {
         E_None = 0,
         E_PlayJson,
         E_Listen ,
         // todo add listen type
     }
+    public static String EToS(State e) {
+        var result = STR_NoneCN;
+        switch (e) {
+            case State.E_Listen:
+                result = STR_WaitForPointCN;
+                break;
+            case State.E_None:
+                result = STR_NoneCN;
+                break;
+            case State.E_PlayJson:
+                result = STR_PlayJsonCN;
+                break;
+        }
+        return result;
+    }
+    public static State  SToE(string s) {
+        var result = State.E_None;
+        switch (s) {
+            case STR_NoneCN:
+                result = State.E_None;
+                break;
+            case STR_PlayJsonCN:
+                result = State.E_PlayJson;
+                break;
+            case STR_WaitForPointCN:
+                result = State.E_Listen;
+                break;
+        }
+        return result;
+    }
     public State MyState = State.E_None;
     public string Npc;
+    public string ExData = "";
     public static NpcOption Copy(NpcOption data) {
         var n = new NpcOption();
         n.MyState = data.MyState;
         n.Npc = data.Npc;
+        n.ExData = data.ExData;
         return n;
     }
 }
 
 [Serializable]
 public class PlotInfoData {
-    public string BgConfigName;
+    public string BgConfigName = "";
     public Dictionary<string,List<NpcOption>> DicOfNpcsOptions = new Dictionary<string, List<NpcOption>>();
     public static PlotInfoData Copy(PlotInfoData data) {
         var p = new PlotInfoData();
@@ -44,9 +79,9 @@ public class PlotInfoData {
 
 [Serializable]
 public class PlaymentInfoData {
-    public string LuaScriptName;
-    public string ProductConfigName;
-    public string AnimationConfigName;
+    public string LuaScriptName = "";
+    public string ProductConfigName = "";
+    public string AnimationConfigName = "";
 
     public static PlaymentInfoData Copy(PlaymentInfoData data) {
         var p = new PlaymentInfoData();
@@ -82,8 +117,8 @@ public class SceneInfoData {
     }
     public State MyState = State.E_None;
     public string SceneNodeID;
-    public PlaymentInfoData PlayMentData = null;
-    public PlotInfoData PLotData = null;
+    public PlaymentInfoData PlayMentData = new PlaymentInfoData();
+    public PlotInfoData PLotData = new PlotInfoData();
 
     public static SceneInfoData Copy(SceneInfoData orignal) {
         var copy = new SceneInfoData();

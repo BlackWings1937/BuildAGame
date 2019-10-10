@@ -54,4 +54,7 @@ public class AppController : BaseController {
     public Dictionary<string,object> GetTargetPackageInfo() { return this.getData<AppData>().GetTargetPackageInfo(); }
     public SceneNodeData GetTargetSceneInfo() { return this.getData<AppData>().GetTargetSceneInfo(); }
 
+
+    public PackageController GetPackageController() { return (PackageController)myPackageController_; }
+
 }
