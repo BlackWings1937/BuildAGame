@@ -66,15 +66,17 @@ public class PlotEditView : SceneViewChildView
         clearListOfItems();
 
         if (prefabNpcOptionsTrain_!= null&& rtOfContent_ != null) {
-            var dic = data_.DicOfNpcsOptions;
-            foreach (var pair in dic)
-            {
+
+            var count = data_.ListOfNpcOptions.Count;
+            for (int i = 0;i<count;++i) {
+                var opsNow = data_.ListOfNpcOptions[i];
                 var g = GameObject.Instantiate(prefabNpcOptionsTrain_) as GameObject;
                 var trainItem = g.GetComponent<NpcOtionsTrain>();
-                trainItem.UpdateByNpcNameAndOptionLIst(pair.Key,pair.Value);
+                trainItem.UpdateByPevAndNpcNameAndOptionLIst(this,opsNow);
                 listOfItems_.Add(trainItem);
-                trainItem.transform.SetParent(rtOfContent_,false);
+                trainItem.transform.SetParent(rtOfContent_, false);
             }
+
             reCaculateRtOfContentSize();
         }
     }
@@ -123,6 +125,18 @@ public class PlotEditView : SceneViewChildView
             else {
                 updatePlotViewAsFillByData();
             }
+        }
+    }
+
+
+    public void OnBtnClickAtNpcItem(RectTransform rt,NpcOptions data) {
+        if (MySceneView != null) {
+            MySceneView.ShowOptionsByUserClickNpcItem(rt, data);
+        }
+    }
+    public void OnBtnClickAtOptionItem(RectTransform rt,NpcOption nop) {
+        if (MySceneView!= null) {
+            MySceneView.ShowOptionsByUserClickOptionItem(rt,nop);
         }
     }
 

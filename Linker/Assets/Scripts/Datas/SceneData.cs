@@ -38,16 +38,18 @@ public class SceneData : BaseData
     }
 
     public void ParseBgConfigToData(string bgConfigName,SceneNodeData data) {
-        var dic = data.MySceneInfoData.PLotData.DicOfNpcsOptions;
-        dic.Clear();
+
+        var list = data.MySceneInfoData.PLotData.ListOfNpcOptions;
+        list.Clear();
 
         var countOfNpcsNum = 100;
         for (int i = 0;i<countOfNpcsNum;++i) {
-            var npcName = "Npc" + i;
-            var listOfOptions = new List<NpcOption>();
-            dic.Add(npcName,listOfOptions);
+            var ops = new NpcOptions();
+            ops.NpcName = "Npc" + i;
+
+            list.Add(ops);
         }
-        Debug.Log("catch:"+dic.Count);
+        Debug.Log("catch:"+ list.Count);
     }
 
 
@@ -85,5 +87,46 @@ public class SceneData : BaseData
             l.Add("BgConfig" + i + ".json");
         }
         return l;
+    }
+
+    public List<string> GetActionsList(string bgConfigName) {
+        var l = new List<string>();
+        for (int i = 0; i < 10; ++i)
+        {
+            l.Add("ActionJson" + i + ".json");
+        }
+        return l;
+    }
+
+
+    /// <summary>
+    /// 获取NpcOptions data 通过 npcName
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public NpcOptions GetOptionsByNpcName(string name) {
+        var count = data_.MySceneInfoData.PLotData.ListOfNpcOptions.Count;
+        for (int i = 0;i<count;++i) {
+            var result = data_.MySceneInfoData.PLotData.ListOfNpcOptions[i];
+            if (name == result.NpcName) {
+                return result;
+            }
+        }
+        return null;
+    }
+
+    public void AddJsonNpcOptionOnNpcOption(NpcOptions nops,string actionJsonName) {
+        var nop = new NpcOption();
+        nop.MyState = NpcOption.State.E_PlayJson;
+        nop.Npc = nops.NpcName;
+        nop.ExData = actionJsonName;
+        nops.listOfOptions.Add(nop);
+        UpdateData();
+    }
+
+    public void OnRemoveAllChildByNpcOptions(NpcOptions ndatas)
+    {
+        ndatas.listOfOptions.Clear();
+        UpdateData();
     }
 }

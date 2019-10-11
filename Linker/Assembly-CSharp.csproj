@@ -104,6 +104,7 @@
     <Compile Include="Assets\Scripts\UIs\PointParent.cs" />
     <Compile Include="Assets\Scripts\UIs\SceneNode.cs" />
     <Compile Include="Assets\Scripts\UIs\SceneViewChildView.cs" />
+    <Compile Include="Assets\Scripts\UIs\SVChoseOptionsBox.cs" />
     <Compile Include="Assets\Scripts\UIs\SWOldProj.cs" />
     <Compile Include="Assets\Scripts\UIs\TapButtonsGroup.cs" />
     <Compile Include="Assets\Scripts\UIs\TestScriptUI.cs" />

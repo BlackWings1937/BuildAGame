@@ -58,20 +58,35 @@ public class NpcOption {
 }
 
 [Serializable]
+public class NpcOptions {
+    public string NpcName;
+    public List<NpcOption> listOfOptions = new List<NpcOption>();
+
+    public static NpcOptions Copy(NpcOptions orignal) {
+        var n = new NpcOptions();
+        var count = orignal.listOfOptions.Count;
+        for (int i = 0;i<count;++i) {
+            var opNow = orignal.listOfOptions[i];
+            var opCopy = NpcOption.Copy(opNow);
+            n.listOfOptions.Add(opCopy);
+        }
+        return n;
+    }
+}
+
+
+[Serializable]
 public class PlotInfoData {
     public string BgConfigName = "";
-    public Dictionary<string,List<NpcOption>> DicOfNpcsOptions = new Dictionary<string, List<NpcOption>>();
+    public List<NpcOptions> ListOfNpcOptions = new List<NpcOptions>();
     public static PlotInfoData Copy(PlotInfoData data) {
         var p = new PlotInfoData();
         p.BgConfigName = data.BgConfigName;
-        foreach (var pair in data.DicOfNpcsOptions) {
-            var list = new List<NpcOption>();
-            var count = pair.Value.Count;
-            for (int i = 0;i<count;++i) {
-                var nop = NpcOption.Copy(pair.Value[i]);
-                list.Add(nop);
-            }
-            p.DicOfNpcsOptions.Add(pair.Key,list);
+        var count = data.ListOfNpcOptions.Count;
+        for (int i = 0;i<count;++i) {
+            var opsNow = data.ListOfNpcOptions[i];
+            var opsCopy = NpcOptions.Copy(opsNow);
+            p.ListOfNpcOptions.Add(opsCopy);
         }
         return p;
     }

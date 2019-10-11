@@ -5,7 +5,7 @@ using UnityEngine;
 public class BaseView : MonoBehaviour {
     private BaseController myController_ = null;
     public void SetController(BaseController c) { myController_ = c; }
-    protected T GetController<T>() where T : BaseController
+    public T GetController<T>() where T : BaseController
     {
         return (T)myController_;
     }

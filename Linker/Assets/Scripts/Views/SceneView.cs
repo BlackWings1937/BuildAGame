@@ -17,7 +17,7 @@ public class SceneView : BaseView
 
 
     [SerializeField]
-    private ChoseOptionsBox myChoseOptionBox_ = null;
+    private SVChoseOptionsBox myChoseOptionBox_ = null;
 
 
     [SerializeField]
@@ -26,11 +26,7 @@ public class SceneView : BaseView
     [SerializeField]
     private PlotEditView myPlotEditView_ = null;
 
-
-
     private SceneNodeData data_;
-
-
 
     // debug
     [SerializeField]
@@ -63,64 +59,16 @@ public class SceneView : BaseView
         }
     }
 
-    // todo plotEditView here
+  
 
-    private void showChoseOptionBoxByNameAndDicAndWorldPos(
-        string name,
-        Dictionary<string, TapButtonCallBack> dic,
-        Vector2 pos) {
-        myChoseOptionBox_.gameObject.SetActive(true);
-        var localPos = TransformUtils.WorldPosToNodePos(pos, transform);
-        var rtBox = myChoseOptionBox_.transform as RectTransform;
-        var sizeOfBox = rtBox.sizeDelta;
-        myChoseOptionBox_.transform.localPosition = new Vector3(localPos.x+sizeOfBox.x/2,localPos.y-sizeOfBox.y/2,0);
-        myChoseOptionBox_.UpdateBoxName(name);
-        myChoseOptionBox_.UpdateOptionsByDic(dic);
-    }
+    private void showChoseOptionAddOptionType(RectTransform rt,string npcName) {
 
-    private void showChoseOptionBoxNameAndDicAndNearObj(
-        string name,
-        Dictionary<string, TapButtonCallBack> dic,
-        RectTransform rt
-        ) {
-        var pos = rt.position;
-        var size = rt.sizeDelta;
-        size = rt.parent.transform.TransformVector(size);
-        showChoseOptionBoxByNameAndDicAndWorldPos(name, dic,new Vector2(pos.x + size.x/2, pos.y));
-    }
-    private void closeChoseOptionBox() {
-        if (myChoseOptionBox_.gameObject.activeSelf)
-            myChoseOptionBox_.gameObject.SetActive(false);
-    }
-
-    private void showChoseOptionSceneType() {
-        var pos = btnChoseSceneNodeType_.transform.position;
-        var dic = new Dictionary<string, TapButtonCallBack>();
-        dic.Add("剧情类型",()=> {
-            if (data_ != null) {
-                data_.MySceneInfoData.MyState = SceneInfoData.State.E_PLot;
-                UpdateData();
-            }
-        });
-        dic.Add("玩法类型",()=> {
-            if (data_ != null) {
-                data_.MySceneInfoData.MyState = SceneInfoData.State.E_Playment;
-                UpdateData();
-            }
-        });
-        showChoseOptionBoxNameAndDicAndNearObj(
-            "选择场景类型",
-            dic,
-            (RectTransform)btnChoseSceneNodeType_.transform
-            );
     }
 
 
     private void initViewAsNew() {
-        closeChoseOptionBox();
+        myChoseOptionBox_.CloseChoseOptionBox();
         setSceneChoseBtn("",null);
-
-
     }
 
 
@@ -144,7 +92,7 @@ public class SceneView : BaseView
     {
         btnBack_.onClick.RemoveAllListeners();
 
-        closeChoseOptionBox();
+        myChoseOptionBox_.CloseChoseOptionBox();
         closeMyPlayMentEditView();
 
         data_ = null;
@@ -160,7 +108,7 @@ public class SceneView : BaseView
         }
         if (btnEmpty_ !=null) {
             btnEmpty_.onClick.AddListener(()=>{
-                closeChoseOptionBox();
+                myChoseOptionBox_.CloseChoseOptionBox();
             });
         }
     }
@@ -182,7 +130,13 @@ public class SceneView : BaseView
 
     private void updateViewAsEmpty(SceneNodeData data) {
         setSceneChoseBtn("选择场景类型",()=> {
-            showChoseOptionSceneType();
+            if (myChoseOptionBox_ != null) {
+                myChoseOptionBox_.ShowChoseOptionSceneType(
+                    data,
+                    btnChoseSceneNodeType_.transform as RectTransform,
+                    this
+                    );
+            }
         });
     }
     private void disposeViewAsEmpty() {
@@ -237,89 +191,82 @@ public class SceneView : BaseView
     }
 
     // ----- 对外接口 -----
+
+    public List<string> GetActionsList(string bgConfigName) { return GetController<SceneController>().GetActionsList(bgConfigName); }
+
     public void UpdateData() {
         GetController<SceneController>().UpdateData();
     }
 
     public void ShowInitBgConfgChoseBoxByEditBtn(Button btn) {
-        if (btn!= null) {
-            var dic = new Dictionary<string, TapButtonCallBack>();
-            var listOfData = GetController<SceneController>().GetBgConfigsList();
-            var count = listOfData.Count;
-            for (int i = 0; i < count; ++i)
-            {
-                var str = listOfData[i];
-                dic.Add(str, () => {
-                    if (data_ != null)
-                    {
-                        data_.MySceneInfoData.PLotData.BgConfigName = str;
-                        GetController<SceneController>().ParseBgConfigToData(data_.MySceneInfoData.PLotData.BgConfigName, data_);
-                        GetController<SceneController>().UpdateData();
-                    }
-                });
-            }
-            showChoseOptionBoxNameAndDicAndNearObj("选择用来初始化的BgConfig", dic, btn.transform as RectTransform);
+        if (btn != null&& myChoseOptionBox_ != null) {
+            myChoseOptionBox_.ShowInitBgConfgChoseBoxByEditBtn(data_,btn.transform as RectTransform,this);
+        }
+    }
+
+    public void ShowOptionsByUserClickNpcItem(RectTransform rt, NpcOptions data) {
+        if (rt!= null && myChoseOptionBox_ != null) {
+            myChoseOptionBox_.ShowOptionsByUserClickNpcItem(data_,rt,this, data);
+        }
+    }
+    public void ShowOptionsByUserClickOptionItem(RectTransform rt, NpcOption nop) {
+        if (rt != null && myChoseOptionBox_ != null) {
+            myChoseOptionBox_.ShowOptionsByUserClickOptionItem(data_, rt, this, nop);
         }
     }
 
     public void ShowLuaScriptChoseBoxByEditBtn(Button btn) {
-        if (btn!= null) {
-            var dic = new Dictionary<string,TapButtonCallBack>();
-            var listOfData = GetController<SceneController>().GetLuaScriptsResList();
-            var count = listOfData.Count;
-            for (int i = 0;i<count;++i) {
-                var str = listOfData[i];
-                dic.Add(str,()=> {
-                    if (data_!= null) {
-                        data_.MySceneInfoData.PlayMentData.LuaScriptName = str;
-                        GetController<SceneController>().UpdateData();
-                    }
-                });
-            }
-            showChoseOptionBoxNameAndDicAndNearObj("选择luaScript",dic,btn.transform as RectTransform);
+        if (btn != null && myChoseOptionBox_ != null) {
+            myChoseOptionBox_.ShowLuaScriptChoseBoxByEditBtn(data_, btn.transform as RectTransform, this);
         }
     }
     public void ShowAnimationConfigChoseBoxByEditBtn(Button btn)
     {
-        if (btn != null)
+        if (btn != null && myChoseOptionBox_ != null)
         {
-            var dic = new Dictionary<string, TapButtonCallBack>();
-            var listOfData = GetController<SceneController>().GetAnimationConfigsList();
-            var count = listOfData.Count;
-            for (int i = 0; i < count; ++i)
-            {
-                var str = listOfData[i];
-                dic.Add(str, () => {
-                    if (data_ != null)
-                    {
-                        data_.MySceneInfoData.PlayMentData.AnimationConfigName = str;
-                        GetController<SceneController>().UpdateData();
-                    }
-                });
-            }
-            showChoseOptionBoxNameAndDicAndNearObj("选择AnimationConfig", dic, btn.transform as RectTransform);
+            myChoseOptionBox_.ShowAnimationConfigChoseBoxByEditBtn(data_, btn.transform as RectTransform, this);
         }
     }
     public void ShowProductConfigBoxByEditBtn(Button btn)
     {
-        if (btn != null)
+        if (btn != null && myChoseOptionBox_ != null)
         {
-            var dic = new Dictionary<string, TapButtonCallBack>();
-            var listOfData = GetController<SceneController>().GetProductConfigsList();
-            var count = listOfData.Count;
-            for (int i = 0; i < count; ++i)
-            {
-                var str = listOfData[i];
-                dic.Add(str, () => {
-                    if (data_ != null)
-                    {
-                        data_.MySceneInfoData.PlayMentData.ProductConfigName = str;
-                        GetController<SceneController>().UpdateData();
-                    }
-                });
-            }
-            showChoseOptionBoxNameAndDicAndNearObj("选择ProductConfig", dic, btn.transform as RectTransform);
+            myChoseOptionBox_.ShowProductConfigBoxByEditBtn(data_, btn.transform as RectTransform, this);
         }
+    }
+
+    public void OnAddChildNpcOptionNodeByNpcOptions(NpcOptions ndatas, RectTransform rt) {
+        if (rt != null && myChoseOptionBox_ != null) {
+            myChoseOptionBox_.ShowOptionsAddChildNpcOptionNode(data_, rt, this, ndatas);
+        }
+    }
+
+    public void OnAddChildNpcOptionNodeJsonByNpcOptions(NpcOptions ndatas, RectTransform rt) {
+        if (rt != null && myChoseOptionBox_ != null)
+        {
+            myChoseOptionBox_.ShowOptionsAddChildJsonNpcOptionNode(data_, rt, this, ndatas);
+        }
+    }
+
+    public void OnRemoveAllChildByNpcOptions(NpcOptions ndatas)
+    {
+        GetController<SceneController>().OnRemoveAllChildByNpcOptions(ndatas);
+    }
+
+
+    /// <summary>
+    /// 获取NpcOptions data 通过 npcName
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public NpcOptions GetOptionsByNpcName(string name)
+    {
+        return GetController<SceneController>().GetOptionsByNpcName(name);
+    }
+
+
+    public void AddJsonNpcOptionOnNpcOption(NpcOptions nops, string actionJsonName) {
+        GetController<SceneController>().AddJsonNpcOptionOnNpcOption(nops, actionJsonName);
     }
 }
 
@@ -351,3 +298,55 @@ for (int i = 0;i<cout;++i) {
     });
 }
 showChoseOptionBoxByDicAndWorldPos(dic,transform.position);*/
+
+// todo plotEditView here
+/*
+private void showChoseOptionBoxByNameAndDicAndWorldPos(
+    string name,
+    Dictionary<string, TapButtonCallBack> dic,
+    Vector2 pos) {
+    myChoseOptionBox_.gameObject.SetActive(true);
+    var localPos = TransformUtils.WorldPosToNodePos(pos, transform);
+    var rtBox = myChoseOptionBox_.transform as RectTransform;
+    var sizeOfBox = rtBox.sizeDelta;
+    myChoseOptionBox_.transform.localPosition = new Vector3(localPos.x+sizeOfBox.x/2,localPos.y-sizeOfBox.y/2,0);
+    myChoseOptionBox_.UpdateBoxName(name);
+    myChoseOptionBox_.UpdateOptionsByDic(dic);
+}
+
+private void showChoseOptionBoxNameAndDicAndNearObj(
+    string name,
+    Dictionary<string, TapButtonCallBack> dic,
+    RectTransform rt
+    ) {
+    var pos = rt.position;
+    var size = rt.sizeDelta;
+    size = rt.parent.transform.TransformVector(size);
+    showChoseOptionBoxByNameAndDicAndWorldPos(name, dic,new Vector2(pos.x + size.x/2, pos.y));
+}
+private void closeChoseOptionBox() {
+    if (myChoseOptionBox_.gameObject.activeSelf)
+        myChoseOptionBox_.gameObject.SetActive(false);
+}*/
+/*
+  private void showChoseOptionSceneType() {
+      var pos = btnChoseSceneNodeType_.transform.position;
+      var dic = new Dictionary<string, TapButtonCallBack>();
+      dic.Add("剧情类型",()=> {
+          if (data_ != null) {
+              data_.MySceneInfoData.MyState = SceneInfoData.State.E_PLot;
+              UpdateData();
+          }
+      });
+      dic.Add("玩法类型",()=> {
+          if (data_ != null) {
+              data_.MySceneInfoData.MyState = SceneInfoData.State.E_Playment;
+              UpdateData();
+          }
+      });
+      myChoseOptionBox_.ShowChoseOptionBoxByNameAnidDicAndNearObj(
+          "选择场景类型",
+          dic,
+          (RectTransform)btnChoseSceneNodeType_.transform
+          );
+  }*/

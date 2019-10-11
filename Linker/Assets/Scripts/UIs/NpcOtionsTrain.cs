@@ -13,6 +13,8 @@ public class NpcOtionsTrain : MonoBehaviour
 
     private List<BtnAdaptText> listOfItems_ = new List<BtnAdaptText>();
 
+    private NpcOptions data_ = null;
+
     // ----- 私有方法 -----
     private void clearItems() {
         var count = listOfItems_.Count;
@@ -57,24 +59,32 @@ public class NpcOtionsTrain : MonoBehaviour
     }
 
     // ----- 对外接口 -----
-    public void UpdateByNpcNameAndOptionLIst(string npcName,List<NpcOption> list) {
-        if (npcName != "" && list!= null && prefabNpcOptionItems_ != null) {
+    public void UpdateByPevAndNpcNameAndOptionLIst(PlotEditView pev,NpcOptions data) {
+        data_ = data;
+        if (data_!= null && prefabNpcOptionItems_ != null) {
             clearItems();
             var npcNameItem = GameObject.Instantiate(prefabNpcOptionItems_) as GameObject;
-            npcNameItem.GetComponent<BtnAdaptText>().SetText(npcName);
+            npcNameItem.GetComponent<BtnAdaptText>().SetText(data_.NpcName);
+            npcNameItem.GetComponent<Button>().onClick.AddListener(()=> {
+                if (pev!=null) {
+                    pev.OnBtnClickAtNpcItem(npcNameItem.transform as RectTransform, data_);
+                }
+            });
             npcNameItem.transform.SetParent(this.transform,false);
             listOfItems_.Add(npcNameItem.GetComponent<BtnAdaptText>());
 
 
-            var count = list.Count;
+            var count = data_.listOfOptions.Count;
             for (int i = 0;i<count;++i) {
-                var option = list[i];
+                var option = data_.listOfOptions[i];
                 var opItem = GameObject.Instantiate(prefabNpcOptionItems_) as GameObject;
                 var batItem = opItem.GetComponent<BtnAdaptText>();
                 batItem.SetText(NpcOption.EToS(option.MyState) +  option.ExData);
                 var btn = opItem.GetComponent<Button>();
                 btn.onClick.AddListener(()=> {
-                    // click option deal option data
+                    if (pev!=null) {
+                        pev.OnBtnClickAtOptionItem(btn.transform as RectTransform, option);
+                    }
                 });
                 opItem.transform.SetParent(this.transform,false);
                 listOfItems_.Add(batItem);
