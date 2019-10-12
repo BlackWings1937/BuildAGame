@@ -7,7 +7,13 @@ public class SceneView : BaseView
 {
     // ----- 私有成员 -----
     [SerializeField]
-    private Button btnEmpty_ = null;
+    private Button btnEmpty1_ = null;
+
+    [SerializeField]
+    private Button btnEmpty2_ = null;
+
+    [SerializeField]
+    private ScrollRect scrollView_ = null;
 
     [SerializeField]
     private Button btnBack_ = null;
@@ -36,7 +42,7 @@ public class SceneView : BaseView
     // ----- 私有方法 -----
 
     private void showMyPlayMentEditView() {
-        if (myPlayMentEditView_!= null) {
+        if (myPlayMentEditView_ != null) {
             myPlayMentEditView_.gameObject.SetActive(true);
         }
     }
@@ -59,33 +65,33 @@ public class SceneView : BaseView
         }
     }
 
-  
 
-    private void showChoseOptionAddOptionType(RectTransform rt,string npcName) {
+
+    private void showChoseOptionAddOptionType(RectTransform rt, string npcName) {
 
     }
 
 
     private void initViewAsNew() {
         myChoseOptionBox_.CloseChoseOptionBox();
-        setSceneChoseBtn("",null);
+        setSceneChoseBtn("", null);
     }
 
 
-    private void setSceneChoseBtn(string name,TapButtonCallBack cb) {
-        if (btnChoseSceneNodeType_!=null) {
+    private void setSceneChoseBtn(string name, TapButtonCallBack cb) {
+        if (btnChoseSceneNodeType_ != null) {
             btnChoseSceneNodeType_.onClick.RemoveAllListeners();
             btnChoseSceneNodeType_.GetComponent<BtnAdaptText>().SetText(name);
             //btnChoseSceneNodeType_.transform.GetChild(0).GetComponent < Text >().text = name;
-            btnChoseSceneNodeType_.onClick.AddListener(()=> {
-                if (cb!=null) {
+            btnChoseSceneNodeType_.onClick.AddListener(() => {
+                if (cb != null) {
                     cb();
                 }
             });
         }
     }
 
-    
+
 
     // ----- 初始化 -----
     public override void dispose()
@@ -106,8 +112,19 @@ public class SceneView : BaseView
                 GetController<SceneController>().BackToPackageEditView();
             });
         }
-        if (btnEmpty_ !=null) {
-            btnEmpty_.onClick.AddListener(()=>{
+        if (btnEmpty1_ != null) {
+            btnEmpty1_.onClick.AddListener(() => {
+                myChoseOptionBox_.CloseChoseOptionBox();
+            });
+        }
+        if (btnEmpty2_ != null)
+        {
+            btnEmpty2_.onClick.AddListener(() => {
+                myChoseOptionBox_.CloseChoseOptionBox();
+            });
+        }
+        if (scrollView_!=null) {
+            scrollView_.onValueChanged.AddListener((Vector2 pos)=> {
                 myChoseOptionBox_.CloseChoseOptionBox();
             });
         }
@@ -117,7 +134,7 @@ public class SceneView : BaseView
     {
         registerViewEvent();
         initViewAsNew();
-        if (myPlayMentEditView_!= null) {
+        if (myPlayMentEditView_ != null) {
             myPlayMentEditView_.MySceneView = this;
         }
         if (myPlotEditView_ != null)
@@ -129,7 +146,7 @@ public class SceneView : BaseView
     // ----- 更新界面 -----
 
     private void updateViewAsEmpty(SceneNodeData data) {
-        setSceneChoseBtn("选择场景类型",()=> {
+        setSceneChoseBtn("选择场景类型", () => {
             if (myChoseOptionBox_ != null) {
                 myChoseOptionBox_.ShowChoseOptionSceneType(
                     data,
@@ -140,12 +157,12 @@ public class SceneView : BaseView
         });
     }
     private void disposeViewAsEmpty() {
-        setSceneChoseBtn("",()=> { });
+        setSceneChoseBtn("", () => { });
     }
 
     private void updateViewAsPlayment(SceneNodeData data) {
         setSceneChoseBtn("玩法", () => { });
-        if (myPlayMentEditView_!= null) {
+        if (myPlayMentEditView_ != null) {
             myPlayMentEditView_.UpdateByData(data.MySceneInfoData.PlayMentData);
         }
     }
@@ -199,14 +216,14 @@ public class SceneView : BaseView
     }
 
     public void ShowInitBgConfgChoseBoxByEditBtn(Button btn) {
-        if (btn != null&& myChoseOptionBox_ != null) {
-            myChoseOptionBox_.ShowInitBgConfgChoseBoxByEditBtn(data_,btn.transform as RectTransform,this);
+        if (btn != null && myChoseOptionBox_ != null) {
+            myChoseOptionBox_.ShowInitBgConfgChoseBoxByEditBtn(data_, btn.transform as RectTransform, this);
         }
     }
 
     public void ShowOptionsByUserClickNpcItem(RectTransform rt, NpcOptions data) {
-        if (rt!= null && myChoseOptionBox_ != null) {
-            myChoseOptionBox_.ShowOptionsByUserClickNpcItem(data_,rt,this, data);
+        if (rt != null && myChoseOptionBox_ != null) {
+            myChoseOptionBox_.ShowOptionsByUserClickNpcItem(data_, rt, this, data);
         }
     }
     public void ShowOptionsByUserClickOptionItem(RectTransform rt, NpcOption nop) {
@@ -241,6 +258,16 @@ public class SceneView : BaseView
         }
     }
 
+    public void OnAddChildNpcOptionNodeByNpcOptionsAndNpcOption(NpcOptions ndatas, NpcOption nop, RectTransform rt)
+    {
+
+        if (rt != null && myChoseOptionBox_ != null)
+        {
+            myChoseOptionBox_.ShowOptionsAddChildNpcOptionNode(data_, rt, this, ndatas, nop);
+        }
+    }
+
+
     public void OnAddChildNpcOptionNodeJsonByNpcOptions(NpcOptions ndatas, RectTransform rt) {
         if (rt != null && myChoseOptionBox_ != null)
         {
@@ -248,9 +275,45 @@ public class SceneView : BaseView
         }
     }
 
+
+    public void OnAddChildNpcOptionNodeJsonByNpcOptions(NpcOptions ndatas, NpcOption nop, RectTransform rt)
+    {
+        if (rt != null && myChoseOptionBox_ != null)
+        {
+            myChoseOptionBox_.ShowOptionsAddChildJsonNpcOptionNode(data_, rt, this, ndatas, nop);
+        }
+    }
+
+    public void OnAddChildNpcOptionNodeTriggleByNpcOptions(
+        NpcOptions ndatas,
+        RectTransform rt
+        ) {
+        if (rt != null && myChoseOptionBox_ != null) {
+            myChoseOptionBox_.ShowOptionsAddChildTriggleByNpcOptions(rt,this,ndatas);
+        }
+    }
+
+
+    public void OnAddChildNpcOptionNodeTriggleByNpcOptions(
+        NpcOptions ndatas,
+        NpcOption nop,
+        RectTransform rt){
+        if (rt != null && myChoseOptionBox_ != null)
+        {
+            myChoseOptionBox_.ShowOptionsAddChildTriggleByNpcOptions(rt, this, ndatas , nop);
+        }
+    }
+
+
+
     public void OnRemoveAllChildByNpcOptions(NpcOptions ndatas)
     {
         GetController<SceneController>().OnRemoveAllChildByNpcOptions(ndatas);
+    }
+
+    public void OnRemoveAllChildByNpcOptions(NpcOptions ndatas, NpcOption nop) {
+        GetController<SceneController>().OnRemoveAllChildByNpcOptions(ndatas, nop);
+
     }
 
 
@@ -267,6 +330,46 @@ public class SceneView : BaseView
 
     public void AddJsonNpcOptionOnNpcOption(NpcOptions nops, string actionJsonName) {
         GetController<SceneController>().AddJsonNpcOptionOnNpcOption(nops, actionJsonName);
+    }
+
+
+    public void AddJsonNpcOptionOnNpcOptions(NpcOptions nops, string actionJsonName, NpcOption nop) {
+        GetController<SceneController>().AddJsonNpcOptionOnNpcOptions(nops, actionJsonName, nop);
+    }
+
+
+    public void CopyANpcOption(NpcOption op) {
+        GetController<SceneController>().CopyANpcOption(op);
+    }
+
+    public void PasteAtNpcOptions(NpcOptions nops) {
+        GetController<SceneController>().PasteAtNpcOptions(nops);
+    }
+
+    public void PasteAtNpcOptions(NpcOptions nops,NpcOption nop) {
+        GetController<SceneController>().PasteAtNpcOptions(nops, nop);
+    }
+
+    public bool IsCopyedNpcOption() { return GetController<SceneController>().IsCopyedNpcOption(); }
+    public void DeleteNpcOption(NpcOptions nops, NpcOption nop) {
+        GetController<SceneController>().DeleteNpcOption(nops, nop);
+    }
+
+
+
+    public void AddWaitPointNpcOption(NpcOptions nops) { GetController<SceneController>().AddWaitPointNpcOption(nops); }
+    public void AddWaitPointNpcOption(NpcOptions nops, NpcOption nop) { GetController<SceneController>().AddWaitPointNpcOption(nops, nop); }
+
+    public void AddWaitSoundNpcOption(NpcOptions nops) { GetController<SceneController>().AddWaitSoundNpcOption(nops); }
+    public void AddWaitSoundNpcOption(NpcOptions nops, NpcOption nop) { GetController<SceneController>().AddWaitSoundNpcOption(nops, nop); }
+
+    public void AddWaitShakeNpcOption(NpcOptions nops) { GetController<SceneController>().AddWaitShakeNpcOption(nops); }
+    public void AddWaitShakeNpcOption(NpcOptions nops, NpcOption nop) { GetController<SceneController>().AddWaitShakeNpcOption(nops, nop); }
+
+
+    public void AddOutputPort(NpcOptions nops)
+    {
+        GetController<SceneController>().AddOutputPort(nops);
     }
 }
 

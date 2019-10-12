@@ -6,13 +6,22 @@ using System;
 
 [Serializable]
 public class NpcOption {
+    //public NpcOption() { timeStamp = TimeUtils.GetTimeStamp(); }
+    //public string timeStamp = "0";
     public const  string STR_WaitForPointCN = "等待点击";
     public const string STR_PlayJsonCN = "播放Json:";
     public const string STR_NoneCN = "空操作";
+
+    public const string STR_T_POINT = "STR_T_POINT";
+    public const string STR_T_SOUND = "STR_T_SOUND";
+    public const string STR_T_SHAKE = "STR_T_SHAKE";
+
+
     public enum State {
         E_None = 0,
         E_PlayJson,
         E_Listen ,
+        E_Exit,
         // todo add listen type
     }
     public static String EToS(State e) {
@@ -48,6 +57,7 @@ public class NpcOption {
     public State MyState = State.E_None;
     public string Npc;
     public string ExData = "";
+    public string BornTimeStamp = "";
     public static NpcOption Copy(NpcOption data) {
         var n = new NpcOption();
         n.MyState = data.MyState;
@@ -115,6 +125,7 @@ public class OutputPortData {
     }
     public PortState State = PortState.E_Empty;
     public string SceneNodeID = "-1";
+    public string BornTimeStamp = "";
     public static OutputPortData Copy(OutputPortData orignal) {
         var copy = new OutputPortData();
         copy.State = PortState.E_Empty;
