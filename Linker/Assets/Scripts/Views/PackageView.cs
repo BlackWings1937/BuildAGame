@@ -25,6 +25,9 @@ public class PackageView : BaseView
     [SerializeField]
     private RectTransform cuiLayer_;
 
+    [SerializeField]
+    private Button btnStartWin32Exe_;
+
     // tapBtnsGroup
     [SerializeField]
     private TapButtonsGroup m_tapBtnsGroups_;
@@ -39,6 +42,24 @@ public class PackageView : BaseView
     private List<SceneNode> listOfScenesNode_ = new List<SceneNode>();
     private List<DrawLine> listOfLinesBetweenSceneNodes_ = new List<DrawLine>();
 
+    public override void wakeup()
+    {
+        var projPath = GetController<PackageController>().GetParentController().GetWin32ProjPath();
+        if (projPath != "")
+        {
+            if (btnStartWin32Exe_ != null)
+            {
+                btnStartWin32Exe_.gameObject.SetActive(true);
+            }
+
+        }
+        else {
+            if (btnStartWin32Exe_ != null)
+            {
+                btnStartWin32Exe_.gameObject.SetActive(false);
+            }
+        }
+    }
 
     //重写UI注册事件
     protected override void registerViewEvent()
@@ -65,6 +86,13 @@ public class PackageView : BaseView
             contentlayerDrag_.SetDragComplieCallBack((Vector2 worldPos) =>
             {
                 // Debug.Log("drag worldPos:" + worldPos.x + " y:" + worldPos.y);
+            });
+        }
+
+        if (btnStartWin32Exe_ != null) {
+            btnStartWin32Exe_.onClick.AddListener(()=> {
+                // todo start exe
+                GetController<PackageController>().GetParentController().StartWin32Exe();
             });
         }
     }

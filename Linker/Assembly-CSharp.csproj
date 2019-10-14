@@ -79,9 +79,12 @@
     <Compile Include="Assets\Scripts\DebugScript.cs" />
     <Compile Include="Assets\Scripts\Line.cs" />
     <Compile Include="Assets\Scripts\SimulatorController.cs" />
+    <Compile Include="Assets\Scripts\Tools\Conn.cs" />
+    <Compile Include="Assets\Scripts\Tools\Main.cs" />
     <Compile Include="Assets\Scripts\Tools\OpenDialog.cs" />
     <Compile Include="Assets\Scripts\Tools\PrefabFactory.cs" />
     <Compile Include="Assets\Scripts\Tools\PrefabsFactoryManager.cs" />
+    <Compile Include="Assets\Scripts\Tools\Serv.cs" />
     <Compile Include="Assets\Scripts\Tools\TextUtils.cs" />
     <Compile Include="Assets\Scripts\Tools\TimeUtils.cs" />
     <Compile Include="Assets\Scripts\Tools\TransformUtils.cs" />

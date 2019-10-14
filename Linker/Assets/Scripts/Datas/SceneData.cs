@@ -1,11 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public class SceneData : BaseData
 {
     // ----- 私有成员 -----
     private SceneNodeData data_ = null;
+    private Dictionary<string, object> pData_ = null;
 
     private NpcOption tmpCopyOptionData_ = null;
 
@@ -19,6 +21,7 @@ public class SceneData : BaseData
     private void initData() {
         var parentController = GetController<SceneController>().GetParentController() as AppController;
         data_ = parentController.GetTargetSceneInfo();
+        pData_ = (GetController<SceneController>().GetParentController() as AppController).GetTargetPackageInfo();
         callUpdateEvent();
     }
     public override void init()
@@ -39,6 +42,53 @@ public class SceneData : BaseData
         GetController<SceneController>().GetParentController().GetPackageController().SaveData();
     }
 
+    // ----- 私有方法 -----
+    private List<string> getBgConfigsByPath(string path) {
+        var l = new List<string>();
+        DirectoryInfo theFolder = new DirectoryInfo(path);
+        //遍历文件
+        foreach (FileInfo NextFile in theFolder.GetFiles())
+        {
+            if (NextFile.Name.Contains("_BgConfig.json"))
+            {
+                l.Add(NextFile.Name);
+            }
+        }
+        return l;
+    }
+
+    private List<string> getActionsByBgConfig(string bgConfig) {
+        var index =  bgConfig.IndexOf("_BgConfig.json");
+        bgConfig = bgConfig.Remove(index, "_BgConfig.json".Length);
+        var l = new List<string>();
+        var path = pData_[ProjData.STR_PATH] + "\\json" ;
+        DirectoryInfo theFolder = new DirectoryInfo(path);
+        foreach (FileInfo NextFile in theFolder.GetFiles())
+        {
+            if (NextFile.Name.Contains(bgConfig)&& !NextFile.Name.Contains("_BgConfig.json"))
+            {
+                l.Add(NextFile.Name);
+            }
+        }
+        return l;
+    }
+
+    private List<string> getNpcNamesByBgConfigName(string bgConfig) {
+        var l = new List<string>();
+        var path = pData_[ProjData.STR_PATH] + "\\json\\" + bgConfig;
+        if (File.Exists(path)) {
+            var str = File.ReadAllText(path);
+            AnimationJsonParse p = JsonUtility.FromJson<AnimationJsonParse>(str);
+            var count = p.layers.Count;
+            for (int i = 0;i<count;++i) {
+                if (p.layers[i].layername!= "camera"&& p.layers[i].framestype == "element") {
+                    l.Add(p.layers[i].layername);
+                }
+            }
+        }
+        return l;
+    }
+
     // ----- 对外接口 -----
     public void UpdateData()
     {
@@ -51,58 +101,86 @@ public class SceneData : BaseData
         var list = data.MySceneInfoData.PLotData.ListOfNpcOptions;
         list.Clear();
 
-        var countOfNpcsNum = 100;
+        var npcList = getNpcNamesByBgConfigName(bgConfigName);
+        var countOfNpcsNum = npcList.Count;
         for (int i = 0;i<countOfNpcsNum;++i) {
             var ops = new NpcOptions();
-            ops.NpcName = "Npc" + i;
-
+            ops.NpcName = npcList[i];
             list.Add(ops);
         }
-        Debug.Log("catch:"+ list.Count);
     }
 
 
 
     public List<string> GetLuaScriptsResList() {
+
+        var path = pData_[ProjData.STR_PATH] + "\\luascript";
+
+        var l = new List<string>();
+        DirectoryInfo theFolder = new DirectoryInfo(path);
+        //遍历文件
+        foreach (FileInfo NextFile in theFolder.GetFiles())
+        {
+            if (NextFile.Name.Contains(".lua"))
+            {
+                l.Add(NextFile.Name);
+            }
+        }
+        return l;
+
+
+        /*
         var l = new List<string>();
         for (int i = 0;i<10;++i) {
             l.Add("PlayMent"+i+".lua");
-        }
-        return l;
+        }*/
+       // return l;
     }
     public List<string> GetProductConfigsList()
     {
+        var path = pData_[ProjData.STR_PATH] + "\\productconfig";
+
         var l = new List<string>();
-        for (int i = 0; i < 10; ++i)
+        DirectoryInfo theFolder = new DirectoryInfo(path);
+        //遍历文件
+        foreach (FileInfo NextFile in theFolder.GetFiles())
         {
-            l.Add("ProductConfig" + i + ".json");
+            if (NextFile.Name.Contains(".json"))
+            {
+                l.Add(NextFile.Name);
+            }
         }
         return l;
     }
     public List<string> GetAnimationConfigsList()
     {
+        var path = pData_[ProjData.STR_PATH] + "\\animconfig";
         var l = new List<string>();
-        for (int i = 0; i < 10; ++i)
+        DirectoryInfo theFolder = new DirectoryInfo(path);
+        //遍历文件
+        foreach (FileInfo NextFile in theFolder.GetFiles())
         {
-            l.Add("AnimationConfig" + i + ".json");
+            if (NextFile.Name.Contains(".json"))
+            {
+                l.Add(NextFile.Name);
+            }
         }
         return l;
     }
 
     public List<string> GetBgConfigsList() {
-        var l = new List<string>();
-        for (int i = 0; i < 10; ++i)
-        {
-            l.Add("BgConfig" + i + ".json");
-        }
+        var path = pData_[ProjData.STR_PATH] + "\\json";
+        var l = getBgConfigsByPath(path);
         return l;
     }
 
     public List<string> GetActionsList(string bgConfigName) {
         var l = new List<string>();
-        for (int i = 0; i < 10; ++i)
+
+        var lActions = getActionsByBgConfig(bgConfigName);
+        for (int i = 0; i < lActions.Count; ++i)
         {
-            l.Add("ActionJson" + i + ".json");
+            l.Add(lActions[i]);
         }
         return l;
     }
@@ -305,5 +383,8 @@ public class SceneData : BaseData
             }
         }
     }
+
+
+
 
 }

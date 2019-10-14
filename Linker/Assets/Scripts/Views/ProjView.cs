@@ -16,6 +16,12 @@ public class ProjView : BaseView {
     public GameObject myPrefabCell_ = null;
     public ScrollRect myScrollView_ = null;
 
+    [SerializeField]
+    private InputField myIpfWin32Path = null;
+
+    [SerializeField]
+    private Button btnSelectWin32Path = null; 
+
     // ----- 私有方法 -----
 
     public override void UpdateView(object obj)
@@ -43,10 +49,31 @@ public class ProjView : BaseView {
             });
             cell.transform.SetParent(myRtContent_,false);
         }
+
+
     }
 
     override protected void registerViewEvent(){
-		transform.Find(BTN_N_START_NEW).GetComponent<Button>().onClick.AddListener(()=>{ Debug.Log("start new"); GetController<ProjController>().OnCreateNewProj(); });// 
+        if (btnSelectWin32Path!=null) {
+            btnSelectWin32Path.onClick.AddListener(()=> {
+                
+                var strPath = OpenDialogUtils.OpenDir();
+                if (myIpfWin32Path != null)
+                {
+                    myIpfWin32Path.text = strPath; // GetController<ProjController>().GetParentController().GetWin32ProjPath();
+                }
+                GetController<ProjController>().GetParentController().SetWin32ProjPath(strPath);
+            });
+        }
+        if (myIpfWin32Path != null)
+        {
+            myIpfWin32Path.text = GetController< ProjController >().GetParentController().GetWin32ProjPath();
+            myIpfWin32Path.onEndEdit.AddListener((string str) =>
+            {
+                GetController<ProjController>().GetParentController().SetWin32ProjPath(str);
+            });
+        }
+        transform.Find(BTN_N_START_NEW).GetComponent<Button>().onClick.AddListener(()=>{ Debug.Log("start new"); GetController<ProjController>().OnCreateNewProj(); });// 
         transform.Find(BTN_N_START_OLD).GetComponent<Button>().onClick.AddListener(()=>{ Debug.Log("start old"); GetController<ProjController>().OnEnterOldProj(); });
 	}
 

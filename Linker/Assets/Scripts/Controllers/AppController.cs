@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 
 
@@ -14,11 +15,17 @@ public class AppController : BaseController {
     // ----- 生命周期 -----
     protected override void Start()
     {
+
+        Serv serv = new Serv();
+        serv.Start("127.0.0.1", 1234);
+
+
         VISIBLE_SIZE = new Vector2(((RectTransform)transform).sizeDelta.x, ((RectTransform)transform).sizeDelta.y);
 
         base.Start();
         init();
         getView<AppView>().InitView();
+        getData<AppData>().init();
         initChildSys();
         activeProjSys();
 
@@ -47,6 +54,25 @@ public class AppController : BaseController {
     private void dispearSceneSys() { mySceneController_.DispearController(); }
     private void disposeSceneSys() { mySceneController_.DisposeController(); }
 
+
+
+    private Process processOfWin32exe_;
+    private void startWin32Process() {
+        if (processOfWin32exe_== null) {
+            var path = GetWin32ProjPath() + "\\xiaobanlong\\xiaobanlong5.2.0\\proj.win32\\Debug.win32\\xiaobanlong.exe";
+            UnityEngine.Debug.Log("path:"+path);
+            processOfWin32exe_ = Process.Start(path);
+        }
+    }
+
+    private void stopWin32Process ()
+    {
+        if (processOfWin32exe_!= null) {
+            processOfWin32exe_.Kill();
+            processOfWin32exe_ = null;
+        }
+    }
+
     // ----- 对外接口 -----
 
     public void SetTargetPackageInfo(Dictionary<string ,object> info) { this.getData<AppData>().SetTargetPackageInfo(info); }
@@ -56,5 +82,21 @@ public class AppController : BaseController {
 
 
     public PackageController GetPackageController() { return (PackageController)myPackageController_; }
+
+    public void SetWin32ProjPath(string p)
+    {
+        this.getData<AppData>().SetWin32ProjPath(p);
+    }
+    public string GetWin32ProjPath()
+    {
+        return this.getData<AppData>().GetWin32ProjPath();
+    }
+
+    public void StartWin32Exe() {
+        startWin32Process();
+    }
+    public void StopWin32Exe() {
+        stopWin32Process();
+    }
 
 }

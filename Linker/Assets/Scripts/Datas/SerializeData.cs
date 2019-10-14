@@ -3,6 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+[Serializable]
+public class AnimationJsonLayerParse {
+    public string layername;
+    public string framestype;
+}
+
+[Serializable]
+public class AnimationJsonParse {
+    public List<AnimationJsonLayerParse> layers;
+}
+
 
 [Serializable]
 public class NpcOption {
