@@ -137,6 +137,7 @@ public class OutputPortData {
     public PortState State = PortState.E_Empty;
     public string SceneNodeID = "-1";
     public string BornTimeStamp = "";
+    public int readNum_;
     public static OutputPortData Copy(OutputPortData orignal) {
         var copy = new OutputPortData();
         copy.State = PortState.E_Empty;
@@ -200,6 +201,9 @@ public class SceneNodeData {
         }
         return copy;
     }
+
+    //runningTime tmp
+    public bool IsPlaying = false;
 }
 
 [Serializable]

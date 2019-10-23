@@ -58,6 +58,10 @@ public class PackageData : BaseData
             saveData();
         }
 
+        //读取玩法脚本为场景添加出口 
+        reloadLuaScript();
+        //GetPortsDataByLuaScript(projData_[ProjData.STR_PATH] + "\\LuaScripts\\TestPlayMent.lua");
+
         //更新数据给绘制系统
         callUpdateEvent();
     }
@@ -138,7 +142,116 @@ public class PackageData : BaseData
         }
     }
 
+    private List<OutputPortData> getPortsDataByLuaScript(string path) {
+        var l = new List<OutputPortData>();
+        if (File.Exists(path)) {
+            var str = File.ReadAllText(path);
+            Debug.Log(str);
+            int index = 0;
+            do
+            {
+                index = str.IndexOf("PROT");//new char[] { 'P', 'R', 'O', 'T' }s
+                Debug.Log("Index:" + index);
+                if (index == -1) { break; }
+                int protNum = 0;
+                bool result = int.TryParse(str[index + 4].ToString(), out protNum);
+                if (result)
+                {
+                    Debug.Log("ProtNum:" + protNum);
+                    var pd = new OutputPortData();
+                    pd.readNum_ = protNum;
+                    l.Add(pd);
+                }
+                else {
+                    break;
+                }
+                str = str.Remove(index, 4);
+            } while (index != -1);
+            
+        }
+        /*
+        l.Sort((OutputPortData p1,OutputPortData p2)=> {
+            if (p1.readNum_>p2.readNum_) {
+                return 1;
+            }
+            else{
+                return -1;
+            }
+            //return 1;
+        });
+        */
+        return l;
+    }
+
+    private void reloadLuaScript() {
+        var sceneList = data_.ScenesList;
+        var count = sceneList.Count;
+        for (int i = 0;i<count;++i) {
+            var s = sceneList[i];
+            if (s.MySceneInfoData.MyState == SceneInfoData.State.E_Playment) {
+                var luaScriptName = s.MySceneInfoData.PlayMentData.LuaScriptName;
+                var origOutputPortData = s.LinkersInfo;
+                var newOutputPortData = getPortsDataByLuaScript(projData_[ProjData.STR_PATH] + "\\LuaScripts\\"+luaScriptName);
+                var countOrig = origOutputPortData.Count;
+                for (int z = 0;z<countOrig;++z) {
+                    var oriPortData = origOutputPortData[z];
+                    for (int x = 0;x< newOutputPortData.Count;++x) {
+                        var newPortData = newOutputPortData[x];
+                        if (newPortData.readNum_ == oriPortData.readNum_) {
+                            newPortData.State = oriPortData.State;
+                            newPortData.SceneNodeID = oriPortData.SceneNodeID;
+                        }
+                    }
+                }
+                s.LinkersInfo = newOutputPortData;
+            }
+        }
+    }
+
+    private SceneNodeData findSceneDataBySceneID(string sceneId) {
+
+        var sceneList = data_.ScenesList;
+        var count = sceneList.Count;
+        for (int i = 0; i < count; ++i)
+        {
+            var sceneData = sceneList[i];
+            if (sceneData.ID == sceneId) {
+                return sceneData;
+            }
+        }
+        return null;
+    }
+
     // ----- 对外接口 -----
+
+    /// <summary>
+    /// 设置场景运行状态
+    /// </summary>
+    /// <param name="sceneId"></param>
+    /// <param name="statue"></param>
+    public void SetSceneRunningStatue(string sceneId, bool statue) {
+        var sceneData = findSceneDataBySceneID(sceneId);
+        sceneData.IsPlaying = statue;
+        callUpdateEvent();
+    }
+
+
+    /// <summary>
+    /// 重新加载lua代码
+    /// </summary>
+    public void ReloadLuaScript() {
+        this.reloadLuaScript();
+        this.callUpdateEvent();
+    }
+
+    /// <summary>
+    /// 读取lua代码获取代码中的出口数量
+    /// </summary>
+    /// <param name="path"></param>
+    public List<OutputPortData> GetPortsDataByLuaScript(string path) {
+        Debug.Log("path:"+path);
+        return this.getPortsDataByLuaScript(path);
+    }
 
     /// <summary>
     /// 保存data数据到文件

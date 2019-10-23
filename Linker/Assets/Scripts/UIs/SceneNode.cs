@@ -14,6 +14,10 @@ public class SceneNode : PointParent
     [SerializeField]
     private VerticalTextItemGroup myOutPutBroard_;
 
+    //播放中tip
+    [SerializeField]
+    private GameObject myBoardOfPlaying_; 
+
     //package界面
     private PackageView packageView_ = null;
     public PackageView PackageView {
@@ -37,6 +41,13 @@ public class SceneNode : PointParent
     // 点击触发区域
     [SerializeField]
     private PointAt pointAt_ = null;
+
+    // 设置播放中牌子显示或者消失
+    private void setBoardOfPlayingActive(bool result) {
+        if (myBoardOfPlaying_!=null) {
+            myBoardOfPlaying_.SetActive(result);
+        }
+    }
 
     // 显示弹出选项
     private void showTapBtns() {
@@ -62,6 +73,17 @@ public class SceneNode : PointParent
             dic.Add("重命名场景", () =>
             {
                 showInputField();
+            });
+            dic.Add("播放场景", () => {
+                if (pv_!= null&& data_!=null) {
+                    pv_.PlayScene(data_.ID);
+                }
+            });
+
+            dic.Add("停止场景",()=> {
+                if (pv_ != null && data_ != null) {
+                    pv_.StopSceneByID(data_.ID);
+                }
             });
             var size = (transform as RectTransform).sizeDelta;
             var pos =  transform.TransformPoint(0, 0 + size.y / 2, 0);
@@ -316,6 +338,7 @@ public class SceneNode : PointParent
             var portInfo = data.LinkersInfo;
             setPackageViewToOutPutItemList(packageView);
             setOutPutItemList(portInfo);
+            setBoardOfPlayingActive(data.IsPlaying);
         }
     }
 

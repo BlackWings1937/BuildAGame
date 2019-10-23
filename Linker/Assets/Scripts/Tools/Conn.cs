@@ -26,6 +26,7 @@ public class Conn
 		this.socket = socket;
 		isUse = true;
 		buffCount = 0;
+        UnityEngine.Debug.Log("Init socket isUse: true");
 	}
 	//缓冲区剩余的字节数
 	public int BuffRemain()
@@ -47,6 +48,7 @@ public class Conn
 		
 		Console.WriteLine("[断开链接]" + GetAdress());
 		socket.Close();
-		isUse = false;
+        UnityEngine.Debug.Log("isUse: Close 断开链接 false");
+        isUse = false;
 	}
 }

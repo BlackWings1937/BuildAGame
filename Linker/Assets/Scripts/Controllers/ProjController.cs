@@ -49,12 +49,29 @@ public class ProjController : AppChildController {
 
 
     private string  createDri(string path) {
-        path = path + "\\";
+        path = path ;
+        /*
         Directory.CreateDirectory(path+ ProjData.STR_FLODER_ANIM);
         Directory.CreateDirectory(path+ ProjData.STR_FLODER_JSON);
         Directory.CreateDirectory(path+ ProjData.STR_FLODER_LUASCRIPT);
         Directory.CreateDirectory(path+ ProjData.STR_FLODER_ANIMCONFIG);
         Directory.CreateDirectory(path+ ProjData.STR_FLODER_PRODUCTCONFIG);
+        */
+
+
+        Directory.CreateDirectory(path + ProjData.STR_DRAGONBONE_DATA);
+        Directory.CreateDirectory(path + ProjData.STR_DRAGONBONE_DATA+"\\"+ ProjData.STR_HD);
+        Directory.CreateDirectory(path + ProjData.STR_DRAGONBONE_DATA+"\\"+ ProjData.STR_LD);
+        Directory.CreateDirectory(path + ProjData.STR_LUASCRIPT);
+        Directory.CreateDirectory(path + ProjData.STR_JSONS);
+        Directory.CreateDirectory(path + ProjData.STR_AUDIOS);
+        Directory.CreateDirectory(path + ProjData.STR_BGMS);
+        Directory.CreateDirectory(path + ProjData.STR_PNGS);
+        Directory.CreateDirectory(path + ProjData.STR_OTHERS);
+        Directory.CreateDirectory(path + ProjData.STR_OTHERS+"\\"+ ProjData.STR_PRODUCTCONFIGS);
+        Directory.CreateDirectory(path + ProjData.STR_OTHERS+"\\"+ ProjData.STR_ANIMATECONFIGS);
+
+
         var p = new ProjConfigData();
         p.name = path;
         p.path = path;
@@ -62,10 +79,14 @@ public class ProjController : AppChildController {
         var configFilePath = path + ProjData.STR_FILE_CONFIGPROJ;
         File.WriteAllText(configFilePath,str);
         return configFilePath;
+
     }
 
     private void createProjAtPath(string name,string path) {
+        
         if (Directory.Exists(path)) {
+            path = path + "\\LinkerData\\";
+            name = name + "\\LinkerData\\";
             var configfilePath = createDri(path);
             //保存项目到data
             getData<ProjData>().addProjByNameAndPath(name,path, configfilePath);

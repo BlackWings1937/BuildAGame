@@ -28,6 +28,9 @@ public class PackageView : BaseView
     [SerializeField]
     private Button btnStartWin32Exe_;
 
+    [SerializeField]
+    private Button btnReloadLuaScript_;
+
     // tapBtnsGroup
     [SerializeField]
     private TapButtonsGroup m_tapBtnsGroups_;
@@ -64,6 +67,12 @@ public class PackageView : BaseView
     //重写UI注册事件
     protected override void registerViewEvent()
     {
+        if (btnReloadLuaScript_!=null) {
+            btnReloadLuaScript_.onClick.AddListener(()=> {
+                // todo :
+                GetController<PackageController>().ReloadLuaScript();
+            });
+        }
         if (contentlayerPointAt_ != null)
         {
             contentlayerDrag_.IsSwallowTouch = true;
@@ -92,6 +101,7 @@ public class PackageView : BaseView
         if (btnStartWin32Exe_ != null) {
             btnStartWin32Exe_.onClick.AddListener(()=> {
                 // todo start exe
+                GetController<PackageController>().GetParentController().PrepareWin32();
                 GetController<PackageController>().GetParentController().StartWin32Exe();
             });
         }
@@ -310,6 +320,14 @@ public class PackageView : BaseView
             }
         }
     }
+
+    public void PlayScene(string sceneId) {
+        GetController<PackageController>().PlayScene(sceneId);
+    }
+    public void StopSceneByID(string sceneId) {
+        GetController<PackageController>().StopSceneByID(sceneId);
+    }
+
     public void CloseBtnsGroup()
     {
         closeBtnsGroup();

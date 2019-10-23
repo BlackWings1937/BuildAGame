@@ -14,6 +14,13 @@ public class PackageController : AppChildController {
 
 
     // ----- 对外接口 -----
+    public void PlayScene(string sceneId) {
+        GetParentController().PlayScene(sceneId);
+    }
+    public void StopSceneByID(string sceneId) {
+        GetParentController().StopSceneByID(sceneId);
+    }
+
     public void EnterEditSceneSys(SceneNodeData data) {
         getParentController<AppController>().SetTargetSceneInfo(data);
         getView<PackageView>().PrepareToOtherView();
@@ -37,7 +44,7 @@ public class PackageController : AppChildController {
     public void ShowTapBtnsGroup(Vector2 touchWorldPos,Vector2 posLocal) {
         var dic = new Dictionary<string, TapButtonCallBack>();
         dic.Add("创建场景",()=> {
-            var data = getData<PackageData>().GenerateTwoPortSceneDataByWorldPos(posLocal);
+            var data = getData<PackageData>().GenerateEmptySceneDataByWorldPos(posLocal);
             getData<PackageData>().AddSceneData(data);
         });
         dic.Add("粘贴",()=> { getView<PackageView>().CloseBtnsGroup(); });
@@ -60,5 +67,16 @@ public class PackageController : AppChildController {
     public void AddPortToSceneNodeBySceneData(SceneNodeData data) {
         getData<PackageData>().AddOutputPortToData(data);
     }
-    
+    public void ReloadLuaScript() {
+        getData<PackageData>().ReloadLuaScript();
+    }
+
+    /// <summary>
+    /// 设置场景是否正在运行中
+    /// </summary>
+    /// <param name="sceneId"></param>
+    /// <param name="statue"></param>
+    public void SetSceneRunningStatue(string sceneId, bool statue) {
+        getData<PackageData>().SetSceneRunningStatue(sceneId,statue);
+    }
 }

@@ -33,11 +33,8 @@ public class CanvasManager : MonoBehaviour
     private void Start()
     {
 
-
         setCanvasManagerToChildManager();
         EnterOpenModPanel();
-
-
     }
 
 

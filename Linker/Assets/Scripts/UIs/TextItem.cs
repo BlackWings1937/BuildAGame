@@ -99,8 +99,15 @@ public class TextItem : PointParent
         sd_ = sd;
         InitPoints();//data.
         var btnAdapt = GetComponent<BtnAdaptText>();
-        btnAdapt.SetText("出口:"+index);
-        updatePointsPos();
+        if (data.readNum_ != 0)
+        {
+            btnAdapt.SetText("出口:" + data.readNum_);
+
+        }
+        else {
+            btnAdapt.SetText("出口:" + data_.BornTimeStamp);      
+        }
+        updatePointsPos(); 
 
         if (data_.State == OutputPortData.PortState.E_Empty)
         {

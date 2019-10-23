@@ -61,7 +61,7 @@ public class SceneData : BaseData
         var index =  bgConfig.IndexOf("_BgConfig.json");
         bgConfig = bgConfig.Remove(index, "_BgConfig.json".Length);
         var l = new List<string>();
-        var path = pData_[ProjData.STR_PATH] + "\\json" ;
+        var path = pData_[ProjData.STR_PATH] + "\\Jsons";
         DirectoryInfo theFolder = new DirectoryInfo(path);
         foreach (FileInfo NextFile in theFolder.GetFiles())
         {
@@ -75,7 +75,7 @@ public class SceneData : BaseData
 
     private List<string> getNpcNamesByBgConfigName(string bgConfig) {
         var l = new List<string>();
-        var path = pData_[ProjData.STR_PATH] + "\\json\\" + bgConfig;
+        var path = pData_[ProjData.STR_PATH] + "\\Jsons\\" + bgConfig;
         if (File.Exists(path)) {
             var str = File.ReadAllText(path);
             AnimationJsonParse p = JsonUtility.FromJson<AnimationJsonParse>(str);
@@ -114,7 +114,7 @@ public class SceneData : BaseData
 
     public List<string> GetLuaScriptsResList() {
 
-        var path = pData_[ProjData.STR_PATH] + "\\luascript";
+        var path = pData_[ProjData.STR_PATH] + "\\LuaScripts";
 
         var l = new List<string>();
         DirectoryInfo theFolder = new DirectoryInfo(path);
@@ -138,7 +138,7 @@ public class SceneData : BaseData
     }
     public List<string> GetProductConfigsList()
     {
-        var path = pData_[ProjData.STR_PATH] + "\\productconfig";
+        var path = pData_[ProjData.STR_PATH] + "\\Others\\ProductConfigs";
 
         var l = new List<string>();
         DirectoryInfo theFolder = new DirectoryInfo(path);
@@ -154,7 +154,7 @@ public class SceneData : BaseData
     }
     public List<string> GetAnimationConfigsList()
     {
-        var path = pData_[ProjData.STR_PATH] + "\\animconfig";
+        var path = pData_[ProjData.STR_PATH] + "\\Others\\AnimatesConfigs";
         var l = new List<string>();
         DirectoryInfo theFolder = new DirectoryInfo(path);
         //遍历文件
@@ -169,7 +169,7 @@ public class SceneData : BaseData
     }
 
     public List<string> GetBgConfigsList() {
-        var path = pData_[ProjData.STR_PATH] + "\\json";
+        var path = pData_[ProjData.STR_PATH] + "\\Jsons";
         var l = getBgConfigsByPath(path);
         return l;
     }
@@ -346,14 +346,30 @@ public class SceneData : BaseData
         if (nops.listOfOptions.Count>0) {
             var eop = nops.listOfOptions[nops.listOfOptions.Count - 1];
             if (eop.MyState != NpcOption.State.E_Exit) {
-                var timeStamp = TimeUtils.GetTimeStamp();
-
                 var op = new NpcOption();
                 op.MyState = NpcOption.State.E_Exit;
                 op.Npc = nops.NpcName;
-                op.ExData = "出口:"+ timeStamp;
                 nops.listOfOptions.Add(op);
 
+
+
+                List<string> l = new List<string>() { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+
+                var count = data_.LinkersInfo.Count;
+                for (int i = 0;i<count;++i) {
+                    var opd = data_.LinkersInfo[i];
+                    var countOfl = l.Count;
+                    for (int z = 0;z<countOfl;++z) {
+                        var bs = opd.BornTimeStamp;
+                        if (bs == l[z]) {
+                            l.RemoveAt(z);
+                            break;
+                        }
+                    }
+                }
+
+                var timeStamp = l[l.Count-1];
+                op.ExData = "出口:" + timeStamp;
                 var outputData = new  OutputPortData();
                 data_.LinkersInfo.Add(outputData);
 

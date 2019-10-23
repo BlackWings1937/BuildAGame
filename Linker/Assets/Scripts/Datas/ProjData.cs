@@ -29,6 +29,19 @@ public class ProjData : BaseData {
     public static readonly string STR_PATH = "path";
     public static readonly string STR_CONFIG_FILE_PATH = "configFilePath";
 
+    public const string STR_DRAGONBONE_DATA = "DragonBoneDatas";
+    public const string STR_HD = "Hd";
+    public const string STR_LD = "Ld";
+    public const string STR_LUASCRIPT = "LuaScripts";
+    public const string STR_JSONS = "Jsons";
+    public const string STR_AUDIOS = "Audios";
+    public const string STR_BGMS = "Bgms";
+    public const string STR_PNGS = "Pngs";
+    public const string STR_OTHERS = "Others";
+    public const string STR_PRODUCTCONFIGS = "ProductConfigs";
+    public const string STR_ANIMATECONFIGS = "AnimatesConfigs";
+    
+
 
     private static readonly int MAX_OLD_ITEM = 10;//最大显示已经创建的项目数
 
