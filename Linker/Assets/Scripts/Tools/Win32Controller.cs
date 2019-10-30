@@ -12,6 +12,8 @@ public class MessageCommon
     public const string STR_MN_START_SCENE = "START_SCENE";
     public const string STR_MN_STOP_SCENE = "STOP_SCENE";
     public const string STR_MN_PLAY_STATUE_CHANGE = "PLAY_STATUE_CHANGE";
+    public const string STR_MN_LOAD_RES = "LOAD_RES";
+    public const string STR_MN_LOAD_RES_STATUE_UPDATE = "LOAD_RES_STATUE_UPDATE";
     public string EventName;
 }
 
@@ -60,6 +62,21 @@ public class MessageScenePlayStatueChange : MessageCommon
     public bool IsPlaying;
 }
 
+[Serializable]
+public class MessageLoadRes : MessageCommon {
+    public MessageLoadRes() {
+        EventName = STR_MN_LOAD_RES;
+    }
+}
+
+[Serializable]
+public class MessageLoadResStatueChange : MessageCommon {
+    public MessageLoadResStatueChange() {
+        EventName = STR_MN_LOAD_RES_STATUE_UPDATE;
+    }
+    public bool IsLoading = false;
+}
+
 
 public class Win32Controller
 {
@@ -68,7 +85,7 @@ public class Win32Controller
     public void Start()
     {
         serv_ = new Serv();
-        serv_.Start("127.0.0.1", 1234);
+        serv_.Start("192.168.9.48", 1234);
         serv_.SetRecvCallBack((string str) =>
         {
             this.recv(str);
@@ -88,6 +105,9 @@ public class Win32Controller
                 break;
             case MessageCommon.STR_MN_PLAY_STATUE_CHANGE:
                 obj = JsonUtility.FromJson<MessageScenePlayStatueChange>(strData);
+                break;
+            case MessageCommon.STR_MN_LOAD_RES_STATUE_UPDATE:
+                obj = JsonUtility.FromJson<MessageLoadResStatueChange>(strData);
                 break;
         }
         // todo parse str to aim data
@@ -155,7 +175,11 @@ public class Win32Controller
         }
     }
 
-
+    public void LoadRes() {
+        var m = new MessageLoadRes();
+        var str = JsonUtility.ToJson(m);
+        this.SendMessage(str);
+    }
     public void ReloadRes()
     {
         var m = new MessageReload();

@@ -81,6 +81,7 @@
     <Compile Include="Assets\Scripts\SimulatorController.cs" />
     <Compile Include="Assets\Scripts\Tools\Conn.cs" />
     <Compile Include="Assets\Scripts\Tools\DirectUtils.cs" />
+    <Compile Include="Assets\Scripts\Tools\HttpServerManager.cs" />
     <Compile Include="Assets\Scripts\Tools\Main.cs" />
     <Compile Include="Assets\Scripts\Tools\OpenDialog.cs" />
     <Compile Include="Assets\Scripts\Tools\PrefabFactory.cs" />

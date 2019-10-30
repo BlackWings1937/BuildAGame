@@ -23,6 +23,8 @@ public class PackageData : BaseData
     public static readonly string STR_Y = "Y";
     public static readonly string STR_Z = "Z";
     public static readonly string STR_PACKAGE_DATA_FILE_NAME = "projData.json";  //内容包数据文件名称
+    public static readonly string STR_FORMAT_PACKAGE_DATA_FILE_NAME = "formatProjData.json";  //内容包数据文件名称
+   
 
     // ----- 初始化 -----
     /// <summary>
@@ -57,7 +59,7 @@ public class PackageData : BaseData
             data_ = generateEmptyPackageData();
             saveData();
         }
-
+        data_.InitTmpData();
         //读取玩法脚本为场景添加出口 
         reloadLuaScript();
         //GetPortsDataByLuaScript(projData_[ProjData.STR_PATH] + "\\LuaScripts\\TestPlayMent.lua");
@@ -84,27 +86,37 @@ public class PackageData : BaseData
     /// <summary>
     /// 更新数据给监听者
     /// </summary>
-    private void callUpdateEvent() {
+    private void callUpdateEvent()
+    {
         eventOfDataUpdates_(data_);
     }
 
     /// <summary>
     /// 存储packageData 到文件
     /// </summary>
-    private void saveData() {
+    private void saveData()
+    {
 
         var strData = JsonConvert.SerializeObject(data_);
-        var path = projData_[ProjData.STR_PATH]+"\\" + STR_PACKAGE_DATA_FILE_NAME;
-        File.WriteAllText(path,strData);
+        var path = projData_[ProjData.STR_PATH] + "\\" + STR_PACKAGE_DATA_FILE_NAME;
+        File.WriteAllText(path, strData);
     }
 
-    
+    private void generateFormatProjFile() {
+
+        var strData = JsonConvert.SerializeObject(new SPackageInfoData(data_));
+        var path = projData_[ProjData.STR_PATH] + "\\" + STR_FORMAT_PACKAGE_DATA_FILE_NAME;
+        File.WriteAllText(path, strData);
+    }
+
+
 
     /// <summary>
     /// 生成空场景包信息
     /// </summary>
     /// <returns></returns>
-    private PackageInfoData generateEmptyPackageData() {
+    private PackageInfoData generateEmptyPackageData()
+    {
         return new PackageInfoData();
     }
 
@@ -112,10 +124,12 @@ public class PackageData : BaseData
     /// 断开scene和其他scene的连接
     /// </summary>
     /// <param name="data"></param>
-    private void removeAllLinkerSceneNode(SceneNodeData data) {
+    private void removeAllLinkerSceneNode(SceneNodeData data)
+    {
         var id = data.ID;
         var count = data_.ScenesList.Count;
-        for (int i = 0;i<count;++i) {
+        for (int i = 0; i < count; ++i)
+        {
             var ns = data_.ScenesList[i];
             if (ns != data)
             {
@@ -130,7 +144,8 @@ public class PackageData : BaseData
                     }
                 }
             }
-            else {
+            else
+            {
                 var pCount = ns.LinkersInfo.Count;
                 for (int z = 0; z < pCount; ++z)
                 {
@@ -142,9 +157,11 @@ public class PackageData : BaseData
         }
     }
 
-    private List<OutputPortData> getPortsDataByLuaScript(string path) {
+    private List<OutputPortData> getPortsDataByLuaScript(string path)
+    {
         var l = new List<OutputPortData>();
-        if (File.Exists(path)) {
+        if (File.Exists(path))
+        {
             var str = File.ReadAllText(path);
             Debug.Log(str);
             int index = 0;
@@ -162,12 +179,13 @@ public class PackageData : BaseData
                     pd.readNum_ = protNum;
                     l.Add(pd);
                 }
-                else {
+                else
+                {
                     break;
                 }
                 str = str.Remove(index, 4);
             } while (index != -1);
-            
+
         }
         /*
         l.Sort((OutputPortData p1,OutputPortData p2)=> {
@@ -183,21 +201,27 @@ public class PackageData : BaseData
         return l;
     }
 
-    private void reloadLuaScript() {
+    private void reloadLuaScript()
+    {
         var sceneList = data_.ScenesList;
         var count = sceneList.Count;
-        for (int i = 0;i<count;++i) {
+        for (int i = 0; i < count; ++i)
+        {
             var s = sceneList[i];
-            if (s.MySceneInfoData.MyState == SceneInfoData.State.E_Playment) {
+            if (s.MySceneInfoData.MyState == SceneInfoData.State.E_Playment)
+            {
                 var luaScriptName = s.MySceneInfoData.PlayMentData.LuaScriptName;
                 var origOutputPortData = s.LinkersInfo;
-                var newOutputPortData = getPortsDataByLuaScript(projData_[ProjData.STR_PATH] + "\\LuaScripts\\"+luaScriptName);
+                var newOutputPortData = getPortsDataByLuaScript(projData_[ProjData.STR_PATH] + "\\LuaScripts\\" + luaScriptName);
                 var countOrig = origOutputPortData.Count;
-                for (int z = 0;z<countOrig;++z) {
+                for (int z = 0; z < countOrig; ++z)
+                {
                     var oriPortData = origOutputPortData[z];
-                    for (int x = 0;x< newOutputPortData.Count;++x) {
+                    for (int x = 0; x < newOutputPortData.Count; ++x)
+                    {
                         var newPortData = newOutputPortData[x];
-                        if (newPortData.readNum_ == oriPortData.readNum_) {
+                        if (newPortData.readNum_ == oriPortData.readNum_)
+                        {
                             newPortData.State = oriPortData.State;
                             newPortData.SceneNodeID = oriPortData.SceneNodeID;
                         }
@@ -208,14 +232,16 @@ public class PackageData : BaseData
         }
     }
 
-    private SceneNodeData findSceneDataBySceneID(string sceneId) {
+    private SceneNodeData findSceneDataBySceneID(string sceneId)
+    {
 
         var sceneList = data_.ScenesList;
         var count = sceneList.Count;
         for (int i = 0; i < count; ++i)
         {
             var sceneData = sceneList[i];
-            if (sceneData.ID == sceneId) {
+            if (sceneData.ID == sceneId)
+            {
                 return sceneData;
             }
         }
@@ -225,11 +251,20 @@ public class PackageData : BaseData
     // ----- 对外接口 -----
 
     /// <summary>
+    /// 生成正式包文件
+    /// </summary>
+    public void GenerateFormatProjFile()
+    {
+        generateFormatProjFile();
+    }
+
+    /// <summary>
     /// 设置场景运行状态
     /// </summary>
     /// <param name="sceneId"></param>
     /// <param name="statue"></param>
-    public void SetSceneRunningStatue(string sceneId, bool statue) {
+    public void SetSceneRunningStatue(string sceneId, bool statue)
+    {
         var sceneData = findSceneDataBySceneID(sceneId);
         sceneData.IsPlaying = statue;
         callUpdateEvent();
@@ -239,7 +274,8 @@ public class PackageData : BaseData
     /// <summary>
     /// 重新加载lua代码
     /// </summary>
-    public void ReloadLuaScript() {
+    public void ReloadLuaScript()
+    {
         this.reloadLuaScript();
         this.callUpdateEvent();
     }
@@ -248,10 +284,13 @@ public class PackageData : BaseData
     /// 读取lua代码获取代码中的出口数量
     /// </summary>
     /// <param name="path"></param>
-    public List<OutputPortData> GetPortsDataByLuaScript(string path) {
-        Debug.Log("path:"+path);
+    public List<OutputPortData> GetPortsDataByLuaScript(string path)
+    {
+        Debug.Log("path:" + path);
         return this.getPortsDataByLuaScript(path);
     }
+
+
 
     /// <summary>
     /// 保存data数据到文件
@@ -262,7 +301,8 @@ public class PackageData : BaseData
     /// 生成空的sceneData
     /// </summary>
     /// <returns></returns>
-    public SceneNodeData GenerateEmptySceneData() {
+    public SceneNodeData GenerateEmptySceneData()
+    {
         return GenerateEmptySceneDataByWorldPos(Vector3.zero);
     }
 
@@ -271,7 +311,8 @@ public class PackageData : BaseData
     /// </summary>
     /// <param name="worldPos"></param>
     /// <returns></returns>
-    public SceneNodeData GenerateEmptySceneDataByWorldPos(Vector3 worldPos) {
+    public SceneNodeData GenerateEmptySceneDataByWorldPos(Vector3 worldPos)
+    {
         var data = new SceneNodeData(); //new Dictionary<string, object>();
         data.ID = TimeUtils.GetTimeStamp();
         data.Name = STR_NONAME_CHINA;
@@ -283,7 +324,8 @@ public class PackageData : BaseData
         return data;
     }
 
-    public SceneNodeData GenerateTwoPortSceneDataByWorldPos(Vector3 worldPos) {
+    public SceneNodeData GenerateTwoPortSceneDataByWorldPos(Vector3 worldPos)
+    {
         SceneNodeData d = this.GenerateEmptySceneDataByWorldPos(worldPos);
         this.AddOutputPortToData(d);
         this.AddOutputPortToData(d);
@@ -308,7 +350,8 @@ public class PackageData : BaseData
     /// </summary>
     /// <param name="o1"></param>
     /// <param name="d2"></param>
-    public void BreakOutputToScene(OutputPortData o1, SceneNodeData d2) {
+    public void BreakOutputToScene(OutputPortData o1, SceneNodeData d2)
+    {
         o1.SceneNodeID = "-1";
         o1.State = OutputPortData.PortState.E_Empty;
         callUpdateEvent();
@@ -323,7 +366,8 @@ public class PackageData : BaseData
     /// </summary>
     /// <param name="data"></param>
     /// <returns></returns>
-    public SceneNodeData AddOutputPortToData(SceneNodeData data) {
+    public SceneNodeData AddOutputPortToData(SceneNodeData data)
+    {
         var linkersInfo = data.LinkersInfo;
         var newOutputPort = new OutputPortData();
         linkersInfo.Add(newOutputPort);
@@ -338,7 +382,8 @@ public class PackageData : BaseData
     /// <param name="data"></param>
     /// <param name="index"></param>
     /// <returns></returns>
-    public SceneNodeData RemoveOutputPortForData(SceneNodeData data, int index) {
+    public SceneNodeData RemoveOutputPortForData(SceneNodeData data, int index)
+    {
         data.LinkersInfo.RemoveAt(index);
         callUpdateEvent();
         saveData();
@@ -349,7 +394,8 @@ public class PackageData : BaseData
     /// 添加SceneData 到列表
     /// </summary>
     /// <param name="data"></param>
-    public void AddSceneData(SceneNodeData data) {
+    public void AddSceneData(SceneNodeData data)
+    {
         var scenesList = data_.ScenesList;
         scenesList.Add(data);
         callUpdateEvent();
@@ -360,7 +406,8 @@ public class PackageData : BaseData
     /// 复制一个节点
     /// </summary>
     /// <param name="data"></param>
-    public void CopySceneData(SceneNodeData data) {
+    public void CopySceneData(SceneNodeData data)
+    {
         var copy = SceneNodeData.Copy(data);
         data_.ScenesList.Add(copy);
         callUpdateEvent();
@@ -371,14 +418,17 @@ public class PackageData : BaseData
     /// 移除一个SceneNode节点
     /// </summary>
     /// <param name="data"></param>
-    public void RemoveSceneData(SceneNodeData data) {
+    public void RemoveSceneData(SceneNodeData data)
+    {
         removeAllLinkerSceneNode(data);
         var dataId = data.ID;
         var scenesList = data_.ScenesList;
-        for (int i =0;i<scenesList.Count;++i) {
+        for (int i = 0; i < scenesList.Count; ++i)
+        {
             var nowSceneData = scenesList[i];
             var nowId = nowSceneData.ID;
-            if (dataId == nowId) {
+            if (dataId == nowId)
+            {
                 scenesList.RemoveAt(i);
                 break;
             }

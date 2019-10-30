@@ -76,12 +76,24 @@ public class NpcOption {
         n.ExData = data.ExData;
         return n;
     }
+
+    public void InitTmpData() { }
 }
 
 [Serializable]
 public class NpcOptions {
     public string NpcName;
     public List<NpcOption> listOfOptions = new List<NpcOption>();
+
+
+    public void InitTmpData() {
+        var count = listOfOptions.Count;
+        for (int i = 0; i < count; ++i)
+        {
+            var l = listOfOptions[i];
+            l.InitTmpData();
+        }
+    }
 
     public static NpcOptions Copy(NpcOptions orignal) {
         var n = new NpcOptions();
@@ -100,6 +112,15 @@ public class NpcOptions {
 public class PlotInfoData {
     public string BgConfigName = "";
     public List<NpcOptions> ListOfNpcOptions = new List<NpcOptions>();
+
+    public void InitTmpData() {
+        var count = ListOfNpcOptions.Count;
+        for (int i = 0; i < count; ++i)
+        {
+            var l = ListOfNpcOptions[i];
+            l.InitTmpData();
+        }
+    }
     public static PlotInfoData Copy(PlotInfoData data) {
         var p = new PlotInfoData();
         p.BgConfigName = data.BgConfigName;
@@ -119,6 +140,7 @@ public class PlaymentInfoData {
     public string ProductConfigName = "";
     public string AnimationConfigName = "";
 
+    public void InitTmpData() { }
     public static PlaymentInfoData Copy(PlaymentInfoData data) {
         var p = new PlaymentInfoData();
         p.LuaScriptName = data.LuaScriptName;
@@ -138,6 +160,10 @@ public class OutputPortData {
     public string SceneNodeID = "-1";
     public string BornTimeStamp = "";
     public int readNum_;
+
+    public void InitTmpData() {
+
+    }
     public static OutputPortData Copy(OutputPortData orignal) {
         var copy = new OutputPortData();
         copy.State = PortState.E_Empty;
@@ -158,6 +184,10 @@ public class SceneInfoData {
     public PlaymentInfoData PlayMentData = new PlaymentInfoData();
     public PlotInfoData PLotData = new PlotInfoData();
 
+    public void InitTmpData() {
+        PlayMentData.InitTmpData();
+        PLotData.InitTmpData();
+    }
     public static SceneInfoData Copy(SceneInfoData orignal) {
         var copy = new SceneInfoData();
         copy.MyState = orignal.MyState;
@@ -181,6 +211,19 @@ public class SceneNodeData {
     //public List<SceneInfoData> scenesInfo = new List<SceneInfoData>();
     public SceneInfoData MySceneInfoData = null;
     public List<OutputPortData> LinkersInfo = new List<OutputPortData>();
+
+    public void InitTmpData() {
+        this.IsPlaying = false;
+        if (MySceneInfoData !=null) {
+            MySceneInfoData.InitTmpData();
+        }
+        var count = LinkersInfo.Count;
+        for (int i = 0; i < count; ++i)
+        {
+            var ll = LinkersInfo[i];
+            ll.InitTmpData();
+        }
+    }
 
     public static SceneNodeData Copy(SceneNodeData orignal) {
         SceneNodeData copy = new SceneNodeData();
@@ -206,7 +249,128 @@ public class SceneNodeData {
     public bool IsPlaying = false;
 }
 
+/*
+ var count = ScenesList.Count;
+ for (int i = 0;i<count;++i) {
+
+ }
+*/
 [Serializable]
 public class PackageInfoData {
+    public void InitTmpData() {
+        var count = ScenesList.Count;
+        for (int i = 0;i<count;++i) {
+            var d = ScenesList[i];
+            d.InitTmpData();
+        }
+    }
     public List<SceneNodeData> ScenesList = new List<SceneNodeData>();
+}
+
+
+[Serializable]
+public class SNpcOption {
+    public int MyState =0;
+    public string Npc;
+    public string ExData = "";
+    public string BornTimeStamp = "";
+    public SNpcOption(NpcOption d) {
+        MyState = (int)d.MyState;
+        Npc = d.Npc;
+        ExData = d.ExData;
+        BornTimeStamp = d.BornTimeStamp;
+    }
+}
+[Serializable]
+public class SNpcOptions {
+    public string NpcName;
+    public List<SNpcOption> listOfOptions = new List<SNpcOption>();
+    public SNpcOptions(NpcOptions d) {
+        NpcName = d.NpcName;
+        var count = d.listOfOptions.Count;
+        for (int i = 0;i<count;++i) {
+            var snpo = new SNpcOption(d.listOfOptions[i]);
+            listOfOptions.Add(snpo);
+        }
+    }
+}
+[Serializable]
+public class SPlotInfoData {
+    public string BgConfigName = "";
+    public List<SNpcOptions> ListOfNpcOptions = new List<SNpcOptions>();
+    public SPlotInfoData(PlotInfoData d) {
+        BgConfigName = d.BgConfigName;
+        var count = d.ListOfNpcOptions.Count;
+        for (int i = 0; i < count; ++i)
+        {
+            var snpo = new SNpcOptions(d.ListOfNpcOptions[i]);
+            ListOfNpcOptions.Add(snpo);
+        }
+    }
+}
+[Serializable]
+public class SPlaymentInfoData {
+    public string LuaScriptName = "";
+    public string ProductConfigName = "";
+    public string AnimationConfigName = "";
+
+    public SPlaymentInfoData(PlaymentInfoData d) {
+        LuaScriptName = d.LuaScriptName;
+        ProductConfigName = d.ProductConfigName;
+        AnimationConfigName = d.AnimationConfigName;
+    }
+}
+[Serializable]
+public class SOutputPortData {
+    public int  State = 0;
+    public string SceneNodeID = "-1";
+    public string BornTimeStamp = "";
+    public int readNum_;
+    public SOutputPortData(OutputPortData d) {
+        State = (int)d.State;
+        SceneNodeID = d.SceneNodeID;
+        BornTimeStamp = d.BornTimeStamp;
+        readNum_ = d.readNum_;
+    }
+}
+[Serializable]
+public class SSceneInfoData {
+    public int MyState = 0;
+    public string SceneNodeID;
+    public SPlaymentInfoData PlayMentData;
+    public SPlotInfoData PLotData;
+    public SSceneInfoData(SceneInfoData d) {
+        MyState = (int)d.MyState;
+        SceneNodeID = d.SceneNodeID;
+        PlayMentData = new SPlaymentInfoData(d.PlayMentData);
+        PLotData = new SPlotInfoData(d.PLotData);
+    }
+}
+[Serializable]
+public class SSceneNodeData {
+    public string ID;
+    public string Name;
+    public SSceneInfoData MySceneInfoData = null;
+    public List<SOutputPortData> LinkersInfo = new List<SOutputPortData>();
+
+    public SSceneNodeData(SceneNodeData d) {
+        ID = d.ID;
+        Name = d.Name;
+        MySceneInfoData = new SSceneInfoData(d.MySceneInfoData);
+        var count = d.LinkersInfo.Count;
+        for (int i = 0;i<count;++i) {
+            LinkersInfo.Add(new SOutputPortData(d.LinkersInfo[i]));
+        }
+    }
+}
+[Serializable]
+public class SPackageInfoData {
+    public List<SSceneNodeData> ScenesList = new List<SSceneNodeData>();
+    public SPackageInfoData(PackageInfoData d) {
+        var count = d.ScenesList.Count;
+        for (int i = 0; i < count; ++i)
+        {
+            ScenesList.Add(new SSceneNodeData(d.ScenesList[i]));
+        }
+    }
 }

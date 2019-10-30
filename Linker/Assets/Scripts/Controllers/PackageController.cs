@@ -14,6 +14,11 @@ public class PackageController : AppChildController {
 
 
     // ----- 对外接口 -----
+    public void SetLoadResLayerActive(bool v) { getView<PackageView>().SetLoadResLayerActive(v); }
+
+    public void GenerateFormatProjFile() {
+        getData<PackageData>().GenerateFormatProjFile();
+    }
     public void PlayScene(string sceneId) {
         GetParentController().PlayScene(sceneId);
     }

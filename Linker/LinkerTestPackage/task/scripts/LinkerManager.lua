@@ -70,7 +70,7 @@ function LinkerManager:ReloadRes()
     ArmatureDataDeal:sharedDataDeal():loadArmatureData(pathOfXML);
     ArmatureDataDeal:sharedDataDeal():loadArmatureData(pathOfPng);
 
-    local pathOfPackageInfo = g_tConfigTable.sTaskpath .. "/LinkerData/projData.json";
+    local pathOfPackageInfo = g_tConfigTable.sTaskpath .. "/LinkerData/formatProjData.json";
     self.result_ = self.packageManager_:InitByFile(pathOfPackageInfo);
     self.packageManager_:SetLinkerProjPath(g_tConfigTable.sTaskpath .. "LinkerData");
     self.packageManager_:SetRootNode(self.rootNode_ );
@@ -107,7 +107,38 @@ function LinkerManager:StopSceneByID(ID)
 end
 
 
+
+function LinkerManager:TestPostDownloadRes()
+    self:SMLoadResStatueDownloading();
+    g_tConfigTable.DownloadComplie = function(str) 
+        self:SMLoadResStatueDownloaded();
+    end
+    self.talkToCSharp_:TestPost();
+    --[[
+    self.rootNode_:runAction(cc.Sequence:create(cc.DelayTime:create(5),cc.CallFunc:create(
+        function() 
+        end
+    )));
+    ]]--
+end
+
+
 -- ----- 发送消息 -----
+function LinkerManager:SMLoadResStatueDownloading()
+    local m = {};
+    m.EventName = MessageManager.STR_MN_LOAD_RES_STATUE_UPDATE;
+    m.IsLoading = true;
+    local str = json.encode(m);
+    self.talkToCSharp_:Send(str);
+end
+function LinkerManager:SMLoadResStatueDownloaded()
+    local m = {};
+    m.EventName = MessageManager.STR_MN_LOAD_RES_STATUE_UPDATE;
+    m.IsLoading = false;
+    local str = json.encode(m);
+    self.talkToCSharp_:Send(str);
+end
+
 function LinkerManager:SMReloadComplie()
     local m = {};
     m.Result = true;

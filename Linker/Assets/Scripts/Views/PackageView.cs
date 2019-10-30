@@ -31,6 +31,9 @@ public class PackageView : BaseView
     [SerializeField]
     private Button btnReloadLuaScript_;
 
+    [SerializeField]
+    private Button btnLoadRes_;
+
     // tapBtnsGroup
     [SerializeField]
     private TapButtonsGroup m_tapBtnsGroups_;
@@ -41,6 +44,9 @@ public class PackageView : BaseView
 
     [SerializeField]
     private Drag contentlayerDrag_;
+
+    [SerializeField]
+    private GameObject loadResLayer_;
 
     private List<SceneNode> listOfScenesNode_ = new List<SceneNode>();
     private List<DrawLine> listOfLinesBetweenSceneNodes_ = new List<DrawLine>();
@@ -67,6 +73,11 @@ public class PackageView : BaseView
     //重写UI注册事件
     protected override void registerViewEvent()
     {
+        if (btnLoadRes_ !=null) {
+            btnLoadRes_.onClick.AddListener(()=> {
+                GetController<PackageController>().GetParentController().LoadRes();
+            });
+        }
         if (btnReloadLuaScript_!=null) {
             btnReloadLuaScript_.onClick.AddListener(()=> {
                 // todo :
@@ -105,6 +116,16 @@ public class PackageView : BaseView
                 GetController<PackageController>().GetParentController().StartWin32Exe();
             });
         }
+    }
+
+    private void setLoadResLayerActive(bool v) {
+        if (this.loadResLayer_ != null) {
+            this.loadResLayer_.SetActive(v);
+        }
+    }
+
+    public void SetLoadResLayerActive(bool v) {
+        this.setLoadResLayerActive(v);
     }
 
     //重写UI初始化方法

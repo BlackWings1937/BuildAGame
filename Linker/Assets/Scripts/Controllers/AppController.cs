@@ -76,8 +76,8 @@ public class AppController : BaseController {
     private void startWin32Process() {
         if (processOfWin32exe_ == null)
         {
-           var path = GetWin32ProjPath() + "\\xiaobanlong\\xiaobanlong5.2.0\\proj.win32\\Debug.win32\\xiaobanlong.exe";
-           processOfWin32exe_ = Process.Start(path);
+          // var path = GetWin32ProjPath() + "\\xiaobanlong\\xiaobanlong5.2.0\\proj.win32\\Debug.win32\\xiaobanlong.exe";
+          // processOfWin32exe_ = Process.Start(path);
         }
         else
         {
@@ -103,6 +103,7 @@ public class AppController : BaseController {
     }
 
 
+
     private void registerWin32ControllerEvent() {
         win32Controller_.RegisterEvent(MessageCommon.STR_MN_RELOAD_RES_COMPLIE, (object obj)=> {
             MessageReloadComplie m = obj as MessageReloadComplie;
@@ -115,6 +116,11 @@ public class AppController : BaseController {
             else {
                 UnityEngine.Debug.Log("reloadResFail");
             }
+        });
+
+        win32Controller_.RegisterEvent(MessageCommon.STR_MN_LOAD_RES_STATUE_UPDATE,(object obj)=> {
+            MessageLoadResStatueChange m = obj as MessageLoadResStatueChange;
+            GetPackageController().SetLoadResLayerActive(m.IsLoading);
         });
 
         win32Controller_.RegisterEvent(MessageCommon.STR_MN_PLAY_STATUE_CHANGE,(object obj)=> {
@@ -178,6 +184,7 @@ public class AppController : BaseController {
     private void updateProjToWin32() {
         // 初始化目录
         /**/
+        GetPackageController().GenerateFormatProjFile();
         var pData = GetTargetPackageInfo();
         var path = pData[ProjData.STR_PATH] as string;
         var aimPath = GetWin32ProjPath() + "\\xiaobanlong\\xiaobanlong5.2.0\\Win32TestRes\\57\\LinkerTestPackage\\Task\\LinkerData";
@@ -241,6 +248,10 @@ public class AppController : BaseController {
 
     public void StopSceneByID(string sceneId) {
         stopScene(sceneId);
+    }
+
+    public void LoadRes() {
+        this.win32Controller_.LoadRes();
     }
 
 }
