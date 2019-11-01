@@ -209,6 +209,10 @@ public class SceneView : BaseView
 
     // ----- 对外接口 -----
 
+    public void PlaySceneByNpcAndIndex(string npcName,int index) {
+        GetController<SceneController>().PlaySceneByAndNpcNameAndOptionIndex(npcName,index);
+    }
+
     public List<string> GetActionsList(string bgConfigName) { return GetController<SceneController>().GetActionsList(bgConfigName); }
 
     public void UpdateData() {

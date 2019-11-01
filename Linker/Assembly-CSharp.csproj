@@ -79,11 +79,14 @@
     <Compile Include="Assets\Scripts\DebugScript.cs" />
     <Compile Include="Assets\Scripts\Line.cs" />
     <Compile Include="Assets\Scripts\SimulatorController.cs" />
+    <Compile Include="Assets\Scripts\Tools\CmdUtils.cs" />
     <Compile Include="Assets\Scripts\Tools\Conn.cs" />
     <Compile Include="Assets\Scripts\Tools\DirectUtils.cs" />
+    <Compile Include="Assets\Scripts\Tools\HttpManager.cs" />
     <Compile Include="Assets\Scripts\Tools\HttpServerManager.cs" />
     <Compile Include="Assets\Scripts\Tools\Main.cs" />
     <Compile Include="Assets\Scripts\Tools\OpenDialog.cs" />
+    <Compile Include="Assets\Scripts\Tools\PackResManager.cs" />
     <Compile Include="Assets\Scripts\Tools\PrefabFactory.cs" />
     <Compile Include="Assets\Scripts\Tools\PrefabsFactoryManager.cs" />
     <Compile Include="Assets\Scripts\Tools\Serv.cs" />
@@ -109,6 +112,7 @@
     <Compile Include="Assets\Scripts\UIs\PointAtEndCall.cs" />
     <Compile Include="Assets\Scripts\UIs\PointParent.cs" />
     <Compile Include="Assets\Scripts\UIs\SceneNode.cs" />
+    <Compile Include="Assets\Scripts\UIs\SceneNodeV2.cs" />
     <Compile Include="Assets\Scripts\UIs\SceneViewChildView.cs" />
     <Compile Include="Assets\Scripts\UIs\SVChoseOptionsBox.cs" />
     <Compile Include="Assets\Scripts\UIs\SWOldProj.cs" />

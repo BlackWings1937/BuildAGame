@@ -168,13 +168,11 @@ public class PackageData : BaseData
             do
             {
                 index = str.IndexOf("PROT");//new char[] { 'P', 'R', 'O', 'T' }s
-                Debug.Log("Index:" + index);
                 if (index == -1) { break; }
                 int protNum = 0;
                 bool result = int.TryParse(str[index + 4].ToString(), out protNum);
                 if (result)
                 {
-                    Debug.Log("ProtNum:" + protNum);
                     var pd = new OutputPortData();
                     pd.readNum_ = protNum;
                     l.Add(pd);
@@ -250,6 +248,10 @@ public class PackageData : BaseData
 
     // ----- 对外接口 -----
 
+    public void UpdateView() {
+        callUpdateEvent();
+    }
+
     /// <summary>
     /// 生成正式包文件
     /// </summary>
@@ -290,12 +292,22 @@ public class PackageData : BaseData
         return this.getPortsDataByLuaScript(path);
     }
 
-
+    public SceneNodeData FindSceneNodeDataByID(string id) {
+        var sceneList = data_.ScenesList;
+        var count = sceneList.Count;
+        for (int i = 0;i<count;++i) {
+            var d = sceneList[i];
+            if (d.ID == id) {
+                return d;
+            }
+        }
+        return null;
+    }
 
     /// <summary>
     /// 保存data数据到文件
     /// </summary>
-    public void SaveData() { saveData(); }
+    public void SaveData() { saveData();  }
 
     /// <summary>
     /// 生成空的sceneData
@@ -410,7 +422,7 @@ public class PackageData : BaseData
     {
         var copy = SceneNodeData.Copy(data);
         data_.ScenesList.Add(copy);
-        callUpdateEvent();
+        //callUpdateEvent();
         saveData();
     }
 

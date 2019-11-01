@@ -31,6 +31,7 @@ public class HttpServerManager : MonoBehaviour
 
         //继续异步监听
         httpListener.BeginGetContext(Result, null);
+
         var guid = Guid.NewGuid().ToString();
         Console.ForegroundColor = ConsoleColor.White;
         Console.WriteLine($"接到新的请求:{guid},时间：{DateTime.Now.ToString()}");

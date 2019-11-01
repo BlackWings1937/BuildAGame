@@ -158,6 +158,12 @@ public class SVChoseOptionsBox : ChoseOptionsBox
                     sv.OnRemoveAllChildByNpcOptions(ndatas, ndata);
                 }
             });
+            dic.Add("播放这个节点",()=> {
+                var ndatas = sv.GetOptionsByNpcName(ndata.Npc);
+                var index = ndatas.listOfOptions.IndexOf(ndata)+1;
+                Debug.Log("npc:"+ndata.Npc+"index:"+index);
+                sv.PlaySceneByNpcAndIndex(ndata.Npc,index);
+            });
             if (sv.IsCopyedNpcOption())
             {
                 dic.Add("粘贴", () =>

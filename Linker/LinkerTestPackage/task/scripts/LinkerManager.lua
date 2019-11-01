@@ -106,6 +106,38 @@ function LinkerManager:StopSceneByID(ID)
     end
 end
 
+function LinkerManager:PlayPlotBySceneIDAndNpcNameAndStartIndex(id,n,i)
+ -- todo delete all res
+ ArmatureDataDeal:sharedDataDeal():removeAllRes();
+ self.packageManager_:Dispose();
+
+ -- load res
+ local pathOfXML =g_tConfigTable.sTaskpath .. "/LinkerData/DragonBoneDatas/";
+ local pathOfPng = "";
+ if true then -- 高低请
+     pathOfPng = g_tConfigTable.sTaskpath .. "/LinkerData/DragonBoneDatas/Hd/";
+ else 
+     pathOfPng = g_tConfigTable.sTaskpath .. "/LinkerData/DragonBoneDatas/Ld/";
+ end
+ ArmatureDataDeal:sharedDataDeal():loadArmatureData(pathOfXML);
+ ArmatureDataDeal:sharedDataDeal():loadArmatureData(pathOfPng);
+
+ local pathOfPackageInfo = g_tConfigTable.sTaskpath .. "/LinkerData/formatProjData.json";
+ self.result_ = self.packageManager_:InitByFile(pathOfPackageInfo);
+ self.packageManager_:SetLinkerProjPath(g_tConfigTable.sTaskpath .. "LinkerData");
+ self.packageManager_:SetRootNode(self.rootNode_ );
+ self.packageManager_:SetLinkerManager(self);
+
+    if self.result_ then 
+        print("ID:"..id);
+        self.packageManager_:StopRunningScene();
+        print("PlayPlotBySceneIDAndNpcNameAndStartIndex:i:"..i);
+        self.packageManager_:StartSceneBySceneIDAndNpcNameAndStartIndex(id,n,i,function() end);
+    else 
+        print("init packageManager fail");
+    end
+end
+
 
 
 function LinkerManager:TestPostDownloadRes()

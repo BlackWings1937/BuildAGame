@@ -14,6 +14,7 @@ public class MessageCommon
     public const string STR_MN_PLAY_STATUE_CHANGE = "PLAY_STATUE_CHANGE";
     public const string STR_MN_LOAD_RES = "LOAD_RES";
     public const string STR_MN_LOAD_RES_STATUE_UPDATE = "LOAD_RES_STATUE_UPDATE";
+    public const string STR_MN_PLAY_SCENE_BY_NPCOPID = "PLAY_SCENE_BY_NPCOPID";
     public string EventName;
 }
 
@@ -75,6 +76,16 @@ public class MessageLoadResStatueChange : MessageCommon {
         EventName = STR_MN_LOAD_RES_STATUE_UPDATE;
     }
     public bool IsLoading = false;
+}
+
+[Serializable]
+public class MessagePlaySceneByIDNpcNameOPIndex :MessageCommon {
+    public MessagePlaySceneByIDNpcNameOPIndex() {
+        EventName = STR_MN_PLAY_SCENE_BY_NPCOPID;
+    }
+    public string SceneID;
+    public string NpcName;
+    public int OptionIndex;
 }
 
 
@@ -201,6 +212,16 @@ public class Win32Controller
         var m = new MessageStopScene();
         m.SceneID = sceneId;
         var str = JsonUtility.ToJson(m);
+        this.SendMessage(str);
+    }
+
+    public void PlaySceneBySceneIDAndNpcNameAndOptionIndex(string sceneId,string npcName,int optionIdex ) {
+        var m = new MessagePlaySceneByIDNpcNameOPIndex();
+        m.SceneID = sceneId;
+        m.NpcName = npcName;
+        m.OptionIndex = optionIdex;
+        var str = JsonUtility.ToJson(m);
+        Debug.Log("PlaySceneByIndex:"+str);
         this.SendMessage(str);
     }
 

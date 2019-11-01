@@ -34,6 +34,9 @@ public class PackageView : BaseView
     [SerializeField]
     private Button btnLoadRes_;
 
+    [SerializeField]
+    private Button btnUpdateResServer_;
+
     // tapBtnsGroup
     [SerializeField]
     private TapButtonsGroup m_tapBtnsGroups_;
@@ -48,7 +51,7 @@ public class PackageView : BaseView
     [SerializeField]
     private GameObject loadResLayer_;
 
-    private List<SceneNode> listOfScenesNode_ = new List<SceneNode>();
+    private List<SceneNodeV2> listOfScenesNode_ = new List<SceneNodeV2>();
     private List<DrawLine> listOfLinesBetweenSceneNodes_ = new List<DrawLine>();
 
     public override void wakeup()
@@ -73,6 +76,11 @@ public class PackageView : BaseView
     //重写UI注册事件
     protected override void registerViewEvent()
     {
+        if (btnUpdateResServer_ != null) {
+            btnUpdateResServer_.onClick.AddListener(()=> {
+                GetController<PackageController>().GetParentController().UpdateRes();
+            });
+        }
         if (btnLoadRes_ !=null) {
             btnLoadRes_.onClick.AddListener(()=> {
                 GetController<PackageController>().GetParentController().LoadRes();
@@ -141,8 +149,12 @@ public class PackageView : BaseView
         var count = listOfLinesBetweenSceneNodes_.Count;
         for (int i = 0; i < count; ++i)
         {
+            Debug.Log("delete line:"+i);
+
             var l = listOfLinesBetweenSceneNodes_[i];
-            GameObject.Destroy(l.gameObject);
+             l.gameObject.SetActive(false);
+            //  GameObject.Destroy(l.gameObject);
+            DrawLine.Recycle(l);
         }
         listOfLinesBetweenSceneNodes_.Clear();
     }
@@ -154,12 +166,13 @@ public class PackageView : BaseView
         {
             var sn = listOfScenesNode_[i];
             sn.DrawLineToLinkerSceneNode();
+
         }
     }
 
     private void generateLineBetweenSceneNodesByPoints(GPoint gp1, GPoint gp2)
     {
-        var l = DrawLine.Create(gp1, gp2, Color.green, 0.04f);
+        var l = DrawLine.Create(gp1, gp2, Color.blue, 0.04f);
         listOfLinesBetweenSceneNodes_.Add(l);
     }
 
@@ -170,7 +183,8 @@ public class PackageView : BaseView
         {
             var sceneNode = listOfScenesNode_[i];
             sceneNode.Dispose();
-            SceneNode.DestroyObj(sceneNode);
+
+            SceneNodeV2.DestroyObj(sceneNode);
         }
         listOfScenesNode_.Clear();
     }
@@ -181,7 +195,8 @@ public class PackageView : BaseView
         for (int i = 0; i < scenesList.Count; ++i)
         {
             var sceneData = scenesList[i];
-            var sceneNode = SceneNode.CreateSceneByData(sceneData, contentLayer_, this);
+            var sceneNode = SceneNodeV2.CreateSceneByData(sceneData, contentLayer_, this);
+
             sceneNode.PackageView = this;
             listOfScenesNode_.Add(sceneNode);
         }
@@ -190,8 +205,8 @@ public class PackageView : BaseView
 
     public override void UpdateView(object data)
     {
-        if (gameObject.activeSelf == false) { return; }
 
+        if (gameObject.activeSelf == false) { return; }
         PackageInfoData pData = data as PackageInfoData;
 
         List<SceneNodeData> scenesList = pData.ScenesList;
@@ -206,7 +221,10 @@ public class PackageView : BaseView
         generateSceneNodes(pData);
         //生成新的连接线段
         generateAllLinesBetweenSceneNodes();
+
     }
+
+
 
     private SceneNode findSceneNodeById(string id)
     {
@@ -228,12 +246,25 @@ public class PackageView : BaseView
             m_tapBtnsGroups_.gameObject.SetActive(false);
     }
     // ----- 对外接口 -----
-    public void GenerateLineBetweenSceneNodeByGPAndID(GPoint g1, string Id)
+    private bool isUpdating_ = false;
+    public void AddUpdateViewEvent() {
+        if (isUpdating_ == false) {
+            isUpdating_ = true;
+            Invoke("UpdateViewEventComplie",0.016f);
+        }
+    }
+    public void UpdateViewEventComplie() {
+        GetController<PackageController>().UpdateView();
+        isUpdating_ = false;
+
+    }
+
+    public void GenerateLineBetweenSceneNodeByGPAndID(GPoint g1, string Id,Vector2 swp)
     {
         var aimSceneNode = findSceneNodeById(Id);
         if (aimSceneNode != null && g1 != null)
         {
-            var aimPoint = aimSceneNode.GetSceneHeadPoint();
+            var aimPoint = aimSceneNode.GetSceneHeadPoint(swp);
             if (aimPoint != null && g1 != null)
             {
                 generateLineBetweenSceneNodesByPoints(g1, aimPoint);
@@ -307,6 +338,12 @@ public class PackageView : BaseView
             }
         }
         return data;
+    }
+
+
+    public SceneNodeData FindSceneNodeDataByID(string id)
+    {
+        return GetController<PackageController>().FindSceneNodeDataByID(id);
     }
 
     /// <summary>

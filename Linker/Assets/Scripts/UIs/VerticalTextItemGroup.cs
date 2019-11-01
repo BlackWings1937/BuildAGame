@@ -5,6 +5,13 @@ using UnityEngine.UI;
 
 public class VerticalTextItemGroup : MonoBehaviour
 {
+    public enum State{
+        E_LEFT,
+        E_RIGHT,
+    }
+
+    public State MyState = State.E_RIGHT;
+
 
     [SerializeField]
     private GameObject myTextItemPrefab_;
@@ -22,6 +29,7 @@ public class VerticalTextItemGroup : MonoBehaviour
         for (int i = 0; i < childCount; ++i)
         {
             var child = transform.GetChild(i);
+            child.GetComponent<TextItem>().Dispose();
             GameObject.Destroy(child.gameObject);
         }
         //创建新的节点
@@ -34,11 +42,18 @@ public class VerticalTextItemGroup : MonoBehaviour
     }
 
     public void InfoItemToDrawLines() {
-        var childCount = transform.childCount;
+        var childCount = listOfTextItem_.Count;
         for (int i = 0; i < childCount; ++i)
         {
-            var child = transform.GetChild(i);
-            child.GetComponent<TextItem>().DrawLine();
+
+            var child = listOfTextItem_[i];
+            if (MyState == State.E_RIGHT)
+            {
+                child.GetComponent<TextItem>().DrawLineRight();
+            }
+            else {
+                child.GetComponent<TextItem>().DrawLineLeft();
+            }
         }
     }
 

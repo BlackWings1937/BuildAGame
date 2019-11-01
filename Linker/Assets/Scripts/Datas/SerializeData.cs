@@ -74,6 +74,7 @@ public class NpcOption {
         n.MyState = data.MyState;
         n.Npc = data.Npc;
         n.ExData = data.ExData;
+        n.BornTimeStamp = data.BornTimeStamp;
         return n;
     }
 
@@ -97,6 +98,7 @@ public class NpcOptions {
 
     public static NpcOptions Copy(NpcOptions orignal) {
         var n = new NpcOptions();
+        n.NpcName = orignal.NpcName;
         var count = orignal.listOfOptions.Count;
         for (int i = 0;i<count;++i) {
             var opNow = orignal.listOfOptions[i];
@@ -168,6 +170,8 @@ public class OutputPortData {
         var copy = new OutputPortData();
         copy.State = PortState.E_Empty;
         copy.SceneNodeID = "-1";
+        copy.BornTimeStamp = orignal.BornTimeStamp;
+        copy.readNum_ = orignal.readNum_;
         return copy;
     }
 }

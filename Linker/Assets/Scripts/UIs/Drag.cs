@@ -47,6 +47,7 @@ public class Drag : TouchObject
             isDragStart = true;
             invokeCallBack(dragStartCallBack_, worldPos);
         } else {
+            isDragStart = false;
         }
         return backResult_;
     }
@@ -81,15 +82,17 @@ public class Drag : TouchObject
 
     public override bool OnTouchEnded(Vector2 worldPos)
     {
-
         if (isDragStart) {
+            isDragStart = false;
+
             var nowTouchPos = TransformUtils.WorldPosToNodePos(worldPos, transform.parent);
             var diff = new Vector2(nowTouchPos.x - startTouchPos_.x, nowTouchPos.y - startTouchPos_.y);
             setLocalPosition(transform, new Vector2(startPos_.x + diff.x, startPos_.y + diff.y));
             //通知事件
-            invokeCallBack(dragComplieCallBack_, worldPos);
+            if (backResult_) {
+                invokeCallBack(dragComplieCallBack_, worldPos);
+            }
         }
-        isDragStart = false;
         return false ;
     }
 }

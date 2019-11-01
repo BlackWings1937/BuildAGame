@@ -12,14 +12,14 @@ public class SceneNode : PointParent
 
     // 出口面板
     [SerializeField]
-    private VerticalTextItemGroup myOutPutBroard_;
+    protected VerticalTextItemGroup myOutPutBroard_;
 
     //播放中tip
     [SerializeField]
     private GameObject myBoardOfPlaying_; 
 
     //package界面
-    private PackageView packageView_ = null;
+    protected PackageView packageView_ = null;
     public PackageView PackageView {
         get { return packageView_; }
         set { packageView_ = value; }
@@ -40,7 +40,7 @@ public class SceneNode : PointParent
 
     // 点击触发区域
     [SerializeField]
-    private PointAt pointAt_ = null;
+    protected PointAt pointAt_ = null;
 
     // 设置播放中牌子显示或者消失
     private void setBoardOfPlayingActive(bool result) {
@@ -57,6 +57,7 @@ public class SceneNode : PointParent
             dic.Add("复制场景",()=> {
                 if (pv_!= null) {
                     pv_.CopySceneData(data_);
+                    pv_.AddUpdateViewEvent();
                 }
             });
             dic.Add("删除场景", () => {
@@ -141,23 +142,55 @@ public class SceneNode : PointParent
             data_.X = transform.localPosition.x;
             data_.Y = transform.localPosition.y;
             packageView_.SaveData();
+            packageView_.AddUpdateViewEvent();
         });
         GetComponent<Drag>().SetDragStartCallBack((Vector2 v)=> {
             if (pv_ != null) { pv_.CloseBtnsGroup(); }
         });
     }
 
+    private void removeUIEvent() {
+        var btnAdapt = GetComponent<BtnAdaptText>();
+        var text = btnAdapt.MyText;
+        var pointAt = text.GetComponent<PointAtEndCall>();
+        if (pointAt != null)
+        {
+            pointAt.SetPointUpCallBack((Vector2 wp) =>
+            {
+            });
+            pointAt.SetPointCancleCallBack((Vector2 wp) =>
+            {
+            });
+        }
+
+        if (pointAt_ != null)
+        {
+            pointAt_.SetPointUpCallBack((Vector2 wp) => {
+            });
+        }
+
+        if (myInputField_ != null)
+        {
+            myInputField_.onEndEdit.RemoveAllListeners();
+        }
+        GetComponent<Drag>().SetDragComplieCallBack((Vector2 v) => {
+        });
+        GetComponent<Drag>().SetDragStartCallBack((Vector2 v) => {
+        });
+
+    }
+
     private void Start()
     {
-        registerEvent();
+        //registerEvent();
         GetComponent<Drag>().IsSwallowTouch = true;
         GetComponent<BtnAdaptText>().MyText.GetComponent<PointAtEndCall>().IsSwallowTouch = true;
         //GetComponent<BtnAdaptText>().
     }
 
     // 绘制内部连接线段
-    private List<DrawLine> listOfLines_ = new List<DrawLine>();
-    private void DrawInternalLine()
+    protected List<DrawLine> listOfLines_ = new List<DrawLine>();
+    protected virtual void DrawInternalLine()
     {
         if (myOutPutBroard_ != null)
         {
@@ -165,28 +198,30 @@ public class SceneNode : PointParent
             for (int i = 0; i < textItems.Count; ++i)
             {
                 var tlp = textItems[i].GetComponent<PointParent>();
+                
                 var l1 = DrawLine.Create(tlp.GetPointByIndex(0), tlp.GetPointByIndex(1), Color.green, 0.04f);
                 var l2 = DrawLine.Create(tlp.GetPointByIndex(0), GetPointByIndex(1), Color.green, 0.04f);
                 var l3 = DrawLine.Create(GetPointByIndex(0), GetPointByIndex(1), Color.green, 0.04f);
                 listOfLines_.Add(l1);
                 listOfLines_.Add(l2);
-                listOfLines_.Add(l3);
+                listOfLines_.Add(l3);/**/
             }
         }
     }
 
     // 清除内部连接线段
-    private void ClearInternalLine()
+    protected void ClearInternalLine()
     {
         for (int i = 0; i < listOfLines_.Count; ++i)
         {
-            GameObject.Destroy(listOfLines_[i].gameObject);
+            DrawLine.Recycle(listOfLines_[i]);
+            //GameObject.Destroy(listOfLines_[i].gameObject);
         }
         listOfLines_.Clear();
     }
 
     // 更新节点连接点
-    private void updatePoints()
+    protected virtual void updatePoints()
     {
         var rt = (RectTransform)transform;
         var p1 = GetPointByIndex(0);
@@ -201,12 +236,12 @@ public class SceneNode : PointParent
 
     //设置节点名称
     [SerializeField]
-    private float outputBoardPadding = 30;
-    private void setText(string t)
+    protected float outputBoardPadding = 30;
+    protected virtual void setText(string t)
     {
         //设置节点名称
         if (t == "")
-            t = "未命名场景";
+            t = data_.ID;
         GetComponent<BtnAdaptText>().SetText(t);
 
         // 更新出口面板位置
@@ -230,7 +265,7 @@ public class SceneNode : PointParent
     }
 
     //设置出口列表
-    private void setOutPutItemList(List<OutputPortData> l)
+    protected virtual void setOutPutItemList(List<OutputPortData> l)
     {
         if (myOutPutBroard_ != null)
         {
@@ -240,16 +275,16 @@ public class SceneNode : PointParent
         }
     }
 
-    private void setPackageViewToOutPutItemList(PackageView pv) {
+    protected virtual void setPackageViewToOutPutItemList(PackageView pv) {
         if (myOutPutBroard_ != null) {
             myOutPutBroard_.SetPackageView(pv);
         }
     }
 
-    private void infoOutPutItemDrawLines() {
-        if (myOutPutBroard_ != null) {
-            myOutPutBroard_.InfoItemToDrawLines();
-        }
+    protected virtual void infoOutPutItemDrawLines() {
+        //if (myOutPutBroard_ != null) {
+        //    myOutPutBroard_.InfoItemToDrawLines();
+       // }
     }
 
     // 显示输入节点名称面板
@@ -270,7 +305,7 @@ public class SceneNode : PointParent
             myInputField_.gameObject.SetActive(false);
         }
     }
-    private PackageView pv_;
+    protected PackageView pv_;
     // ----- 对外接口 -----
 
     /// <summary>
@@ -280,7 +315,7 @@ public class SceneNode : PointParent
     /// <param name="parent">SceneNode的母节点</param>
     /// <param name="packageView">packageView</param>
     /// <returns></returns>
-    public static SceneNode CreateSceneByData(SceneNodeData data, Transform parent, PackageView pv)
+    public  static SceneNode CreateSceneByData(SceneNodeData data, Transform parent, PackageView pv)
     {
         
         var f = PrefabsFactoryManager.GetInstance().GetFactoryByPrefabName("SceneNode");
@@ -303,6 +338,7 @@ public class SceneNode : PointParent
     /// </summary>
     public void Dispose()
     {
+        removeUIEvent();
         ClearInternalLine();
         DisposePoints();
     }
@@ -311,7 +347,7 @@ public class SceneNode : PointParent
     /// <summary>
     /// 初始化节点的data
     /// </summary>
-    private SceneNodeData data_;
+    protected SceneNodeData data_;
 
     public SceneNodeData Data { get { return data_; } }
 
@@ -321,8 +357,9 @@ public class SceneNode : PointParent
     /// <param name="data">用于初始化的数据</param>
     /// <param name="parent">SceneNode的母节点</param>
     /// <param name="packageView">packageView</param>
-    public void InitSceneByData(SceneNodeData data,Transform parent,PackageView packageView) {
+    public virtual void InitSceneByData(SceneNodeData data,Transform parent,PackageView packageView) {
         if (data!= null) {
+            registerEvent();
             data_ = data;
             pv_ = packageView;
             InitPoints();
@@ -332,7 +369,6 @@ public class SceneNode : PointParent
             var y = data.Y;
             var z = data.Z;
             //transform.position = new Vector3(x,y,z);
-            Debug.Log("sceneNode local pos:"+x+"y:"+y);
             transform.localPosition = new Vector3(x,y,0);
             //(List<Dictionary<string, object>>)
             var portInfo = data.LinkersInfo;
@@ -342,7 +378,28 @@ public class SceneNode : PointParent
         }
     }
 
-    public GPoint GetSceneHeadPoint() { return GetPointByIndex(2); }
+    public GPoint GetSceneHeadPoint(Vector2 aimpos) {
+        var selfWp =transform.position;
+        if (aimpos.x > selfWp.x && aimpos.y > selfWp.y)
+        {
+            return GetPointByIndex(4);
+        }
+        else if (aimpos.x < selfWp.x && aimpos.y > selfWp.y)
+        {
+            return GetPointByIndex(2);
+        }
+        else if (aimpos.x < selfWp.x && aimpos.y < selfWp.y)
+        {
+            return GetPointByIndex(3);
+        }
+        else if (aimpos.x < selfWp.x && aimpos.y < selfWp.y)
+        {
+            return GetPointByIndex(1);
+        }
+        else {
+           return  GetPointByIndex(1);
+        }
+    }
 
     public GPoint GetOutputPortPointByIndex(int i) {
         var textItems = myOutPutBroard_.GetTextItems();

@@ -46,7 +46,7 @@ public class DragLine : MonoBehaviour
     private void init() {
         registerEvent();
         if (gpOrignal_ != null && gpDrag_!=null && gpOrignal_ != gpDrag_) {
-            l_ = DrawLine.Create(gpOrignal_,gpDrag_,Color.green,0.04f);
+            l_ = DrawLine.Create(gpOrignal_,gpDrag_,Color.red,0.04f);
         }
     }
     private void registerEvent() {
@@ -125,6 +125,10 @@ public class DragLine : MonoBehaviour
     /// <param name="cb"></param>
     public void SetDragComplieCallBack(TouchObjectCallBack cb) {
         cb_ = cb;
+    }
+
+    public void Dispose() {
+        DrawLine.Recycle(l_);
     }
 
 }

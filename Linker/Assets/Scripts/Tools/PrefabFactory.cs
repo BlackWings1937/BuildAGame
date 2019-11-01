@@ -41,6 +41,7 @@ public class PrefabFactory
         g.SetActive(false);
         g.transform.SetParent(idleInstancesParent_.transform,false);
         idleList_.Add(g);
+
     }
     private void addToUsingList(GameObject g) {
         g.SetActive(true);
@@ -131,13 +132,30 @@ public class PrefabFactory
         return g;
     }
 
+    public GameObject GetFalseActive()
+    {
+        if (!checkFactoryIsInit()) { return null; }
+        GameObject g = null;
+        if (idleList_.Count > 0)
+        {
+            int rearIndex = idleList_.Count - 1;
+            g = idleList_[rearIndex];
+            idleList_.RemoveAt(rearIndex);
+        }
+        else
+        {
+            g = GameObject.Instantiate(prefabInstance_) as GameObject;
+        }
+        usingList_.Add(g);
+        return g;
+    }
+
     /// <summary>
     /// 回收预制体实例
     /// </summary>
     /// <param name="g">预制体实例</param>
     public void Recycle(GameObject g) {
         if (!checkFactoryIsInit()) { return ; }
-
         if (usingList_.Contains(g)) {
             usingList_.Remove(g);
             addToIdleList(g);

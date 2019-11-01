@@ -23,7 +23,10 @@ public class TextItem : PointParent
         for (int i = 0; i < 2; ++i)
             listPoints_[i].transform.localPosition = caculatePosByIndex(i);
     }
+    public void Dispose() {
+        dl_.Dispose();
 
+    }
     private Vector2 caculatePosByIndex(int index) {
         var result = Vector2.zero;
         if (0 <= index && index < 2) {
@@ -67,10 +70,24 @@ public class TextItem : PointParent
         }
     }
 
-    private void drawLineWithPv() {
+    private void drawLineWithPvRight() {
         if (pv_!= null&&sd_!= null) {
+            if (data_.State == OutputPortData.PortState.E_Full) {
+                var p = listPoints_[listPoints_.Count - 1];
+                pv_.GenerateLineBetweenSceneNodeByGPAndID(p, data_.SceneNodeID, transform.parent.parent.position);
+            }
+        }
+    }
+
+    private void drawLineWithPvLeft()
+    {
+        if (pv_ != null && sd_ != null)
+        {
             if (data_.State == OutputPortData.PortState.E_Full)
-                pv_.GenerateLineBetweenSceneNodeByGPAndID(listPoints_[listPoints_.Count-1], data_.SceneNodeID);
+            {
+                var p = listPoints_[0];
+                pv_.GenerateLineBetweenSceneNodeByGPAndID(p, data_.SceneNodeID,transform.parent.parent.position);
+            }
         }
     }
 
@@ -140,7 +157,10 @@ public class TextItem : PointParent
         });
     }
 
-    public void DrawLine() {
-        drawLineWithPv();
+    public void DrawLineRight() {
+        drawLineWithPvRight();
+    }
+    public void DrawLineLeft() {
+        drawLineWithPvLeft();
     }
 }

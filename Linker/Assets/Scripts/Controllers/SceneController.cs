@@ -5,6 +5,10 @@ using UnityEngine;
 public class SceneController : AppChildController {
 
     // ----- 对外接口 -----
+    public void PlaySceneByAndNpcNameAndOptionIndex( string npcName, int optionIdex)
+    {
+        this.GetParentController().PlaySceneBySceneIdAndNpcNameAndOptionIndex(getData<SceneData>().GetSceneID(),npcName, optionIdex);
+    }
     public void BackToPackageEditView() {
         DisposeController();
     }

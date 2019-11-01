@@ -400,6 +400,10 @@ public class SceneData : BaseData
         }
     }
 
+    public string GetSceneID() {
+        return data_.ID;
+    }
+
 
 
 

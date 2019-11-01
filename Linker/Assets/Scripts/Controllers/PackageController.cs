@@ -52,7 +52,6 @@ public class PackageController : AppChildController {
             var data = getData<PackageData>().GenerateEmptySceneDataByWorldPos(posLocal);
             getData<PackageData>().AddSceneData(data);
         });
-        dic.Add("粘贴",()=> { getView<PackageView>().CloseBtnsGroup(); });
         dic.Add(TapButtonsGroup.STR_KEY_CANCLE,()=> { Debug.Log("取消");  getView<PackageView>().CloseBtnsGroup(); });
        // getView<PackageView>().ShowBtnsGroupByDic(touchWorldPos, dic);
         showTapBtns(touchWorldPos, dic);
@@ -62,6 +61,12 @@ public class PackageController : AppChildController {
         showTapBtns(wp, dic);
     }
 
+    public SceneNodeData FindSceneNodeDataByID(string id) {
+        return getData<PackageData>().FindSceneNodeDataByID(id);
+    }
+    public void UpdateView() {
+        getData<PackageData>().UpdateView();
+    }
     /// <summary>
     /// 保存当前packageInfo 信息到文件
     /// </summary>

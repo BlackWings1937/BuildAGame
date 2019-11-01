@@ -1,4 +1,8 @@
-﻿using System.Collections;
+﻿
+#define FORMAT
+
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -18,9 +22,20 @@ public class AppController : BaseController {
 
     private ReloadComplieCallBack cbOfReloadComplie_ = null;
 
+    private Win32Controller win32Controller_ = null;
+    private HttpManager httpManager_ = null;
     // ----- 生命周期 -----
     protected override void Start()
     {
+        // debug 
+        DateTime dt = File.GetLastWriteTime("D:\\test2.png");
+        System.DateTime startTime = TimeZone.CurrentTimeZone.ToLocalTime(new System.DateTime(1970, 1, 1)); // 当地时区
+        long timeStamp = (long)(dt - startTime).TotalMilliseconds; // 相差毫秒数
+        UnityEngine.Debug.Log("timeStamp:"+timeStamp);
+        // debug
+        httpManager_ = new HttpManager();
+        httpManager_.SetAppController(this);
+        httpManager_.Start();
 
         VISIBLE_SIZE = new Vector2(((RectTransform)transform).sizeDelta.x, ((RectTransform)transform).sizeDelta.y);
 
@@ -76,8 +91,10 @@ public class AppController : BaseController {
     private void startWin32Process() {
         if (processOfWin32exe_ == null)
         {
-          // var path = GetWin32ProjPath() + "\\xiaobanlong\\xiaobanlong5.2.0\\proj.win32\\Debug.win32\\xiaobanlong.exe";
-          // processOfWin32exe_ = Process.Start(path);
+#if FORMAT
+            var path = GetWin32ProjPath() + "\\xiaobanlong\\xiaobanlong5.2.0\\proj.win32\\Debug.win32\\xiaobanlong.exe";
+            processOfWin32exe_ = Process.Start(path);
+#endif
         }
         else
         {
@@ -131,7 +148,7 @@ public class AppController : BaseController {
         });
     }
 
-    private Win32Controller win32Controller_ = null;
+
     private void startWin32Controller() {
         if (win32Controller_ == null) {
             win32Controller_ = new Win32Controller();
@@ -178,6 +195,12 @@ public class AppController : BaseController {
         if (win32Controller_!=null) {
             win32Controller_.StopSceneByID(sceneId);
 
+        }
+    }
+
+    private void playSceneBySceneIdAndNpcNameAndOptionIndex(string sceneId,string npcName,int opIndex) {
+        if (win32Controller_!= null) {
+            win32Controller_.PlaySceneBySceneIDAndNpcNameAndOptionIndex(sceneId,npcName,opIndex);
         }
     }
 
@@ -254,4 +277,12 @@ public class AppController : BaseController {
         this.win32Controller_.LoadRes();
     }
 
+    public void UpdateRes() {
+        this.httpManager_.UpdateRes();
+    }
+
+
+    public void PlaySceneBySceneIdAndNpcNameAndOptionIndex(string sceneId,string npcName,int opIndex) {
+        this.playSceneBySceneIdAndNpcNameAndOptionIndex(sceneId,npcName,opIndex);
+    }
 }
