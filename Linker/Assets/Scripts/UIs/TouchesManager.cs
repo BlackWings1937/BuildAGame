@@ -6,9 +6,43 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
-public class TouchesManager : MonoBehaviour 
+public class TouchesManager : Button 
 {
+    private bool isTouchDown_ = false;
+    private bool getIsTouchDown() { return isTouchDown_; }
+    public override void OnPointerDown(PointerEventData eventData)
+    {
+        isTouchDown_ = true;
+        Debug.Log("----------------------------------------------OnPointerDown");
+
+        if (Input.GetKeyDown(KeyCode.Mouse0))
+        {
+            isMouseKeyDown_ = true;
+            touch_ = new Touch();
+            touch_.SetGetTouchObjects(() => { return myListOfTouchObjects_; });
+            touch_.OnTouchBegan(Input.mousePosition);
+        }
+        base.OnPointerDown(eventData);
+    }
+    public override void OnPointerUp(PointerEventData eventData)
+    {
+        Debug.Log("----------------------------------------------OnPointerUp");
+
+        isTouchDown_ = false;
+        if (Input.GetKeyUp(KeyCode.Mouse0))
+        {
+            isMouseKeyDown_ = false;
+            if (touch_ != null)
+            {
+                touch_.OnTouchEnded(Input.mousePosition);
+                touch_ = null;
+            }
+        }
+        base.OnPointerUp(eventData);
+    }
     /*
      * 自动初始化自身的单例
      */
@@ -20,6 +54,8 @@ public class TouchesManager : MonoBehaviour
         if (_instance == null) {
             var prefab = Resources.Load("prefab/" + STR_INSTANCE_PREFAB_NAME);
             var instanceGameObj = GameObject.Instantiate(prefab) as GameObject;
+            var g = GameObject.Find("TouchLayerPos");
+            instanceGameObj.transform.SetParent(g.transform,false);
             _instance = instanceGameObj.GetComponent<TouchesManager>();
 
         }
@@ -59,29 +95,18 @@ public class TouchesManager : MonoBehaviour
 
     private void Update()
     {
-       // Debug.Log("update start1");
-        isLock_ = true;
-       // updateByCache();
-        sortTouchObjectsByOrder();
-
-        if (Input.GetKeyDown(KeyCode.Mouse0)) {
-            isMouseKeyDown_ = true;
-            touch_ = new Touch();
-            touch_.SetGetTouchObjects(()=> { return myListOfTouchObjects_; });
-            touch_.OnTouchBegan(Input.mousePosition);
-        }
-        if (isMouseKeyDown_) {
-            if (touch_!= null) {  touch_.OnTouchMoved(Input.mousePosition); }
-        }
-        if (Input.GetKeyUp(KeyCode.Mouse0)) {
-            isMouseKeyDown_ = false;
-            if (touch_!=null) {
-                touch_.OnTouchEnded(Input.mousePosition);
-                touch_ = null;
+        if (getIsTouchDown()) {
+            // Debug.Log("update start1");
+            isLock_ = true;
+            // updateByCache();
+            sortTouchObjectsByOrder();
+            if (isMouseKeyDown_)
+            {
+                if (touch_ != null) { touch_.OnTouchMoved(Input.mousePosition); }
             }
+            // Debug.Log("update start2 end");
+            isLock_ = false;
         }
-       // Debug.Log("update start2 end");
-        isLock_ = false;
     }
 
 

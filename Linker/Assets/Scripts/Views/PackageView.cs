@@ -37,6 +37,7 @@ public class PackageView : BaseView
     [SerializeField]
     private Button btnUpdateResServer_;
 
+
     // tapBtnsGroup
     [SerializeField]
     private TapButtonsGroup m_tapBtnsGroups_;
@@ -76,7 +77,10 @@ public class PackageView : BaseView
     //重写UI注册事件
     protected override void registerViewEvent()
     {
+
+        
         if (btnUpdateResServer_ != null) {
+            //btnUpdateResServer_.OnPointerDown
             btnUpdateResServer_.onClick.AddListener(()=> {
                 GetController<PackageController>().GetParentController().UpdateRes();
             });
