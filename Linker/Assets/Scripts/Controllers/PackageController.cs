@@ -67,6 +67,7 @@ public class PackageController : AppChildController {
     public void UpdateView() {
         getData<PackageData>().UpdateView();
     }
+
     /// <summary>
     /// 保存当前packageInfo 信息到文件
     /// </summary>
@@ -88,5 +89,64 @@ public class PackageController : AppChildController {
     /// <param name="statue"></param>
     public void SetSceneRunningStatue(string sceneId, bool statue) {
         getData<PackageData>().SetSceneRunningStatue(sceneId,statue);
+    }
+
+    public PackageData.EnumLinkerDeviceStatue GetDeviceStatue() { return getData<PackageData>().MyDeviceStatue; }
+
+
+    public bool IsSetWin32ProjPath() {
+        var p = GetParentController().GetWin32ProjPath();
+        return p != "";
+    }
+
+    public void StopWin32() {
+        this.GetParentController().StopWin32Exe();
+        getData<PackageData>().MyDeviceStatue = PackageData.EnumLinkerDeviceStatue.E_None;
+        getView<PackageView>().UpdateUIView();
+    }
+    public void StartWin32() {
+        this.GetParentController().PrepareWin32();
+        this.GetParentController().StartWin32Exe();
+        getData<PackageData>().MyDeviceStatue = PackageData.EnumLinkerDeviceStatue.E_Win32;
+        getView<PackageView>().UpdateUIView();
+    }
+
+    public void StartCell() {
+        this.getView<PackageView>().ShowConnectLayer();
+        this.StartCellController();
+
+    }
+    public void StopCell() {
+        this.getView<PackageView>().CloseConnectLayer();
+        this.StopCellController();
+        getData<PackageData>().MyDeviceStatue = PackageData.EnumLinkerDeviceStatue.E_None;
+        getView<PackageView>().UpdateUIView();
+    }
+    public string GetHostIP() {
+        return GetParentController().GetHostIP();
+    }
+
+    public void OnUserCloseConnectLayer() {
+        this.StopCell();
+    }
+
+    public void StartCellController()
+    {
+        GetParentController().StartCellController();
+    }
+    public void StopCellController()
+    {
+        GetParentController().StopCellController();
+    }
+
+    public void OnUserCellConnect(string brand) {
+        this.getView<PackageView>().CloseConnectLayer();
+        getData<PackageData>().MyDeviceBrand = brand;
+        getData<PackageData>().MyDeviceStatue = PackageData.EnumLinkerDeviceStatue.E_Cell;
+        getView<PackageView>().UpdateUIView();
+    }
+
+    public string GetBrandName() {
+        return getData<PackageData>().MyDeviceBrand;
     }
 }

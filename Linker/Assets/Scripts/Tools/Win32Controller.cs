@@ -15,7 +15,25 @@ public class MessageCommon
     public const string STR_MN_LOAD_RES = "LOAD_RES";
     public const string STR_MN_LOAD_RES_STATUE_UPDATE = "LOAD_RES_STATUE_UPDATE";
     public const string STR_MN_PLAY_SCENE_BY_NPCOPID = "PLAY_SCENE_BY_NPCOPID";
+    public const string STR_MN_CELL_HELLO = "CELL_HELLO";
+    public const string STR_MN_LINKER_HELLO = "LINKER_HELLO";
     public string EventName;
+}
+[Serializable]
+public class MessageCellHello : MessageCommon
+{
+    public MessageCellHello() {
+        EventName = STR_MN_CELL_HELLO;
+    }
+}
+
+[Serializable]
+public class MessageLinkerHello : MessageCommon
+{
+    public MessageLinkerHello() {
+        EventName = STR_MN_LINKER_HELLO;
+    }
+    public string DeviceName;
 }
 
 [Serializable]
@@ -120,6 +138,9 @@ public class Win32Controller
             case MessageCommon.STR_MN_LOAD_RES_STATUE_UPDATE:
                 obj = JsonUtility.FromJson<MessageLoadResStatueChange>(strData);
                 break;
+            case MessageCommon.STR_MN_LINKER_HELLO:
+                obj = JsonUtility.FromJson<MessageLinkerHello>(strData);
+                break;
         }
         // todo parse str to aim data
         return obj;
@@ -222,6 +243,12 @@ public class Win32Controller
         m.OptionIndex = optionIdex;
         var str = JsonUtility.ToJson(m);
         Debug.Log("PlaySceneByIndex:"+str);
+        this.SendMessage(str);
+    }
+
+    public void HelloCell() {
+        var m = new MessageCellHello();
+        var str = JsonUtility.ToJson(m);
         this.SendMessage(str);
     }
 

@@ -7,7 +7,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using UnityEngine;
-
+using System.Net;
+using System.Net.Sockets;
 
 public delegate void ReloadComplieCallBack(bool result);
 
@@ -24,9 +25,16 @@ public class AppController : BaseController {
 
     private Win32Controller win32Controller_ = null;
     private HttpManager httpManager_ = null;
+
     // ----- 生命周期 -----
     protected override void Start()
     {
+        //debug
+        IPHostEntry localhost = Dns.GetHostByName(Dns.GetHostName());    //方法已过期，可以获取IPv4的地址
+        IPAddress localaddr = localhost.AddressList[2];
+        
+        UnityEngine.Debug.Log("hostName:"+ localaddr.ToString());
+
         // debug 
         DateTime dt = File.GetLastWriteTime("D:\\test2.png");
         System.DateTime startTime = TimeZone.CurrentTimeZone.ToLocalTime(new System.DateTime(1970, 1, 1)); // 当地时区
@@ -135,6 +143,11 @@ public class AppController : BaseController {
             }
         });
 
+        win32Controller_.RegisterEvent(MessageCommon.STR_MN_LINKER_HELLO, (object obj) => {
+            MessageLinkerHello m = obj as MessageLinkerHello;
+            GetPackageController().OnUserCellConnect(m.DeviceName);
+        });
+
         win32Controller_.RegisterEvent(MessageCommon.STR_MN_LOAD_RES_STATUE_UPDATE,(object obj)=> {
             MessageLoadResStatueChange m = obj as MessageLoadResStatueChange;
             GetPackageController().SetLoadResLayerActive(m.IsLoading);
@@ -162,6 +175,7 @@ public class AppController : BaseController {
             win32Controller_ = null;
         }
     }
+
 
     private void prepareGotoFile() {
         var filePath = GetWin32ProjPath()+ "\\xiaobanlong\\xiaobanlong5.2.0\\goto.txt";
@@ -235,6 +249,16 @@ public class AppController : BaseController {
     public SceneNodeData GetTargetSceneInfo() { return this.getData<AppData>().GetTargetSceneInfo(); }
 
 
+
+    public void StartCellController()
+    {
+        startWin32Controller();
+    }
+    public void StopCellController()
+    {
+        stopWin32Controller();
+    }
+
     public PackageController GetPackageController() { return (PackageController)myPackageController_; }
 
     public void SetWin32ProjPath(string p)
@@ -284,5 +308,22 @@ public class AppController : BaseController {
 
     public void PlaySceneBySceneIdAndNpcNameAndOptionIndex(string sceneId,string npcName,int opIndex) {
         this.playSceneBySceneIdAndNpcNameAndOptionIndex(sceneId,npcName,opIndex);
+    }
+
+
+    public string GetHostIP()
+    {
+        IPHostEntry localhost = Dns.GetHostByName(Dns.GetHostName());    //方法已过期，可以获取IPv4的地址
+        var count = localhost.AddressList.Length;
+        for (int i = 0; i < count; ++i)
+        {
+            var str = localhost.AddressList[i].ToString();
+            if (str.Contains("192.168."))
+            {
+                return str;
+            }
+        }
+        UnityEngine.Debug.LogError("Can t get host name");
+        return "";
     }
 }

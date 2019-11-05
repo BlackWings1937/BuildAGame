@@ -45,7 +45,6 @@ public class AppData : BaseData {
     }
 
     // ----- 对外接口 -----
-
     public void SetWin32ProjPath(string p) {
         appData_.Win32ProjPath = p;
         saveData();

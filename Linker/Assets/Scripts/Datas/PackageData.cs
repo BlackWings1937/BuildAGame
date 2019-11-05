@@ -24,6 +24,14 @@ public class PackageData : BaseData
     public static readonly string STR_Z = "Z";
     public static readonly string STR_PACKAGE_DATA_FILE_NAME = "projData.json";  //内容包数据文件名称
     public static readonly string STR_FORMAT_PACKAGE_DATA_FILE_NAME = "formatProjData.json";  //内容包数据文件名称
+
+
+    // ----- 枚举声明 -----
+    public enum EnumLinkerDeviceStatue {
+        E_None,
+        E_Win32,
+        E_Cell,
+    }
    
 
     // ----- 初始化 -----
@@ -35,6 +43,16 @@ public class PackageData : BaseData
     /// 项目数据（保存着项目路径）
     /// </summary>
     private Dictionary<string, object> projData_;
+
+    private EnumLinkerDeviceStatue myDeviceStatue_;
+
+    public EnumLinkerDeviceStatue MyDeviceStatue { get { return myDeviceStatue_; } set { myDeviceStatue_ = value; } }
+
+    private string myDeviceBrand_ = "";
+    public string MyDeviceBrand {
+        get { return myDeviceBrand_; }
+        set { myDeviceBrand_ = value; }
+    }
 
     /// <summary>
     /// 初始化内容包数据
