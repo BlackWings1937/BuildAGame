@@ -188,6 +188,9 @@ public class AppController : BaseController {
         if (projPath!= "") {
             prepareGotoFile();
             var oriPath = System.Environment.CurrentDirectory + "\\LinkerTestPackage";
+            var configFilePath = oriPath + "\\task\\IpConfig.json";
+            var ip = GetHostIP();
+            Win32Controller.GenerateIpConfigFileByPath(configFilePath,ip);
             var aimPath = GetWin32ProjPath() + "\\xiaobanlong\\xiaobanlong5.2.0\\Win32TestRes\\57";
             DirectUtils.CopyDir(oriPath,aimPath);
         }
@@ -304,7 +307,10 @@ public class AppController : BaseController {
     public void UpdateRes() {
         this.httpManager_.UpdateRes();
     }
-
+    public void UpdateResByAimFloder(List<string> list)
+    {
+        this.httpManager_.UpdateResByAimFloder(list);
+    }
 
     public void PlaySceneBySceneIdAndNpcNameAndOptionIndex(string sceneId,string npcName,int opIndex) {
         this.playSceneBySceneIdAndNpcNameAndOptionIndex(sceneId,npcName,opIndex);

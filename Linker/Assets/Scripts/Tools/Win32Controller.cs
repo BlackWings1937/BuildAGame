@@ -2,7 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.IO;
+
 public delegate void EventCallBack(object obj);
+
+[Serializable]
+public class IPConfig {
+    public string IP;
+}
 
 [Serializable]
 public class MessageCommon
@@ -250,6 +257,14 @@ public class Win32Controller
         var m = new MessageCellHello();
         var str = JsonUtility.ToJson(m);
         this.SendMessage(str);
+    }
+
+    public static void GenerateIpConfigFileByPath(string p,string ip) {
+        var ipconfig = new IPConfig();
+        ipconfig.IP = ip;
+        var str = JsonUtility.ToJson(ipconfig);
+        File.WriteAllText(p,str);
+
     }
 
 }

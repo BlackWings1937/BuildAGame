@@ -20,6 +20,29 @@ public class PackResManager
     // ----- 私有成员 -----
     private HttpManager myHttpManager_ = null;
     private string aimPath_ = "";
+    private string packAimFolder_ = "";
+
+    private List<string> listOfMark_ = new List<string>();
+
+    public void SetListOfMark(List<string> v) {
+        listOfMark_ = v;
+    }
+
+    private bool checkIsFloderInMark(string floderPath) {
+        var count = listOfMark_.Count;
+        for (int i = 0;i<count;++i) {
+            var m = listOfMark_[i];
+            if (floderPath.Contains(m)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public string PackAimFolder {
+        set { packAimFolder_ = value; }
+        get { return packAimFolder_; }
+    }
 
     // ----- 私有方法 -----
     public void copyDir(string srcPath, string aimPath)
@@ -43,6 +66,7 @@ public class PackResManager
             {
                 System.IO.Directory.CreateDirectory(srcdir);
             }
+
             //获取源文件下所有的文件
             String[] files = Directory.GetFileSystemEntries(srcPath);
             foreach (string element in files)
@@ -50,9 +74,30 @@ public class PackResManager
                 // UnityEngine.Debug.LogError("copyFIle:"+ element);
                 //如果是文件夹，循环
                 if (Directory.Exists(element))
-                    copyDir(element, srcdir);
+                {
+
+                    if (listOfMark_.Count == 0 )
+                    {
+                        Debug.Log("PackAimFolder == null CopyFloder:" + element);
+                        copyDir(element, srcdir);
+                    }
+                    else {
+                        if (checkIsFloderInMark(element))
+                        {
+                            Debug.Log("CopyFloder:" + element);
+                            copyDir(element, srcdir);
+                        }
+                        else
+                        {
+
+                        }
+                    }
+                }
                 else
+                {
+                    Debug.Log("CopyFile:" + element);
                     File.Copy(element, srcdir + Path.GetFileName(element), true);
+                }
             }
         }
         catch (Exception e)
@@ -86,8 +131,15 @@ public class PackResManager
         var aimPath = aimPath_;
         copyDir(oriPath,aimPath);
     }
+    public void CopyLinkerDataToAimByOptionFloder(string floder) {
+        PackAimFolder = floder;
+        CopyLinkerDataToAim();
+    }
     public void ZipToServer() {
+
         var zipPath = System.Environment.CurrentDirectory + "\\" + GetHttpManager().GetZipDataFileName();
+        if (File.Exists(zipPath)) { File.Delete(zipPath); }
+
         var waitForZipPath = aimPath_;//+ "\\" + strPaths[strPaths.Length - 1];// LinkerData";
         var winRarPath = System.Environment.CurrentDirectory + "/WinRAR/WinRAR.exe";
         var cmd = winRarPath + " a -r  -ibck " + zipPath + " " + waitForZipPath;

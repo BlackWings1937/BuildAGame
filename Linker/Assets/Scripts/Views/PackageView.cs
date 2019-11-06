@@ -62,6 +62,8 @@ public class PackageView : BaseView
     [SerializeField]
     private ConnectCellLayer myConnectCellLayer_;
 
+
+
     private List<SceneNodeV2> listOfScenesNode_ = new List<SceneNodeV2>();
     private List<DrawLine> listOfLinesBetweenSceneNodes_ = new List<DrawLine>();
 
@@ -76,7 +78,8 @@ public class PackageView : BaseView
             }
 
         }
-        else {
+        else
+        {
             if (btnStartWin32Exe_ != null)
             {
                 btnStartWin32Exe_.gameObject.SetActive(false);
@@ -84,19 +87,67 @@ public class PackageView : BaseView
         }
     }
 
+    private void initResBtnByDic(Dictionary<string, UnityAction> dic)
+    {
+        var ss = GetController<PackageController>().GetDeviceStatue();
+        var name = "";
+        if (ss == PackageData.EnumLinkerDeviceStatue.E_None)
+        {
+            name = "更新资源";
+        }
+        else
+        {
+            name = "播放";
+        }
+        dic.Add(name, () =>
+        {
+            myChoseOptionTapBar_.gameObject.SetActive(true);  
+            var s = GetController<PackageController>().GetDeviceStatue();
+            var d = new Dictionary<string, TapButtonCallBack>();
+            if (s == PackageData.EnumLinkerDeviceStatue.E_None)
+            {
+                //todo 更新服务器
+                d.Add("全量更新", () => { GetController<PackageController>().UpdateResAll(); });
+                d.Add("lua更新", () => { GetController<PackageController>().UpdateResLuaScript(); });
+                d.Add("龙骨&&Json数据更新", () => { GetController<PackageController>().UpdateResXMLAndJson(); });
+                d.Add("配置更新", () => { GetController<PackageController>().updateResConfigs(); });
+            }
+            else
+            {
+                //todo 更新服务器
+                //todo 命令客户端 下载 更新 播放
+                d.Add("播放（全量更新）", () => { });
+                d.Add("播放（lua更新）", () => { });
+                d.Add("播放（龙骨&&Json数据更新）", () => { });
+                d.Add("播放（配置更新）", () => { });
+            }
+            myChoseOptionTapBar_.UpdateOptionsByDic(d);
+            myChoseOptionTapBar_.SetBtnCancleEvent(() =>
+            {
+                myChoseOptionTapBar_.gameObject.SetActive(false);
+            });
+            var v = myTapBarBtnsGroup_.GetWPByIndex(1);
+            myChoseOptionTapBar_.gameObject.transform.position = v;
+        });
 
-    private void initDeviceBtnWithDic(Dictionary<string,UnityAction> dic) {
+    }
+    private void initDeviceBtnWithDic(Dictionary<string, UnityAction> dic)
+    {
         var s = GetController<PackageController>().GetDeviceStatue();
-        switch (s) {
+        switch (s)
+        {
             case PackageData.EnumLinkerDeviceStatue.E_Cell:
-                dic.Add(("设备名：" + GetController<PackageController>().GetBrandName()), () => {
+                dic.Add(("设备名：" + GetController<PackageController>().GetBrandName()), () =>
+                {
                     myChoseOptionTapBar_.gameObject.SetActive(true);
                     var d = new Dictionary<string, TapButtonCallBack>();
-                    d.Add("终止", () => {
+                    d.Add("终止", () =>
+                    {
                         this.GetController<PackageController>().StopCell();
                     });
                     myChoseOptionTapBar_.UpdateOptionsByDic(d);
-                    myChoseOptionTapBar_.SetBtnCancleEvent(() => {
+                    myChoseOptionTapBar_.SetBtnCancleEvent(() =>
+                    {
                         myChoseOptionTapBar_.gameObject.SetActive(false);
                     });
                     var v = myTapBarBtnsGroup_.GetWPByIndex(0);
@@ -104,20 +155,25 @@ public class PackageView : BaseView
                 });
                 break;
             case PackageData.EnumLinkerDeviceStatue.E_None:
-                dic.Add("启动调试设备", () => {
+                dic.Add("启动调试设备", () =>
+                {
                     Debug.Log("启动调试设备");
                     myChoseOptionTapBar_.gameObject.SetActive(true);
-                    var d = new Dictionary<string,TapButtonCallBack>();
-                    if (GetController<PackageController>().IsSetWin32ProjPath()) {
-                        d.Add("启动Win32", () => {
+                    var d = new Dictionary<string, TapButtonCallBack>();
+                    if (GetController<PackageController>().IsSetWin32ProjPath())
+                    {
+                        d.Add("启动Win32", () =>
+                        {
                             GetController<PackageController>().StartWin32();
                         });
                     }
-                    d.Add("连接手机", ()=> {
+                    d.Add("连接手机", () =>
+                    {
                         this.GetController<PackageController>().StartCell();
                     });
                     myChoseOptionTapBar_.UpdateOptionsByDic(d);
-                    myChoseOptionTapBar_.SetBtnCancleEvent(()=> {
+                    myChoseOptionTapBar_.SetBtnCancleEvent(() =>
+                    {
                         myChoseOptionTapBar_.gameObject.SetActive(false);
                     });
                     var v = myTapBarBtnsGroup_.GetWPByIndex(0);
@@ -125,15 +181,18 @@ public class PackageView : BaseView
                 });
                 break;
             case PackageData.EnumLinkerDeviceStatue.E_Win32:
-                dic.Add("设备名：Win32", () => {
+                dic.Add("设备名：Win32", () =>
+                {
                     Debug.Log("设备名：Win32");
                     myChoseOptionTapBar_.gameObject.SetActive(true);
                     var d = new Dictionary<string, TapButtonCallBack>();
-                    d.Add("终止", () => {
+                    d.Add("终止", () =>
+                    {
                         GetController<PackageController>().StopWin32();
                     });
                     myChoseOptionTapBar_.UpdateOptionsByDic(d);
-                    myChoseOptionTapBar_.SetBtnCancleEvent(() => {
+                    myChoseOptionTapBar_.SetBtnCancleEvent(() =>
+                    {
                         myChoseOptionTapBar_.gameObject.SetActive(false);
                     });
                     var v = myTapBarBtnsGroup_.GetWPByIndex(0);
@@ -146,32 +205,42 @@ public class PackageView : BaseView
     {
         var d = new Dictionary<string, UnityAction>();
         initDeviceBtnWithDic(d);
-        d.Add("资源", () => { });
+        initResBtnByDic(d);
+
         myTapBarBtnsGroup_.SetEventByDic(d);
     }
-    public void UpdateUIView() {
+    public void UpdateUIView()
+    {
         updateTapBar();
     }
     //重写UI注册事件
     protected override void registerViewEvent()
     {
-        if (myTapBarBtnsGroup_!= null) {
+        if (myTapBarBtnsGroup_ != null)
+        {
             this.UpdateUIView();
         }
-        
-        if (btnUpdateResServer_ != null) {
+
+        if (btnUpdateResServer_ != null)
+        {
             //btnUpdateResServer_.OnPointerDown
-            btnUpdateResServer_.onClick.AddListener(()=> {
+            btnUpdateResServer_.onClick.AddListener(() =>
+            {
+                //GetController<PackageController>().GetParentController().UpdateResByAimFolder("LuaScripts");
                 GetController<PackageController>().GetParentController().UpdateRes();
             });
         }
-        if (btnLoadRes_ !=null) {
-            btnLoadRes_.onClick.AddListener(()=> {
+        if (btnLoadRes_ != null)
+        {
+            btnLoadRes_.onClick.AddListener(() =>
+            {
                 GetController<PackageController>().GetParentController().LoadRes();
             });
         }
-        if (btnReloadLuaScript_!=null) {
-            btnReloadLuaScript_.onClick.AddListener(()=> {
+        if (btnReloadLuaScript_ != null)
+        {
+            btnReloadLuaScript_.onClick.AddListener(() =>
+            {
                 // todo :
                 GetController<PackageController>().ReloadLuaScript();
             });
@@ -201,22 +270,27 @@ public class PackageView : BaseView
             });
         }
 
-        if (btnStartWin32Exe_ != null) {
-            btnStartWin32Exe_.onClick.AddListener(()=> {
+        if (btnStartWin32Exe_ != null)
+        {
+            btnStartWin32Exe_.onClick.AddListener(() =>
+            {
                 // todo start exe
-              //  GetController<PackageController>().GetParentController().PrepareWin32();
-               // GetController<PackageController>().GetParentController().StartWin32Exe();
+                //  GetController<PackageController>().GetParentController().PrepareWin32();
+                // GetController<PackageController>().GetParentController().StartWin32Exe();
             });
         }
     }
 
-    private void setLoadResLayerActive(bool v) {
-        if (this.loadResLayer_ != null) {
+    private void setLoadResLayerActive(bool v)
+    {
+        if (this.loadResLayer_ != null)
+        {
             this.loadResLayer_.SetActive(v);
         }
     }
 
-    public void SetLoadResLayerActive(bool v) {
+    public void SetLoadResLayerActive(bool v)
+    {
         this.setLoadResLayerActive(v);
     }
 
@@ -233,10 +307,10 @@ public class PackageView : BaseView
         var count = listOfLinesBetweenSceneNodes_.Count;
         for (int i = 0; i < count; ++i)
         {
-            Debug.Log("delete line:"+i);
+            Debug.Log("delete line:" + i);
 
             var l = listOfLinesBetweenSceneNodes_[i];
-             l.gameObject.SetActive(false);
+            l.gameObject.SetActive(false);
             //  GameObject.Destroy(l.gameObject);
             DrawLine.Recycle(l);
         }
@@ -306,6 +380,9 @@ public class PackageView : BaseView
         //生成新的连接线段
         generateAllLinesBetweenSceneNodes();
 
+        var startSceneId = pData.StartSceneID;
+        var n = findSceneNodeById(startSceneId);
+        n.SetIsStartScene(true);
     }
 
 
@@ -331,19 +408,22 @@ public class PackageView : BaseView
     }
     // ----- 对外接口 -----
     private bool isUpdating_ = false;
-    public void AddUpdateViewEvent() {
-        if (isUpdating_ == false) {
+    public void AddUpdateViewEvent()
+    {
+        if (isUpdating_ == false)
+        {
             isUpdating_ = true;
-            Invoke("UpdateViewEventComplie",0.016f);
+            Invoke("UpdateViewEventComplie", 0.016f);
         }
     }
-    public void UpdateViewEventComplie() {
+    public void UpdateViewEventComplie()
+    {
         GetController<PackageController>().UpdateView();
         isUpdating_ = false;
 
     }
 
-    public void GenerateLineBetweenSceneNodeByGPAndID(GPoint g1, string Id,Vector2 swp)
+    public void GenerateLineBetweenSceneNodeByGPAndID(GPoint g1, string Id, Vector2 swp)
     {
         var aimSceneNode = findSceneNodeById(Id);
         if (aimSceneNode != null && g1 != null)
@@ -463,10 +543,17 @@ public class PackageView : BaseView
         }
     }
 
-    public void PlayScene(string sceneId) {
+    public void SetStartScene(string sceneId)
+    {
+        GetController<PackageController>().SetStartScene(sceneId);
+    }
+
+    public void PlayScene(string sceneId)
+    {
         GetController<PackageController>().PlayScene(sceneId);
     }
-    public void StopSceneByID(string sceneId) {
+    public void StopSceneByID(string sceneId)
+    {
         GetController<PackageController>().StopSceneByID(sceneId);
     }
 
@@ -480,17 +567,21 @@ public class PackageView : BaseView
         GetController<PackageController>().SaveData();
     }
 
-    public void ShowConnectLayer() {
+    public void ShowConnectLayer()
+    {
         var strIp = GetController<PackageController>().GetHostIP();
         myConnectCellLayer_.SetIP(strIp);
         myConnectCellLayer_.gameObject.SetActive(true);
-        myConnectCellLayer_.SetCloseLayerCloseCallBack(()=> {
+        myConnectCellLayer_.SetCloseLayerCloseCallBack(() =>
+        {
             GetController<PackageController>().OnUserCloseConnectLayer();
         });
     }
-    public void CloseConnectLayer() {
+    public void CloseConnectLayer()
+    {
         myConnectCellLayer_.gameObject.SetActive(false);
-        myConnectCellLayer_.SetCloseLayerCloseCallBack(() => {
+        myConnectCellLayer_.SetCloseLayerCloseCallBack(() =>
+        {
         });
     }
 

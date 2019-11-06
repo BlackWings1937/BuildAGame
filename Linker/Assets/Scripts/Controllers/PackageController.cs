@@ -149,4 +149,31 @@ public class PackageController : AppChildController {
     public string GetBrandName() {
         return getData<PackageData>().MyDeviceBrand;
     }
+    public void SetStartScene(string sceneId)
+    {
+        getData<PackageData>().SetStartScene(sceneId);
+    }
+
+    private void updateResToServerByList(List<string> l) {
+        GetParentController().UpdateResByAimFloder(l);
+    }
+    public void UpdateResLuaScript() {
+        var l = new List<string>();
+        l.Add("LuaScripts");
+        updateResToServerByList(l);
+    }
+    public void UpdateResXMLAndJson() {
+        var l = new List<string>();
+        l.Add("Jsons");
+        l.Add("DragonBoneDatas");
+        updateResToServerByList(l);
+    }
+    public void updateResConfigs() {
+        var l = new List<string>();
+        l.Add("Others");
+        updateResToServerByList(l);
+    }
+    public void UpdateResAll() {
+        GetParentController().UpdateRes();
+    }
 }

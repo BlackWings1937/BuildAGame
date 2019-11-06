@@ -15,18 +15,19 @@ local MBArmatureUtil = requirePack("scripts.FrameWork.Util.MBArmatureUtil");
 local PlayArmatureHandler = requirePack("scripts.Behaviour.PlayArmatureHandler");
 requirePack("baseScripts.homeUI.FrameWork.AnimationEngineLua.AnimationEngine");
 
-local SceneEmpty = class("SceneEmpty", function(...)
+local SceneWin = class("SceneWin", function(...)
     -- 创建sceneBase基类
     return SceneTouches.new(...);
 end )
-g_tConfigTable.CREATE_NEW(SceneEmpty);
+g_tConfigTable.CREATE_NEW(SceneWin);
 
-function SceneEmpty:ctor()
-    print("LinkerTestPackage123123");
-    print(debug.traceback());
+function SceneWin:ctor()
+    local str = FileUtil.LoadFileContent(g_tConfigTable.sTaskpath.."IpConfig.json");
+    print("json:"..str);
+    local m = json.decode(str);
     self.linkerManager_ = LinkerManager.new();
     self.linkerManager_:SetRootNode(self);
-    self.linkerManager_:Start();
+    self.linkerManager_:StartWithIP(m.IP);
 end
 
-return SceneEmpty;
+return SceneWin;

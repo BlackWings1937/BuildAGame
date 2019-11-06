@@ -89,6 +89,16 @@ public class HttpManager
     public void UpdateRes() {
         if (this.myPackResManager_ != null) {
             this.myPackResManager_.PrepareFloder();
+            this.myPackResManager_.SetListOfMark(new List<string>());
+            this.myPackResManager_.CopyLinkerDataToAim();
+            this.myPackResManager_.ZipToServer();
+        }
+    }
+    public void UpdateResByAimFloder(List<string> list) {
+        if (this.myPackResManager_ != null)
+        {
+            this.myPackResManager_.PrepareFloder();
+            this.myPackResManager_.SetListOfMark(list);
             this.myPackResManager_.CopyLinkerDataToAim();
             this.myPackResManager_.ZipToServer();
         }

@@ -87,7 +87,7 @@ end
 Button.Create = function(spNormalName,spDownName,pos,parent) 
     local btn = Button.new();
     btn.spNormalName_ = spNormalName;
-    btn:Init(SpriteUtil.Create(spNormalName),SpriteUtil.Create(spDownName));
+    btn:Init(spNormalName,spDownName);
     parent:addChild(btn);
     btn:setPosition(pos);
     --btn.oriPos = pos;

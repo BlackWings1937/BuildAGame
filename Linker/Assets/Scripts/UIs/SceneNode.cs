@@ -16,7 +16,10 @@ public class SceneNode : PointParent
 
     //播放中tip
     [SerializeField]
-    private GameObject myBoardOfPlaying_; 
+    private GameObject myBoardOfPlaying_;
+
+    [SerializeField]
+    private GameObject myBoardOfStartScene_;
 
     //package界面
     protected PackageView packageView_ = null;
@@ -49,6 +52,12 @@ public class SceneNode : PointParent
         }
     }
 
+    private void setBoardOfStartSceneActive(bool result) {
+        if (myBoardOfStartScene_!=null) {
+            myBoardOfStartScene_.SetActive(result);
+        }
+    }
+
     // 显示弹出选项
     private void showTapBtns() {
         if (pv_ != null)
@@ -75,17 +84,17 @@ public class SceneNode : PointParent
             {
                 showInputField();
             });
-            dic.Add("播放场景", () => {
+            dic.Add("设置为启动场景", () => {
                 if (pv_!= null&& data_!=null) {
-                    pv_.PlayScene(data_.ID);
+                    pv_.SetStartScene(data_.ID);
                 }
             });
-
+            /*
             dic.Add("停止场景",()=> {
                 if (pv_ != null && data_ != null) {
                     pv_.StopSceneByID(data_.ID);
                 }
-            });
+            });*/
             var size = (transform as RectTransform).sizeDelta;
             var pos =  transform.TransformPoint(0, 0 + size.y / 2, 0);
             
@@ -375,7 +384,12 @@ public class SceneNode : PointParent
             setPackageViewToOutPutItemList(packageView);
             setOutPutItemList(portInfo);
             setBoardOfPlayingActive(data.IsPlaying);
+            SetIsStartScene(false);
         }
+    }
+
+    public void SetIsStartScene(bool startScene) {
+        setBoardOfStartSceneActive(startScene);
     }
 
     public GPoint GetSceneHeadPoint(Vector2 aimpos) {

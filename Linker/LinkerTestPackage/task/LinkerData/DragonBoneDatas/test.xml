@@ -1,0 +1,147 @@
+<dragonBones name="层次测试" frameRate="24" version="2.3">
+ <armature name="A">
+  <bone name="a">
+   <transform x="0" y="0" skX="0" skY="0" scX="1" scY="1"/>
+  </bone>
+  <skin name="default">
+   <slot name="a" parent="a" z="0">
+    <display name="t1" type="image">
+     <transform x="0" y="0" skX="0" skY="0" scX="1" scY="1" pX="62.95" pY="62.95"/>
+    </display>
+   </slot>
+  </skin>
+  <animation name="0" fadeInTime="0.3" duration="2" scale="5" loop="0" autoTween="1" tweenEasing="2">
+   <timeline name="a" scale="1" offset="0">
+    <frame z="0" duration="2">
+     <transform x="0" y="0" skX="0" skY="0" scX="1" scY="1" pX="0" pY="0"/>
+    </frame>
+   </timeline>
+  </animation>
+  <animation name="1" fadeInTime="0.3" duration="2" scale="20" loop="0" autoTween="1" tweenEasing="2">
+   <timeline name="a" scale="1" offset="0">
+    <frame z="0" duration="1">
+     <transform x="0" y="0" skX="45" skY="45" scX="1" scY="1" pX="0" pY="0"/>
+    </frame>
+    <frame z="0" duration="1">
+     <transform x="0" y="0" skX="-45" skY="-45" scX="1" scY="1" pX="0" pY="0"/>
+    </frame>
+   </timeline>
+  </animation>
+ </armature>
+ <armature name="B">
+  <bone name="a">
+   <transform x="0" y="0" skX="0" skY="0" scX="1" scY="1"/>
+  </bone>
+  <skin name="default">
+   <slot name="a" parent="a" z="0">
+    <display name="t2" type="image">
+     <transform x="0" y="0" skX="0" skY="0" scX="1" scY="1" pX="62.95" pY="62.95"/>
+    </display>
+   </slot>
+  </skin>
+  <animation name="0" fadeInTime="0.3" duration="2" scale="5" loop="0" autoTween="1" tweenEasing="2">
+   <timeline name="a" scale="1" offset="0">
+    <frame z="0" duration="2">
+     <transform x="0" y="0" skX="0" skY="0" scX="1" scY="1" pX="0" pY="0"/>
+    </frame>
+   </timeline>
+  </animation>
+  <animation name="1" fadeInTime="0.3" duration="2" scale="20" loop="0" autoTween="1" tweenEasing="2">
+   <timeline name="a" scale="1" offset="0">
+    <frame z="0" duration="1">
+     <transform x="0" y="-24.3" skX="0" skY="0" scX="1" scY="1" pX="0" pY="0"/>
+    </frame>
+    <frame z="0" duration="1">
+     <transform x="0" y="27.75" skX="0" skY="0" scX="1" scY="1" pX="0" pY="0"/>
+    </frame>
+   </timeline>
+  </animation>
+ </armature>
+ <armature name="C">
+  <bone name="a">
+   <transform x="0" y="-0.05" skX="0" skY="0" scX="1" scY="1"/>
+  </bone>
+  <skin name="default">
+   <slot name="a" parent="a" z="0">
+    <display name="t3" type="image">
+     <transform x="0" y="0" skX="0" skY="0" scX="1" scY="1" pX="62.95" pY="62.95"/>
+    </display>
+   </slot>
+  </skin>
+  <animation name="0" fadeInTime="0.3" duration="2" scale="5" loop="0" autoTween="1" tweenEasing="2">
+   <timeline name="a" scale="1" offset="0">
+    <frame z="0" duration="2">
+     <transform x="0" y="-0.05" skX="0" skY="0" scX="1" scY="1" pX="0" pY="0"/>
+    </frame>
+   </timeline>
+  </animation>
+  <animation name="1" fadeInTime="0.3" duration="2" scale="20" loop="0" autoTween="1" tweenEasing="2">
+   <timeline name="a" scale="1" offset="0">
+    <frame z="0" duration="1">
+     <transform x="0" y="24.3" skX="0" skY="0" scX="1" scY="1" pX="0" pY="0"/>
+    </frame>
+    <frame z="0" duration="1">
+     <transform x="0" y="-24.3" skX="0" skY="0" scX="1" scY="1" pX="0" pY="0"/>
+    </frame>
+   </timeline>
+  </animation>
+ </armature>
+ <armature name="D">
+  <bone name="a">
+   <transform x="0" y="0" skX="0" skY="0" scX="1" scY="1"/>
+  </bone>
+  <skin name="default">
+   <slot name="a" parent="a" z="0">
+    <display name="t4" type="image">
+     <transform x="0" y="0" skX="0" skY="0" scX="1" scY="1" pX="62.95" pY="62.95"/>
+    </display>
+   </slot>
+  </skin>
+  <animation name="0" fadeInTime="0.3" duration="2" scale="5" loop="0" autoTween="1" tweenEasing="2">
+   <timeline name="a" scale="1" offset="0">
+    <frame z="0" duration="2">
+     <transform x="0" y="0" skX="0" skY="0" scX="1" scY="1" pX="0" pY="0"/>
+    </frame>
+   </timeline>
+  </animation>
+  <animation name="1" fadeInTime="0.3" duration="2" scale="20" loop="0" autoTween="1" tweenEasing="2">
+   <timeline name="a" scale="1" offset="0">
+    <frame z="0" duration="1">
+     <transform x="0" y="0" skX="-45" skY="-45" scX="1" scY="1" pX="0" pY="0"/>
+    </frame>
+    <frame z="0" duration="1">
+     <transform x="0" y="0" skX="45" skY="45" scX="1" scY="1" pX="0" pY="0"/>
+    </frame>
+   </timeline>
+  </animation>
+ </armature>
+ <armature name="E">
+  <bone name="a">
+   <transform x="0" y="0" skX="0" skY="0" scX="1" scY="1"/>
+  </bone>
+  <skin name="default">
+   <slot name="a" parent="a" z="0">
+    <display name="t5" type="image">
+     <transform x="0" y="0" skX="0" skY="0" scX="1" scY="1" pX="62.95" pY="62.95"/>
+    </display>
+   </slot>
+  </skin>
+  <animation name="0" fadeInTime="0.3" duration="2" scale="5" loop="0" autoTween="1" tweenEasing="2">
+   <timeline name="a" scale="1" offset="0">
+    <frame z="0" duration="2">
+     <transform x="0" y="0" skX="0" skY="0" scX="1" scY="1" pX="0" pY="0"/>
+    </frame>
+   </timeline>
+  </animation>
+  <animation name="1" fadeInTime="0.3" duration="2" scale="20" loop="0" autoTween="1" tweenEasing="2">
+   <timeline name="a" scale="1" offset="0">
+    <frame z="0" duration="1">
+     <transform x="0" y="0" skX="-45" skY="-45" scX="1" scY="1" pX="0" pY="0"/>
+    </frame>
+    <frame z="0" duration="1">
+     <transform x="0" y="0" skX="45" skY="45" scX="1" scY="1" pX="0" pY="0"/>
+    </frame>
+   </timeline>
+  </animation>
+ </armature>
+</dragonBones>

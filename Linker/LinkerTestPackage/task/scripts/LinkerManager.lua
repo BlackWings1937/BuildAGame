@@ -36,7 +36,30 @@ function LinkerManager:Start()
     local result = self.talkToCSharp_:ConnectToCSharp();
     if result then 
         print("win32 linker to linker");
-        self.talkToCSharp_:Send("hello linker");
+        --self.talkToCSharp_:Send("hello linker");
+    else 
+        print("win32 not linker to linker");
+    end
+    if self.rootNode_~= nil then 
+        self.rootNode_:runAction(cc.RepeatForever:create(cc.Sequence:create(cc.DelayTime:create(0.016),cc.CallFunc:create(function() 
+            if self.talkToCSharp_ ~= nil then 
+                self.talkToCSharp_:ProcessData();
+            end
+        end))));
+    end
+end
+
+function LinkerManager:StartWithIP(strIp)
+    self.talkToCSharp_ = TalkToCSharp:GetInstance();
+    self.messageHandle_ = MessageManager.new();
+    self.messageHandle_:SetLinkerManager(self);-- mei有设置linkerManager
+    self.packageManager_ = PackageManager.new();
+
+
+    local result = self.talkToCSharp_:ConnectToCSharpByIPAndPort(strIp,1234);
+    if result then 
+        print("win32 linker to linker");
+        self:SMHelloLinker();
     else 
         print("win32 not linker to linker");
     end
@@ -182,6 +205,14 @@ function LinkerManager:SMReloadFail()
     local m = {};
     m.Result = false;
     m.EventName = MessageManager.STR_MN_RELOAD_RES_COMPLIE;
+    local str = json.encode(m);
+    self.talkToCSharp_:Send(str);
+end
+
+function LinkerManager:SMHelloLinker()
+    local m = {};
+    m.EventName = MessageManager.STR_MN_LINKER_HELLO;
+    m.DeviceName = UInfoUtil:getInstance():getBrand();
     local str = json.encode(m);
     self.talkToCSharp_:Send(str);
 end

@@ -1,0 +1,137 @@
+<dragonBones name="选择效果" frameRate="24" version="2.3">
+ <armature name="gui_selectpop_btn_touch">
+  <bone name="xx">
+   <transform x="8.05" y="1.55" skX="-168.27" skY="-168.27" scX="0.5" scY="0.5"/>
+  </bone>
+  <bone name="ff">
+   <transform x="8.4" y="-23.4" skX="0" skY="0" scX="0.07" scY="0.07"/>
+  </bone>
+  <bone name="ee">
+   <transform x="-17.2" y="-2.5" skX="0" skY="0" scX="0.27" scY="0.27"/>
+  </bone>
+  <bone name="dd">
+   <transform x="16.2" y="7.85" skX="0" skY="-0.6" scX="0.27" scY="0.27"/>
+  </bone>
+  <bone name="cc">
+   <transform x="-5.4" y="6.9" skX="104.99" skY="104.99" scX="0.27" scY="0.27"/>
+  </bone>
+  <bone name="bb">
+   <transform x="-2.55" y="6.4" skX="104.99" skY="104.99" scX="0.27" scY="0.27"/>
+  </bone>
+  <bone name="aa">
+   <transform x="-2.95" y="6.4" skX="104.99" skY="104.39" scX="0.27" scY="0.27"/>
+  </bone>
+  <skin name="default">
+   <slot name="xx" parent="xx" z="0">
+    <display name="gui_selectpop_btn_touch_05" type="image">
+     <transform x="0.3" y="-0.1" skX="0" skY="0" scX="1" scY="1" pX="112.6" pY="112.75"/>
+    </display>
+   </slot>
+   <slot name="ff" parent="ff" z="1">
+    <display name="gui_selectpop_btn_touch_06" type="image">
+     <transform x="0" y="0.05" skX="0" skY="0" scX="1" scY="1" pX="247.85" pY="245.3"/>
+    </display>
+   </slot>
+   <slot name="ee" parent="ee" z="2">
+    <display name="gui_selectpop_btn_touch_06" type="image">
+     <transform x="0.8" y="0.6" skX="0" skY="0" scX="1" scY="1" pX="247.85" pY="245.3"/>
+    </display>
+   </slot>
+   <slot name="dd" parent="dd" z="3">
+    <display name="gui_selectpop_btn_touch_06" type="image">
+     <transform x="-0.4" y="-0.2" skX="0" skY="0" scX="1" scY="1" pX="247.85" pY="245.3"/>
+    </display>
+   </slot>
+   <slot name="cc" parent="cc" z="4">
+    <display name="gui_selectpop_btn_touch_04" type="image">
+     <transform x="-0.45" y="-0.3" skX="0" skY="0" scX="1" scY="1" pX="99.05" pY="98.1"/>
+    </display>
+   </slot>
+   <slot name="bb" parent="bb" z="5">
+    <display name="gui_selectpop_btn_touch_03" type="image">
+     <transform x="-0.55" y="-0.65" skX="0" skY="0" scX="1" scY="1" pX="99.3" pY="100.35"/>
+    </display>
+   </slot>
+   <slot name="aa" parent="aa" z="6">
+    <display name="gui_selectpop_btn_touch_02" type="image">
+     <transform x="-0.5" y="-0.3" skX="0" skY="0" scX="1" scY="1" pX="99.05" pY="98.1"/>
+    </display>
+   </slot>
+  </skin>
+  <animation name="0" fadeInTime="0" duration="18" scale="1" loop="1" autoTween="0" tweenEasing="NaN">
+   <timeline name="xx" scale="1" offset="0">
+    <frame z="0" tweenEasing="0" duration="7">
+     <transform x="8.05" y="1.55" skX="-168.27" skY="-168.27" scX="0.5" scY="0.5" pX="0" pY="0"/>
+    </frame>
+    <frame z="0" tweenEasing="0" duration="6">
+     <transform x="3.6" y="2.6" skX="-161.18" skY="-161.18" scX="1.92" scY="1.92" pX="-0.2" pY="0.15"/>
+    </frame>
+    <frame z="0" duration="1">
+     <transform x="1.3" y="3.05" skX="-157.41" skY="-157.41" scX="2.63" scY="2.63" pX="-0.3" pY="0.2"/>
+     <colorTransform aO="0" rO="0" gO="0" bO="0" aM="0" rM="100" gM="100" bM="100"/>
+    </frame>
+    <frame duration="4" displayIndex="-1"/>
+   </timeline>
+   <timeline name="ff" scale="1" offset="0">
+    <frame duration="1" displayIndex="-1"/>
+    <frame z="1" tweenEasing="0" duration="8">
+     <transform x="8.4" y="-23.4" skX="0" skY="0" scX="0.07" scY="0.07" pX="0" pY="0"/>
+    </frame>
+    <frame z="1" duration="1">
+     <transform x="40.5" y="-120.8" skX="0" skY="0" scX="0.26" scY="0.26" pX="-0.6" pY="0.55"/>
+    </frame>
+    <frame duration="8" displayIndex="-1"/>
+   </timeline>
+   <timeline name="ee" scale="1" offset="0">
+    <frame duration="1" displayIndex="-1"/>
+    <frame z="2" tweenEasing="0" duration="8">
+     <transform x="-17.2" y="-2.5" skX="0" skY="0" scX="0.27" scY="0.27" pX="0" pY="0"/>
+    </frame>
+    <frame z="2" duration="1">
+     <transform x="-121.1" y="-10.15" skX="0" skY="0" scX="0.13" scY="0.13" pX="-0.4" pY="-0.2"/>
+    </frame>
+    <frame duration="8" displayIndex="-1"/>
+   </timeline>
+   <timeline name="dd" scale="1" offset="0">
+    <frame duration="1" displayIndex="-1"/>
+    <frame z="3" tweenEasing="0" duration="8">
+     <transform x="16.2" y="7.85" skX="0" skY="-0.6" scX="0.27" scY="0.27" pX="0" pY="0"/>
+    </frame>
+    <frame z="3" duration="1">
+     <transform x="65.95" y="126.1" skX="0" skY="-0.59" scX="0.15" scY="0.15" pX="-0.6" pY="-0.45"/>
+    </frame>
+    <frame duration="8" displayIndex="-1"/>
+   </timeline>
+   <timeline name="cc" scale="1" offset="0">
+    <frame duration="1" displayIndex="-1"/>
+    <frame z="4" tweenEasing="0" duration="6">
+     <transform x="-5.4" y="6.9" skX="104.99" skY="104.99" scX="0.27" scY="0.27" pX="0" pY="0"/>
+    </frame>
+    <frame z="4" duration="1">
+     <transform x="-63.65" y="85.05" skX="-25.27" skY="-25.27" scX="0.71" scY="0.71" pX="0.6" pY="0.35"/>
+    </frame>
+    <frame duration="10" displayIndex="-1"/>
+   </timeline>
+   <timeline name="bb" scale="1" offset="0">
+    <frame duration="1" displayIndex="-1"/>
+    <frame z="5" tweenEasing="0" duration="6">
+     <transform x="-2.55" y="6.4" skX="104.99" skY="104.99" scX="0.27" scY="0.27" pX="0" pY="0"/>
+    </frame>
+    <frame z="5" duration="1">
+     <transform x="95.1" y="16" skX="-168.27" skY="-168.27" scX="0.87" scY="0.87" pX="0.8" pY="0.75"/>
+    </frame>
+    <frame duration="10" displayIndex="-1"/>
+   </timeline>
+   <timeline name="aa" scale="1" offset="0">
+    <frame duration="1" displayIndex="-1"/>
+    <frame z="6" tweenEasing="0" duration="6">
+     <transform x="-2.95" y="6.4" skX="104.99" skY="104.39" scX="0.27" scY="0.27" pX="0" pY="0"/>
+    </frame>
+    <frame z="6" duration="1">
+     <transform x="-42.25" y="-102.5" skX="-34.31" skY="-34.31" scX="0.72" scY="0.72" pX="0.35" pY="0.6"/>
+    </frame>
+    <frame duration="10" displayIndex="-1"/>
+   </timeline>
+  </animation>
+ </armature>
+</dragonBones>

@@ -268,6 +268,7 @@ public class PackageInfoData {
             d.InitTmpData();
         }
     }
+    public string StartSceneID = "";
     public List<SceneNodeData> ScenesList = new List<SceneNodeData>();
 }
 
@@ -372,9 +373,12 @@ public class SPackageInfoData {
     public List<SSceneNodeData> ScenesList = new List<SSceneNodeData>();
     public SPackageInfoData(PackageInfoData d) {
         var count = d.ScenesList.Count;
+        StartSceneID = d.StartSceneID;
         for (int i = 0; i < count; ++i)
         {
             ScenesList.Add(new SSceneNodeData(d.ScenesList[i]));
         }
     }
+
+    public string StartSceneID = "";
 }

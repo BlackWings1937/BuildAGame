@@ -466,4 +466,11 @@ public class PackageData : BaseData
         callUpdateEvent();
         saveData();
     }
+
+    public void SetStartScene(string sceneId)
+    {
+        data_.StartSceneID = sceneId;
+        callUpdateEvent();
+        saveData();
+    }
 }

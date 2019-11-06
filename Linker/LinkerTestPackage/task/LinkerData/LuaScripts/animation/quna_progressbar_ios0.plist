@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <key>frames</key>
+        <dict>
+            <key>gui_quna_progressbar_kong.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{2,2},{1,1}}</string>
+                <key>offset</key>
+                <string>{-100.5,100.5}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{1,1}}</string>
+                <key>sourceSize</key>
+                <string>{202,202}</string>
+            </dict>
+        </dict>
+        <key>metadata</key>
+        <dict>
+            <key>format</key>
+            <integer>2</integer>
+            <key>realTextureFileName</key>
+            <string>quna_progressbar_ios0.png</string>
+            <key>size</key>
+            <string>{5,5}</string>
+            <key>smartupdate</key>
+            <string>$TexturePacker:SmartUpdate:17258c6b3bbfc2f97a1c0db2ecf0047a:1/1$</string>
+            <key>textureFileName</key>
+            <string>quna_progressbar_ios0.png</string>
+        </dict>
+    </dict>
+</plist>

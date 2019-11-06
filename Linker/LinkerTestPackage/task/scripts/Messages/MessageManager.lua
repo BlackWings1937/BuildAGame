@@ -5,7 +5,8 @@ g_tConfigTable.CREATE_NEW(MessageManager);
 MessageManager.STR_MN_RELOAD_RES_COMPLIE = "RELOAD_RES_COMPLIE";
 MessageManager.STR_MN_PLAY_STATUE_CHANGE = "PLAY_STATUE_CHANGE";
 MessageManager.STR_MN_LOAD_RES_STATUE_UPDATE = "LOAD_RES_STATUE_UPDATE";
-
+MessageManager.STR_MN_CELL_HELLO = "CELL_HELLO";
+MessageManager.STR_MN_LINKER_HELLO = "LINKER_HELLO";
 function MessageManager:ctor()
     self.linkerManager_ = nil;
 end
