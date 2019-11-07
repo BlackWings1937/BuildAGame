@@ -22,6 +22,11 @@ public class SceneData : BaseData
         var parentController = GetController<SceneController>().GetParentController() as AppController;
         data_ = parentController.GetTargetSceneInfo();
         pData_ = (GetController<SceneController>().GetParentController() as AppController).GetTargetPackageInfo();
+        if (data_.MySceneInfoData.MyState == SceneInfoData.State.E_PLot) {
+            if (data_.MySceneInfoData.PLotData.BgConfigName!= "") {
+                initTracks();
+            }
+        }
         callUpdateEvent();
     }
     public override void init()
@@ -40,6 +45,50 @@ public class SceneData : BaseData
 
     private void saveData() {
         GetController<SceneController>().GetParentController().GetPackageController().SaveData();
+    }
+
+    private Dictionary<string, List<string>> dicOfTrackUsedNpc_;
+
+    private void initTrack(NpcOptions track) {
+        var l = new List<string>();
+        var str = track.NpcName;
+        dicOfTrackUsedNpc_.Add(str,l);
+    }
+
+    private void updateTrack(NpcOptions track) {
+        var str = track.NpcName;
+        var l = new List<string>();
+        dicOfTrackUsedNpc_[str] = l;
+        var count = track.listOfOptions.Count;
+        for (int i = 0;i<count;++i) {
+            var op = track.listOfOptions[i];
+            if (op.MyState == NpcOption.State.E_PlayJson) {
+                insertNpcsList(l,op);
+            }
+        }
+    }
+
+    private void insertNpcsList(List<string> l,NpcOption op) {
+        var jsonList = getNpcNamesByBgConfigName(op.ExData);
+        var count = jsonList.Count;
+        for (int i = 0;i<count;++i) {
+            if (l.Contains(jsonList[i]) == false) {
+                l.Add(jsonList[i]);
+            } 
+        }
+    }
+
+     
+    private void initTracks() {
+        dicOfTrackUsedNpc_ = new Dictionary<string, List<string>>();
+
+        var tracks = data_.MySceneInfoData.PLotData.ListOfNpcOptions;
+        var count = tracks.Count;
+        for (int i = 0;i<count;++i) {
+            initTrack(tracks[i]);
+            updateTrack(tracks[i]);
+        }
+        Debug.Log("catch");
     }
 
     // ----- 私有方法 -----
@@ -107,6 +156,14 @@ public class SceneData : BaseData
             var ops = new NpcOptions();
             ops.NpcName = npcList[i];
             list.Add(ops);
+        }
+
+        if (data_.MySceneInfoData.MyState == SceneInfoData.State.E_PLot)
+        {
+            if (data_.MySceneInfoData.PLotData.BgConfigName != "")
+            {
+                initTracks();
+            }
         }
     }
 
@@ -176,7 +233,6 @@ public class SceneData : BaseData
 
     public List<string> GetActionsList(string bgConfigName) {
         var l = new List<string>();
-
         var lActions = getActionsByBgConfig(bgConfigName);
         for (int i = 0; i < lActions.Count; ++i)
         {
@@ -202,17 +258,48 @@ public class SceneData : BaseData
         return null;
     }
 
+    private bool checkJsonCouldAdd (string npcName, string jsonName) {
+        var npcListFromJson = getNpcNamesByBgConfigName(jsonName);
+        var count = data_.MySceneInfoData.PLotData.ListOfNpcOptions.Count;
+        for (int i = 0;i<count;++i) {
+            var nops = data_.MySceneInfoData.PLotData.ListOfNpcOptions[i];
+            if (nops.NpcName!=npcName) {
+
+                var listUsingNpcName =  dicOfTrackUsedNpc_[nops.NpcName];
+
+                var countOfNewJsonUse = npcListFromJson.Count;
+                for (int z = 0;z< countOfNewJsonUse; ++z) {
+                    var nowNpcName = npcListFromJson[z];
+                    if (listUsingNpcName.Contains(nowNpcName)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     public void AddJsonNpcOptionOnNpcOption(NpcOptions nops,string actionJsonName) {
+        if (checkJsonCouldAdd(nops.NpcName,actionJsonName)) {
+            GetController<SceneController>().GetParentController().ShowAlertView("别的npc轨道中使用了此npc");
+            return;
+        }
         var nop = new NpcOption();
         nop.MyState = NpcOption.State.E_PlayJson;
         nop.Npc = nops.NpcName;
         nop.ExData = actionJsonName;
         nops.listOfOptions.Add(nop);
         UpdateData();
+        updateTrack(nops);
     }
 
     public void AddJsonNpcOptionOnNpcOptions(NpcOptions nops, string actionJsonName, NpcOption nop) {
         if (nops.listOfOptions.Contains(nop)) {
+            if (checkJsonCouldAdd(nops.NpcName, actionJsonName))
+            {
+                GetController<SceneController>().GetParentController().ShowAlertView("别的npc轨道中使用了此npc");
+                return;
+            }
             var index = nops.listOfOptions.IndexOf(nop);
             var nopNew = new NpcOption();
             nopNew.MyState = NpcOption.State.E_PlayJson;
@@ -220,6 +307,7 @@ public class SceneData : BaseData
             nopNew.ExData = actionJsonName;
             nops.listOfOptions.Insert(index+1,nopNew);
             UpdateData();
+            updateTrack(nops);
         }
     }
 
@@ -227,6 +315,7 @@ public class SceneData : BaseData
     {
         ndatas.listOfOptions.Clear();
         UpdateData();
+        updateTrack(ndatas);
     }
 
     public void OnRemoveAllChildByNpcOptions(NpcOptions ndatas,NpcOption nop) {
@@ -236,7 +325,9 @@ public class SceneData : BaseData
                 var count = ndatas.listOfOptions.Count - 1 - index;
                 ndatas.listOfOptions.RemoveRange(index+1, count);
                 UpdateData();
-            } 
+                updateTrack(ndatas);
+
+            }
         }
     }
 
@@ -248,6 +339,8 @@ public class SceneData : BaseData
             copyResult.Npc = nops.NpcName;
             TmpCopyOptionData = null;
             UpdateData();
+            updateTrack(nops);
+
         }
     }
 
@@ -255,12 +348,22 @@ public class SceneData : BaseData
     {
         if (TmpCopyOptionData != null && nops.listOfOptions.Contains(nop))
         {
+            if (nop.MyState == NpcOption.State.E_PlayJson) {
+                if (checkJsonCouldAdd(nops.NpcName, nop.ExData))
+                {
+                    GetController<SceneController>().GetParentController().ShowAlertView("别的npc轨道中使用了此npc");
+                    return;
+                }
+            }
+
             var copyResult = NpcOption.Copy(TmpCopyOptionData);
             var index = nops.listOfOptions.IndexOf(nop);
             nops.listOfOptions.Insert(index+1, copyResult);
             copyResult.Npc = nops.NpcName;
             TmpCopyOptionData = null;
             UpdateData();
+            updateTrack(nops);
+
         }
     }
 
@@ -272,6 +375,8 @@ public class SceneData : BaseData
         if (nops.listOfOptions.Contains(nop)) {
             nops.listOfOptions.Remove(nop);
             UpdateData();
+            updateTrack(nops);
+
         }
     }
 

@@ -116,10 +116,13 @@ public class PackageView : BaseView
             {
                 //todo 更新服务器
                 //todo 命令客户端 下载 更新 播放
-                d.Add("播放（全量更新）", () => { });
-                d.Add("播放（lua更新）", () => { });
-                d.Add("播放（龙骨&&Json数据更新）", () => { });
-                d.Add("播放（配置更新）", () => { });
+                if (GetController<PackageController>().IsSetStartScene()) {
+                    d.Add("播放（全量更新）", () => { GetController<PackageController>().StartSceneAll(); });
+                    d.Add("播放（lua更新）", () => { GetController<PackageController>().StartSceneLuaScript(); });
+                    d.Add("播放（龙骨&&Json数据更新）", () => { GetController<PackageController>().StartSceneXMLAndJson(); });
+                    d.Add("播放（配置更新）", () => { GetController<PackageController>().StartSceneConfig(); });
+                }
+                d.Add("终止", () => { GetController<PackageController>().StopScene(); });
             }
             myChoseOptionTapBar_.UpdateOptionsByDic(d);
             myChoseOptionTapBar_.SetBtnCancleEvent(() =>
@@ -382,7 +385,9 @@ public class PackageView : BaseView
 
         var startSceneId = pData.StartSceneID;
         var n = findSceneNodeById(startSceneId);
-        n.SetIsStartScene(true);
+        if (n!=null) {
+            n.SetIsStartScene(true);
+        }
     }
 
 

@@ -121,7 +121,7 @@ public class PackageData : BaseData
     }
 
     private void generateFormatProjFile() {
-
+        Debug.Log("GenerateFormat filexxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
         var strData = JsonConvert.SerializeObject(new SPackageInfoData(data_));
         var path = projData_[ProjData.STR_PATH] + "\\" + STR_FORMAT_PACKAGE_DATA_FILE_NAME;
         File.WriteAllText(path, strData);
@@ -472,5 +472,16 @@ public class PackageData : BaseData
         data_.StartSceneID = sceneId;
         callUpdateEvent();
         saveData();
+    }
+
+    public bool IsSetStartScene() {
+        var sceneId = data_.StartSceneID;
+        var sl = data_.ScenesList;
+        var count = sl.Count;
+        for (int i = 0;i<count;++i) {
+            var d = sl[i];
+            if (d.ID == sceneId) { return true; }
+        }
+        return false;
     }
 }

@@ -20,10 +20,8 @@ public class PackageController : AppChildController {
         getData<PackageData>().GenerateFormatProjFile();
     }
     public void PlayScene(string sceneId) {
-        GetParentController().PlayScene(sceneId);
     }
     public void StopSceneByID(string sceneId) {
-        GetParentController().StopSceneByID(sceneId);
     }
 
     public void EnterEditSceneSys(SceneNodeData data) {
@@ -155,6 +153,7 @@ public class PackageController : AppChildController {
     }
 
     private void updateResToServerByList(List<string> l) {
+        GenerateFormatProjFile();
         GetParentController().UpdateResByAimFloder(l);
     }
     public void UpdateResLuaScript() {
@@ -174,6 +173,33 @@ public class PackageController : AppChildController {
         updateResToServerByList(l);
     }
     public void UpdateResAll() {
+        GenerateFormatProjFile();
         GetParentController().UpdateRes();
+    }
+    public void StartSceneLuaScript() {
+        UpdateResLuaScript();
+        startScene(false);
+    }
+    public void StartSceneXMLAndJson() {
+        UpdateResXMLAndJson();
+        startScene(true);
+    }
+    public void StartSceneConfig() {
+        updateResConfigs();
+        startScene(false);
+    }
+    public void StartSceneAll() {
+        UpdateResAll();
+        startScene(true);
+    }
+    private void startScene(bool v) {
+        
+        GetParentController().PlayScene(v);
+    }
+    public void StopScene() {
+        GetParentController().StopScene();
+    }
+    public bool IsSetStartScene() {
+       return  getData<PackageData>().IsSetStartScene();
     }
 }

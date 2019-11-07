@@ -20,6 +20,9 @@ public class AppController : BaseController {
     public AppChildController myPackageController_ = null;
     public AppChildController mySceneController_ = null;
 
+    [SerializeField]
+    private AlertView myAlertView_ = null;
+
 
     private ReloadComplieCallBack cbOfReloadComplie_ = null;
 
@@ -202,15 +205,20 @@ public class AppController : BaseController {
         }
     }
 
-    private void playScene(string sceneId) {
+    private void playScene() {
         if (win32Controller_!= null) {
-            win32Controller_.PlayScene(sceneId);
+            win32Controller_.PlayScene();
+        }
+    }
+    private void playSceneReloadDragonbone() {
+        if (win32Controller_!=null) {
+            win32Controller_.PlaySceneReloadDragonBone();
         }
     }
 
-    private void stopScene(string sceneId) {
+    private void stopScene() {
         if (win32Controller_!=null) {
-            win32Controller_.StopSceneByID(sceneId);
+            win32Controller_.StopScene();
 
         }
     }
@@ -286,18 +294,19 @@ public class AppController : BaseController {
         stopWin32Controller();
     }
 
-    public void PlayScene(string sceneID) {
-        updateProjToWin32();
-        setReloadComplieCallBack((bool result)=> {
-            if (result) {
-                playScene(sceneID);
-            }
-        });
-        reloadRes();
+    public void PlayScene(bool isReloadDragonboneData) {
+        if (isReloadDragonboneData)
+        {
+            playSceneReloadDragonbone();
+        }
+        else {
+            playScene();
+        }
     }
+    
 
-    public void StopSceneByID(string sceneId) {
-        stopScene(sceneId);
+    public void StopScene() {
+        stopScene();
     }
 
     public void LoadRes() {
@@ -309,6 +318,7 @@ public class AppController : BaseController {
     }
     public void UpdateResByAimFloder(List<string> list)
     {
+       UnityEngine.Debug.Log("update res to server xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
         this.httpManager_.UpdateResByAimFloder(list);
     }
 
@@ -332,4 +342,6 @@ public class AppController : BaseController {
         UnityEngine.Debug.LogError("Can t get host name");
         return "";
     }
+
+    public void ShowAlertView(string str) { myAlertView_.ShowAlert(str); }
 }

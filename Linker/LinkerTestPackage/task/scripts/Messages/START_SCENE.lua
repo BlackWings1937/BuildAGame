@@ -7,8 +7,10 @@ end);
 g_tConfigTable.CREATE_NEW(START_SCENE);
 
 function START_SCENE:Handle(ms)
-    local sceneId = ms.SceneID;
-    self:GetLinkerManager():StartSceneBySceneID(sceneId);
+    print("SceneStartHandle");
+    dump(ms);
+    local IsReloadDragonBoneData = ms.IsReloadDragonBoneData;
+    self:GetLinkerManager():StartScene(IsReloadDragonBoneData);
 end
 
 return START_SCENE;

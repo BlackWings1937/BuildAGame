@@ -95,6 +95,7 @@
     <Compile Include="Assets\Scripts\Tools\TransformUtils.cs" />
     <Compile Include="Assets\Scripts\Tools\Win32Controller.cs" />
     <Compile Include="Assets\Scripts\Tools\ZipUtils.cs" />
+    <Compile Include="Assets\Scripts\UIs\AlertView.cs" />
     <Compile Include="Assets\Scripts\UIs\BtnAdaptText.cs" />
     <Compile Include="Assets\Scripts\UIs\CButton.cs" />
     <Compile Include="Assets\Scripts\UIs\CellOldProjs.cs" />

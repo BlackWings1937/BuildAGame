@@ -14,6 +14,7 @@ function LinkerManager:ctor()
     self.messageHandle_ = nil;
     self.packageManager_ = nil;
     self.result_ = nil;
+    self.isUpdatingRes_ = false;
 end
 
 function LinkerManager:recv(str)
@@ -127,6 +128,70 @@ function LinkerManager:StopSceneByID(ID)
     else 
         print("self.packageManager_ ~= nil");
     end
+end
+
+function LinkerManager:GetIsUpdatingRes()
+    return self.isUpdatingRes_;
+end
+
+
+function LinkerManager:UpdateRes(isReloadDragonboneData,cb)
+
+    local loadRes = function() 
+        self.packageManager_:Dispose();
+        local pathOfPackageInfo = g_tConfigTable.sTaskpath .. "/LinkerData/formatProjData.json";
+        self.result_ = self.packageManager_:InitByFile(pathOfPackageInfo);
+        self.packageManager_:SetLinkerProjPath(g_tConfigTable.sTaskpath .. "LinkerData");
+        self.packageManager_:SetRootNode(self.rootNode_ );
+        self.packageManager_:SetLinkerManager(self);
+        if self.result_ then 
+            self.packageManager_:StopRunningScene();
+            if cb~= nil then 
+                cb();
+            end
+        else 
+            print("init packageManager fail");
+        end
+        self.isUpdatingRes_ = false;
+
+    end
+    
+    self.isUpdatingRes_ = true;
+    if isReloadDragonboneData then 
+        print("isReloadDragonBone");
+        self.talkToCSharp_:TestPost(function() 
+            ArmatureDataDeal:sharedDataDeal():removeAllRes();
+            local pathOfXML =g_tConfigTable.sTaskpath .. "/LinkerData/DragonBoneDatas/";
+            local pathOfPng = "";
+            if true then -- 高低请
+                pathOfPng = g_tConfigTable.sTaskpath .. "/LinkerData/DragonBoneDatas/Hd/";
+            else 
+                pathOfPng = g_tConfigTable.sTaskpath .. "/LinkerData/DragonBoneDatas/Ld/";
+            end
+            ArmatureDataDeal:sharedDataDeal():loadArmatureData(pathOfXML);
+            ArmatureDataDeal:sharedDataDeal():loadArmatureData(pathOfPng);
+            print("load dragonbone ---------------------------------------------------------");
+            loadRes();
+        end);
+    else 
+        print("isReloadDragonBone == false");
+        loadRes();
+    end
+end
+
+function LinkerManager:StartScene(isReloadDragonboneData)
+    --[[
+    TalkToCSharp:GetInstance():TestPost(function() 
+
+    end);]]--
+    self:UpdateRes(isReloadDragonboneData,function() 
+        -- todo start scene
+        self.packageManager_:StartDefaultScene();
+    end);
+end
+
+function LinkerManager:StopScene()
+    self.packageManager_:StopRunningScene();
 end
 
 function LinkerManager:PlayPlotBySceneIDAndNpcNameAndStartIndex(id,n,i)

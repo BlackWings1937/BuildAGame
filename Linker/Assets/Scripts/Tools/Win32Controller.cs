@@ -66,6 +66,7 @@ public class MessagePlayScene : MessageCommon
         EventName = STR_MN_START_SCENE;
     }
     public string SceneID;
+    public bool IsReloadDragonBoneData;
 }
 
 [Serializable]
@@ -226,19 +227,23 @@ public class Win32Controller
         this.SendMessage(str);
     }
 
-    public void PlayScene(string sceneId)
+    public void PlayScene()
     {
         var m = new MessagePlayScene();
-        m.SceneID = sceneId;
+        m.IsReloadDragonBoneData = false;
+        var str = JsonUtility.ToJson(m);
+        this.SendMessage(str);
+    }
+    public void PlaySceneReloadDragonBone() {
+        var m = new MessagePlayScene();
+        m.IsReloadDragonBoneData = true;
         var str = JsonUtility.ToJson(m);
         this.SendMessage(str);
     }
 
-
-    public void StopSceneByID(string sceneId)
+    public void StopScene()
     {
         var m = new MessageStopScene();
-        m.SceneID = sceneId;
         var str = JsonUtility.ToJson(m);
         this.SendMessage(str);
     }

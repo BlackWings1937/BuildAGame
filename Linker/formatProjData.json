@@ -1,0 +1,232 @@
+{
+    "ScenesList": [
+        {
+            "ID": "1572605070",
+            "Name": "a1a",
+            "MySceneInfoData": {
+                "MyState": 2,
+                "SceneNodeID": "1572605070",
+                "PlayMentData": {
+                    "LuaScriptName": "",
+                    "ProductConfigName": "",
+                    "AnimationConfigName": ""
+                },
+                "PLotData": {
+                    "BgConfigName": "Queue_BgConfig.json",
+                    "ListOfNpcOptions": [
+                        {
+                            "NpcName": "npc_b",
+                            "listOfOptions": [
+                                {
+                                    "MyState": 1,
+                                    "Npc": "npc_b",
+                                    "ExData": "Queue_b.json",
+                                    "BornTimeStamp": ""
+                                },
+                                {
+                                    "MyState": 3,
+                                    "Npc": "npc_b",
+                                    "ExData": "出口:9",
+                                    "BornTimeStamp": "9"
+                                }
+                            ]
+                        },
+                        {
+                            "NpcName": "npc_c",
+                            "listOfOptions": []
+                        },
+                        {
+                            "NpcName": "npc_d",
+                            "listOfOptions": []
+                        },
+                        {
+                            "NpcName": "npc_e",
+                            "listOfOptions": []
+                        },
+                        {
+                            "NpcName": "npc_a",
+                            "listOfOptions": []
+                        }
+                    ]
+                }
+            },
+            "LinkersInfo": [
+                {
+                    "State": 1,
+                    "SceneNodeID": "1572607273",
+                    "BornTimeStamp": "9",
+                    "readNum_": 0
+                }
+            ]
+        },
+        {
+            "ID": "1572607273",
+            "Name": "a1b",
+            "MySceneInfoData": {
+                "MyState": 2,
+                "SceneNodeID": "1572607273",
+                "PlayMentData": {
+                    "LuaScriptName": "",
+                    "ProductConfigName": "",
+                    "AnimationConfigName": ""
+                },
+                "PLotData": {
+                    "BgConfigName": "Queue_BgConfig.json",
+                    "ListOfNpcOptions": [
+                        {
+                            "NpcName": "npc_b",
+                            "listOfOptions": [
+                                {
+                                    "MyState": 1,
+                                    "Npc": "npc_b",
+                                    "ExData": "Queue_b.json",
+                                    "BornTimeStamp": ""
+                                },
+                                {
+                                    "MyState": 3,
+                                    "Npc": "npc_b",
+                                    "ExData": "出口:9",
+                                    "BornTimeStamp": "9"
+                                }
+                            ]
+                        },
+                        {
+                            "NpcName": "npc_c",
+                            "listOfOptions": [
+                                {
+                                    "MyState": 1,
+                                    "Npc": "npc_c",
+                                    "ExData": "Queue_c.json",
+                                    "BornTimeStamp": ""
+                                },
+                                {
+                                    "MyState": 1,
+                                    "Npc": "npc_c",
+                                    "ExData": "Queue_b.json",
+                                    "BornTimeStamp": ""
+                                },
+                                {
+                                    "MyState": 2,
+                                    "Npc": "npc_c",
+                                    "ExData": "STR_T_POINT",
+                                    "BornTimeStamp": ""
+                                },
+                                {
+                                    "MyState": 3,
+                                    "Npc": "npc_c",
+                                    "ExData": "出口:8",
+                                    "BornTimeStamp": "8"
+                                }
+                            ]
+                        },
+                        {
+                            "NpcName": "npc_d",
+                            "listOfOptions": []
+                        },
+                        {
+                            "NpcName": "npc_e",
+                            "listOfOptions": []
+                        },
+                        {
+                            "NpcName": "npc_a",
+                            "listOfOptions": []
+                        }
+                    ]
+                }
+            },
+            "LinkersInfo": [
+                {
+                    "State": 1,
+                    "SceneNodeID": "1572605070",
+                    "BornTimeStamp": "9",
+                    "readNum_": 0
+                },
+                {
+                    "State": 0,
+                    "SceneNodeID": "-1",
+                    "BornTimeStamp": "8",
+                    "readNum_": 0
+                }
+            ]
+        },
+        {
+            "ID": "1572608345",
+            "Name": "a1",
+            "MySceneInfoData": {
+                "MyState": 2,
+                "SceneNodeID": "1572608345",
+                "PlayMentData": {
+                    "LuaScriptName": "",
+                    "ProductConfigName": "",
+                    "AnimationConfigName": ""
+                },
+                "PLotData": {
+                    "BgConfigName": "Queue_BgConfig.json",
+                    "ListOfNpcOptions": [
+                        {
+                            "NpcName": "",
+                            "listOfOptions": [
+                                {
+                                    "MyState": 1,
+                                    "Npc": "npc_b",
+                                    "ExData": "Queue_b.json",
+                                    "BornTimeStamp": ""
+                                },
+                                {
+                                    "MyState": 3,
+                                    "Npc": "npc_b",
+                                    "ExData": "出口:9",
+                                    "BornTimeStamp": ""
+                                }
+                            ]
+                        },
+                        {
+                            "NpcName": "",
+                            "listOfOptions": [
+                                {
+                                    "MyState": 1,
+                                    "Npc": "npc_c",
+                                    "ExData": "Queue_c.json",
+                                    "BornTimeStamp": ""
+                                },
+                                {
+                                    "MyState": 3,
+                                    "Npc": "npc_c",
+                                    "ExData": "出口:8",
+                                    "BornTimeStamp": ""
+                                }
+                            ]
+                        },
+                        {
+                            "NpcName": "",
+                            "listOfOptions": []
+                        },
+                        {
+                            "NpcName": "",
+                            "listOfOptions": []
+                        },
+                        {
+                            "NpcName": "",
+                            "listOfOptions": []
+                        }
+                    ]
+                }
+            },
+            "LinkersInfo": [
+                {
+                    "State": 0,
+                    "SceneNodeID": "-1",
+                    "BornTimeStamp": "",
+                    "readNum_": 0
+                },
+                {
+                    "State": 0,
+                    "SceneNodeID": "-1",
+                    "BornTimeStamp": "",
+                    "readNum_": 0
+                }
+            ]
+        }
+    ],
+    "StartSceneID": "1572605070"
+}

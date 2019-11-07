@@ -78,13 +78,11 @@ public class PackResManager
 
                     if (listOfMark_.Count == 0 )
                     {
-                        Debug.Log("PackAimFolder == null CopyFloder:" + element);
                         copyDir(element, srcdir);
                     }
                     else {
                         if (checkIsFloderInMark(element))
                         {
-                            Debug.Log("CopyFloder:" + element);
                             copyDir(element, srcdir);
                         }
                         else
@@ -95,7 +93,6 @@ public class PackResManager
                 }
                 else
                 {
-                    Debug.Log("CopyFile:" + element);
                     File.Copy(element, srcdir + Path.GetFileName(element), true);
                 }
             }
