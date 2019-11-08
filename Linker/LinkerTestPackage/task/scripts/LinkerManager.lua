@@ -15,6 +15,7 @@ function LinkerManager:ctor()
     self.packageManager_ = nil;
     self.result_ = nil;
     self.isUpdatingRes_ = false;
+    self.isLoadedDragonBoneData_ = false;
 end
 
 function LinkerManager:recv(str)
@@ -55,6 +56,7 @@ function LinkerManager:StartWithIP(strIp)
     self.messageHandle_ = MessageManager.new();
     self.messageHandle_:SetLinkerManager(self);-- mei有设置linkerManager
     self.packageManager_ = PackageManager.new();
+    self.IP_ = strIp;
 
 
     local result = self.talkToCSharp_:ConnectToCSharpByIPAndPort(strIp,1234);
@@ -134,6 +136,20 @@ function LinkerManager:GetIsUpdatingRes()
     return self.isUpdatingRes_;
 end
 
+function LinkerManager:ReloadDragonboneData()
+    ArmatureDataDeal:sharedDataDeal():removeAllRes();
+    local pathOfXML =g_tConfigTable.sTaskpath .. "/LinkerData/DragonBoneDatas/";
+    local pathOfPng = "";
+    if true then -- 高低请
+        pathOfPng = g_tConfigTable.sTaskpath .. "/LinkerData/DragonBoneDatas/Hd/";
+    else 
+        pathOfPng = g_tConfigTable.sTaskpath .. "/LinkerData/DragonBoneDatas/Ld/";
+    end
+    ArmatureDataDeal:sharedDataDeal():loadArmatureData(pathOfXML);
+    ArmatureDataDeal:sharedDataDeal():loadArmatureData(pathOfPng);
+    self.isLoadedDragonBoneData_  = true;
+end
+
 
 function LinkerManager:UpdateRes(isReloadDragonboneData,cb)
 
@@ -159,23 +175,21 @@ function LinkerManager:UpdateRes(isReloadDragonboneData,cb)
     self.isUpdatingRes_ = true;
     if isReloadDragonboneData then 
         print("isReloadDragonBone");
-        self.talkToCSharp_:TestPost(function() 
-            ArmatureDataDeal:sharedDataDeal():removeAllRes();
-            local pathOfXML =g_tConfigTable.sTaskpath .. "/LinkerData/DragonBoneDatas/";
-            local pathOfPng = "";
-            if true then -- 高低请
-                pathOfPng = g_tConfigTable.sTaskpath .. "/LinkerData/DragonBoneDatas/Hd/";
-            else 
-                pathOfPng = g_tConfigTable.sTaskpath .. "/LinkerData/DragonBoneDatas/Ld/";
-            end
-            ArmatureDataDeal:sharedDataDeal():loadArmatureData(pathOfXML);
-            ArmatureDataDeal:sharedDataDeal():loadArmatureData(pathOfPng);
+        self.talkToCSharp_:TestPost(self.IP_, function() 
+            self:ReloadDragonboneData();
             print("load dragonbone ---------------------------------------------------------");
             loadRes();
         end);
     else 
-        print("isReloadDragonBone == false");
-        loadRes();
+
+        self.talkToCSharp_:TestPost(self.IP_,function() 
+            print("isReloadDragonBone == false");
+            if  self.isLoadedDragonBoneData_  == false then 
+                self:ReloadDragonboneData();
+            end
+            loadRes();
+        end);
+        
     end
 end
 
@@ -184,6 +198,10 @@ function LinkerManager:StartScene(isReloadDragonboneData)
     TalkToCSharp:GetInstance():TestPost(function() 
 
     end);]]--
+    if self.isUpdatingRes_  then 
+        print("is updating xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+        return ;
+    end
     self:UpdateRes(isReloadDragonboneData,function() 
         -- todo start scene
         self.packageManager_:StartDefaultScene();

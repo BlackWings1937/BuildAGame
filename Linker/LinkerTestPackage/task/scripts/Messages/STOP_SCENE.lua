@@ -8,7 +8,7 @@ g_tConfigTable.CREATE_NEW(STOP_SCENE);
 
 function STOP_SCENE:Handle(ms)
     local sceneId = ms.SceneID;
-    self:GetLinkerManager():StopSceneByID(sceneId);
+    self:GetLinkerManager():StopScene();
 end
 
 return STOP_SCENE; 
