@@ -16,6 +16,8 @@ function LinkerManager:ctor()
     self.result_ = nil;
     self.isUpdatingRes_ = false;
     self.isLoadedDragonBoneData_ = false;
+    self.keyOfLoadResXML_ = "LinkerDataDragonboneXML";
+    self.keyOfLoadResPng_ = "LinkerDataDragonbonePng";
 end
 
 function LinkerManager:recv(str)
@@ -137,6 +139,7 @@ function LinkerManager:GetIsUpdatingRes()
 end
 
 function LinkerManager:ReloadDragonboneData()
+    --[[
     ArmatureDataDeal:sharedDataDeal():removeAllRes();
     local pathOfXML =g_tConfigTable.sTaskpath .. "/LinkerData/DragonBoneDatas/";
     local pathOfPng = "";
@@ -148,6 +151,27 @@ function LinkerManager:ReloadDragonboneData()
     ArmatureDataDeal:sharedDataDeal():loadArmatureData(pathOfXML);
     ArmatureDataDeal:sharedDataDeal():loadArmatureData(pathOfPng);
     self.isLoadedDragonBoneData_  = true;
+    ]]--
+end
+
+function LinkerManager:ReloadDragonBoneDataAsync(cb)
+    AsyncLoadRes:shareMgr():removeListFromAsync(self.keyOfLoadResXML_);
+    AsyncLoadRes:shareMgr():removeListFromAsync(self.keyOfLoadResPng_);
+    local pathOfXML =g_tConfigTable.sTaskpath .. "/LinkerData/DragonBoneDatas/";
+    AsyncLoadRes:shareMgr():addOneDirAsyncLoadLua(pathOfXML,pathOfXML,self.keyOfLoadResXML_,function() 
+        local pathOfPng = "";
+        if true then -- 高低请
+            pathOfPng = g_tConfigTable.sTaskpath .. "/LinkerData/DragonBoneDatas/Hd/";
+        else 
+            pathOfPng = g_tConfigTable.sTaskpath .. "/LinkerData/DragonBoneDatas/Ld/";
+        end
+        AsyncLoadRes:shareMgr():addOneDirAsyncLoadLua(pathOfPng,pathOfPng,self.keyOfLoadResPng_,function() 
+            if cb ~= nil then 
+                cb();
+            end
+        end);
+    end);
+    
 end
 
 
@@ -176,18 +200,33 @@ function LinkerManager:UpdateRes(isReloadDragonboneData,cb)
     if isReloadDragonboneData then 
         print("isReloadDragonBone");
         self.talkToCSharp_:TestPost(self.IP_, function() 
+            --[[
             self:ReloadDragonboneData();
             print("load dragonbone ---------------------------------------------------------");
             loadRes();
+]]--
+            self:ReloadDragonBoneDataAsync(function() 
+                loadRes();
+            end);
         end);
     else 
 
         self.talkToCSharp_:TestPost(self.IP_,function() 
             print("isReloadDragonBone == false");
+            --[[
             if  self.isLoadedDragonBoneData_  == false then 
                 self:ReloadDragonboneData();
             end
             loadRes();
+            ]]--
+            if  self.isLoadedDragonBoneData_  == false then 
+                self:ReloadDragonBoneDataAsync(function() 
+                    loadRes();
+                end);
+                return 
+            else
+                loadRes();
+            end
         end);
         
     end

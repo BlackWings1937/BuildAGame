@@ -241,7 +241,7 @@ public class AppController : BaseController {
         }
         Directory.CreateDirectory(aimPath);// 这里拷贝的应该用到的资源而已
         UnityEngine.Debug.Log(path);
-
+           
         // 复制目录
         DirectUtils.CopyDir(path,aimPath);
         
