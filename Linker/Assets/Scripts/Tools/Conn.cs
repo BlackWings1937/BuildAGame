@@ -36,7 +36,7 @@ public class Conn
 	//获取客户端地址
 	public string GetAdress()
 	{
-		if (!isUse)
+		if (!isUse||socket.RemoteEndPoint == null)
 			return "无法获取地址";
 		return socket.RemoteEndPoint.ToString();
 	}

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 
 public delegate void RecvCallBack(string str);
+public delegate void SendFailCallBack();
 
 public class Serv
 {
@@ -193,6 +194,12 @@ public class Serv
         recvCb_ = cb;
     }
 
+    public SendFailCallBack cbOfSendFail_;
+
+    public void SetSendFail(SendFailCallBack v) {
+        cbOfSendFail_ = v;
+    }
+
     public void Send(string str)
     {
         byte[] bytes = System.Text.Encoding.Default.GetBytes(str);
@@ -201,7 +208,14 @@ public class Serv
         if (c.isUse)
         {
             UnityEngine.Debug.Log("Send2 bytesLength:" + bytes.Length);
-            c.socket.Send(bytes);
+            try{
+                c.socket.Send(bytes);
+            }
+            catch (Exception e) {
+                if (cbOfSendFail_ != null) {
+                    cbOfSendFail_();
+                }
+            }
         }
     }
 }

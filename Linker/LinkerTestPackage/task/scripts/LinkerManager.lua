@@ -52,8 +52,11 @@ function LinkerManager:Start()
         end))));
     end
 end
+function LinkerManager:SetScene(v)
+    self.scene_ = v;
+end
 
-function LinkerManager:StartWithIP(strIp)
+function LinkerManager:StartWithIP(strIp,isCell)
     self.talkToCSharp_ = TalkToCSharp:GetInstance();
     self.messageHandle_ = MessageManager.new();
     self.messageHandle_:SetLinkerManager(self);-- mei有设置linkerManager
@@ -64,12 +67,12 @@ function LinkerManager:StartWithIP(strIp)
     local result = self.talkToCSharp_:ConnectToCSharpByIPAndPort(strIp,1234);
     if result then 
         print("win32 linker to linker");
-        self:SMHelloLinker();
+        self:SMHelloLinker(isCell);
     else 
         print("win32 not linker to linker");
     end
-    if self.rootNode_~= nil then 
-        self.rootNode_:runAction(cc.RepeatForever:create(cc.Sequence:create(cc.DelayTime:create(0.016),cc.CallFunc:create(function() 
+    if self.scene_~= nil then 
+        self.scene_:runAction(cc.RepeatForever:create(cc.Sequence:create(cc.DelayTime:create(0.016),cc.CallFunc:create(function() 
             if self.talkToCSharp_ ~= nil then 
                 self.talkToCSharp_:ProcessData();
             end
@@ -82,37 +85,7 @@ function LinkerManager:SetRootNode(n)
 end
 
 -- ----- linker 命令 -----
-function LinkerManager:ReloadRes()
-    -- todo delete all res
-    ArmatureDataDeal:sharedDataDeal():removeAllRes();
-    self.packageManager_:Dispose();
 
-    -- load res
-    local pathOfXML =g_tConfigTable.sTaskpath .. "/LinkerData/DragonBoneDatas/";
-    local pathOfPng = "";
-    if true then -- 高低请
-        pathOfPng = g_tConfigTable.sTaskpath .. "/LinkerData/DragonBoneDatas/Hd/";
-    else 
-        pathOfPng = g_tConfigTable.sTaskpath .. "/LinkerData/DragonBoneDatas/Ld/";
-    end
-    ArmatureDataDeal:sharedDataDeal():loadArmatureData(pathOfXML);
-    ArmatureDataDeal:sharedDataDeal():loadArmatureData(pathOfPng);
-
-    local pathOfPackageInfo = g_tConfigTable.sTaskpath .. "/LinkerData/formatProjData.json";
-    self.result_ = self.packageManager_:InitByFile(pathOfPackageInfo);
-    self.packageManager_:SetLinkerProjPath(g_tConfigTable.sTaskpath .. "LinkerData");
-    self.packageManager_:SetRootNode(self.rootNode_ );
-    self.packageManager_:SetLinkerManager(self);
-    
-    if self.result_ then 
-        print("Reload data Complie");
-        self:SMReloadComplie();
-    else 
-        print("init packageManager fail");
-        print("Reload data Fail");
-        print(debug.traceback(  ));
-    end
-end
 
 function LinkerManager:StartSceneBySceneID(ID)
     if self.result_ then 
@@ -138,21 +111,6 @@ function LinkerManager:GetIsUpdatingRes()
     return self.isUpdatingRes_;
 end
 
-function LinkerManager:ReloadDragonboneData()
-    --[[
-    ArmatureDataDeal:sharedDataDeal():removeAllRes();
-    local pathOfXML =g_tConfigTable.sTaskpath .. "/LinkerData/DragonBoneDatas/";
-    local pathOfPng = "";
-    if true then -- 高低请
-        pathOfPng = g_tConfigTable.sTaskpath .. "/LinkerData/DragonBoneDatas/Hd/";
-    else 
-        pathOfPng = g_tConfigTable.sTaskpath .. "/LinkerData/DragonBoneDatas/Ld/";
-    end
-    ArmatureDataDeal:sharedDataDeal():loadArmatureData(pathOfXML);
-    ArmatureDataDeal:sharedDataDeal():loadArmatureData(pathOfPng);
-    self.isLoadedDragonBoneData_  = true;
-    ]]--
-end
 
 function LinkerManager:ReloadDragonBoneDataAsync(cb)
     AsyncLoadRes:shareMgr():removeListFromAsync(self.keyOfLoadResXML_);
@@ -200,11 +158,6 @@ function LinkerManager:UpdateRes(isReloadDragonboneData,cb)
     if isReloadDragonboneData then 
         print("isReloadDragonBone");
         self.talkToCSharp_:TestPost(self.IP_, function() 
-            --[[
-            self:ReloadDragonboneData();
-            print("load dragonbone ---------------------------------------------------------");
-            loadRes();
-]]--
             self:ReloadDragonBoneDataAsync(function() 
                 loadRes();
             end);
@@ -212,13 +165,6 @@ function LinkerManager:UpdateRes(isReloadDragonboneData,cb)
     else 
 
         self.talkToCSharp_:TestPost(self.IP_,function() 
-            print("isReloadDragonBone == false");
-            --[[
-            if  self.isLoadedDragonBoneData_  == false then 
-                self:ReloadDragonboneData();
-            end
-            loadRes();
-            ]]--
             if  self.isLoadedDragonBoneData_  == false then 
                 self:ReloadDragonBoneDataAsync(function() 
                     loadRes();
@@ -233,10 +179,6 @@ function LinkerManager:UpdateRes(isReloadDragonboneData,cb)
 end
 
 function LinkerManager:StartScene(isReloadDragonboneData)
-    --[[
-    TalkToCSharp:GetInstance():TestPost(function() 
-
-    end);]]--
     if self.isUpdatingRes_  then 
         print("is updating xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
         return ;
@@ -291,16 +233,17 @@ function LinkerManager:TestPostDownloadRes()
         self:SMLoadResStatueDownloaded();
     end
     self.talkToCSharp_:TestPost();
-    --[[
-    self.rootNode_:runAction(cc.Sequence:create(cc.DelayTime:create(5),cc.CallFunc:create(
-        function() 
-        end
-    )));
-    ]]--
 end
 
 
 -- ----- 发送消息 -----
+function LinkerManager:SMHeartBeatComplie()
+    local m = {};
+    m.EventName = MessageManager.STR_MN_HEART_BEAT_COMPLIE;
+    local str = json.encode(m);
+    self.talkToCSharp_:Send(str);
+    print("Heart beat complie linker manager..");
+end
 function LinkerManager:SMLoadResStatueDownloading()
     local m = {};
     m.EventName = MessageManager.STR_MN_LOAD_RES_STATUE_UPDATE;
@@ -331,10 +274,14 @@ function LinkerManager:SMReloadFail()
     self.talkToCSharp_:Send(str);
 end
 
-function LinkerManager:SMHelloLinker()
+function LinkerManager:SMHelloLinker(isCell)
     local m = {};
     m.EventName = MessageManager.STR_MN_LINKER_HELLO;
-    m.DeviceName = UInfoUtil:getInstance():getBrand();
+    if isCell then 
+        m.DeviceName = UInfoUtil:getInstance():getBrand();
+    else
+        m.DeviceName ="Win32";
+    end
     local str = json.encode(m);
     self.talkToCSharp_:Send(str);
 end
@@ -368,3 +315,52 @@ end
 
 
 return LinkerManager;
+
+--[[
+function LinkerManager:ReloadRes()
+    -- todo delete all res
+    ArmatureDataDeal:sharedDataDeal():removeAllRes();
+    self.packageManager_:Dispose();
+
+    -- load res
+    local pathOfXML =g_tConfigTable.sTaskpath .. "/LinkerData/DragonBoneDatas/";
+    local pathOfPng = "";
+    if true then -- 高低请
+        pathOfPng = g_tConfigTable.sTaskpath .. "/LinkerData/DragonBoneDatas/Hd/";
+    else 
+        pathOfPng = g_tConfigTable.sTaskpath .. "/LinkerData/DragonBoneDatas/Ld/";
+    end
+    ArmatureDataDeal:sharedDataDeal():loadArmatureData(pathOfXML);
+    ArmatureDataDeal:sharedDataDeal():loadArmatureData(pathOfPng);
+
+    local pathOfPackageInfo = g_tConfigTable.sTaskpath .. "/LinkerData/formatProjData.json";
+    self.result_ = self.packageManager_:InitByFile(pathOfPackageInfo);
+    self.packageManager_:SetLinkerProjPath(g_tConfigTable.sTaskpath .. "LinkerData");
+    self.packageManager_:SetRootNode(self.rootNode_ );
+    self.packageManager_:SetLinkerManager(self);
+    
+    if self.result_ then 
+        print("Reload data Complie");
+        self:SMReloadComplie();
+    else 
+        print("init packageManager fail");
+        print("Reload data Fail");
+        print(debug.traceback(  ));
+    end
+end
+vfunction LinkerManager:ReloadDragonboneData()
+    --[[
+    ArmatureDataDeal:sharedDataDeal():removeAllRes();
+    local pathOfXML =g_tConfigTable.sTaskpath .. "/LinkerData/DragonBoneDatas/";
+    local pathOfPng = "";
+    if true then -- 高低请
+        pathOfPng = g_tConfigTable.sTaskpath .. "/LinkerData/DragonBoneDatas/Hd/";
+    else 
+        pathOfPng = g_tConfigTable.sTaskpath .. "/LinkerData/DragonBoneDatas/Ld/";
+    end
+    ArmatureDataDeal:sharedDataDeal():loadArmatureData(pathOfXML);
+    ArmatureDataDeal:sharedDataDeal():loadArmatureData(pathOfPng);
+    self.isLoadedDragonBoneData_  = true;
+end
+
+]]--

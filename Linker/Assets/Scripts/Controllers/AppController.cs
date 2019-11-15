@@ -29,14 +29,52 @@ public class AppController : BaseController {
     private Win32Controller win32Controller_ = null;
     private HttpManager httpManager_ = null;
 
+    private bool isHeartBeatComplie_ = true; // 心跳是否返回
+
+
+    private void heartBeatComplie() {
+        isHeartBeatComplie_ = true;
+        UnityEngine.Debug.Log("appcontroller heartbeat complie");
+    }
+    public void HeartBeat() {
+        UnityEngine.Debug.Log("heart beat appcontroller");
+        if (isHeartBeatComplie_ == true)
+        {
+            isHeartBeatComplie_ = false;
+            if (this.win32Controller_ != null) {
+                UnityEngine.Debug.Log("appcontroller heartbeatStart");
+                this.win32Controller_.HeartBeat();
+            }
+        }
+        else {
+            if (GetPackageController().GetDeviceState() == PackageData.EnumLinkerDeviceStatue.E_Cell) {
+                GetPackageController().StopCell();
+            }
+            else if (GetPackageController().GetDeviceState() == PackageData.EnumLinkerDeviceStatue.E_Win32) {
+                GetPackageController().StopWin32();
+            }
+        }
+    }
+
+    private void startHeartBeat() {
+        UnityEngine.Debug.Log("HeartBeat start");
+
+        InvokeRepeating("HeartBeat",2,2);
+    }
+    private void stopHeartBeat() {
+        UnityEngine.Debug.Log("HeartBeat stop");
+        CancelInvoke();
+        //CancelInvoke("HeartBeat");
+    }
+
     // ----- 生命周期 -----
     protected override void Start()
     {
         //debug
-        IPHostEntry localhost = Dns.GetHostByName(Dns.GetHostName());    //方法已过期，可以获取IPv4的地址
-        IPAddress localaddr = localhost.AddressList[2];
+        //IPHostEntry localhost = Dns.GetHostByName(Dns.GetHostName());    //方法已过期，可以获取IPv4的地址
+        //IPAddress localaddr = localhost.AddressList[2];
         
-        UnityEngine.Debug.Log("hostName:"+ localaddr.ToString());
+       // UnityEngine.Debug.Log("hostName:"+ localaddr.ToString());
 
         // debug 
         DateTime dt = File.GetLastWriteTime("D:\\test2.png");
@@ -124,7 +162,15 @@ public class AppController : BaseController {
 
     private void stopWin32Process ()
     {
-        if (processOfWin32exe_!= null) {
+       
+        if (processOfWin32exe_!= null ) {
+            if (processOfWin32exe_.HasExited)
+            {
+                processOfWin32exe_.Close();
+                processOfWin32exe_ = null;
+                return;
+            }
+
             processOfWin32exe_.Kill();
             processOfWin32exe_ = null;
         }
@@ -133,6 +179,15 @@ public class AppController : BaseController {
 
 
     private void registerWin32ControllerEvent() {
+        win32Controller_.SetDeviceFailCallBack(() => {
+            GetPackageController().StopWin32();
+        });
+        win32Controller_.RegisterEvent(MessageCommon.STR_MN_HEART_BEAT_COMPLIE,(object obj)=> {
+            UnityEngine.Debug.Log("appcontroller message heart beat complie..");
+            //mark
+            this.heartBeatComplie();
+        });
+
         win32Controller_.RegisterEvent(MessageCommon.STR_MN_RELOAD_RES_COMPLIE, (object obj)=> {
             MessageReloadComplie m = obj as MessageReloadComplie;
             // reload Complie
@@ -149,6 +204,7 @@ public class AppController : BaseController {
         win32Controller_.RegisterEvent(MessageCommon.STR_MN_LINKER_HELLO, (object obj) => {
             MessageLinkerHello m = obj as MessageLinkerHello;
             GetPackageController().OnUserCellConnect(m.DeviceName);
+            startHeartBeat();
         });
 
         win32Controller_.RegisterEvent(MessageCommon.STR_MN_LOAD_RES_STATUE_UPDATE,(object obj)=> {
@@ -177,6 +233,7 @@ public class AppController : BaseController {
             win32Controller_.Dispose();
             win32Controller_ = null;
         }
+        
     }
 
 
@@ -250,7 +307,7 @@ public class AppController : BaseController {
 
     private void OnDestroy()
     {
-        if (processOfWin32exe_ != null) { StopWin32Exe(); }
+        if (processOfWin32exe_ != null) {   StopWin32Exe(); }
     }
     // ----- 对外接口 -----
 
@@ -268,6 +325,7 @@ public class AppController : BaseController {
     public void StopCellController()
     {
         stopWin32Controller();
+        stopHeartBeat();
     }
 
     public PackageController GetPackageController() { return (PackageController)myPackageController_; }
@@ -290,6 +348,7 @@ public class AppController : BaseController {
         startWin32Process();
     }
     public void StopWin32Exe() {
+        stopHeartBeat();
         stopWin32Process();
         stopWin32Controller();
     }
@@ -344,4 +403,11 @@ public class AppController : BaseController {
     }
 
     public void ShowAlertView(string str) { myAlertView_.ShowAlert(str); }
+
+    public void ShowLoadingView() {
+        myAlertView_.ShowLoading();
+    }
+    public void CloseLoadingView() {
+        myAlertView_.CloseLoading();
+    }
 }

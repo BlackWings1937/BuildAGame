@@ -140,8 +140,16 @@ public class PackageController : AppChildController {
     public void OnUserCellConnect(string brand) {
         this.getView<PackageView>().CloseConnectLayer();
         getData<PackageData>().MyDeviceBrand = brand;
-        getData<PackageData>().MyDeviceStatue = PackageData.EnumLinkerDeviceStatue.E_Cell;
+        if (brand == "Win32")
+        {
+            getData<PackageData>().MyDeviceStatue = PackageData.EnumLinkerDeviceStatue.E_Win32;
+
+        }
+        else {
+            getData<PackageData>().MyDeviceStatue = PackageData.EnumLinkerDeviceStatue.E_Cell;
+        }
         getView<PackageView>().UpdateUIView();
+        
     }
 
     public string GetBrandName() {
@@ -183,7 +191,7 @@ public class PackageController : AppChildController {
     public void StartSceneXMLAndJson() {
         UpdateResXMLAndJson();
         startScene(true);
-    }
+    }  
     public void StartSceneConfig() {
         updateResConfigs();
         startScene(false);
@@ -201,5 +209,9 @@ public class PackageController : AppChildController {
     }
     public bool IsSetStartScene() {
        return  getData<PackageData>().IsSetStartScene();
+    }
+
+    public PackageData.EnumLinkerDeviceStatue GetDeviceState() {
+        return this.getData<PackageData>().MyDeviceStatue;
     }
 }

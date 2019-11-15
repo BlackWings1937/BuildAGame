@@ -22,7 +22,7 @@ public class ChoseOptionBase : MonoBehaviour
         listOfBtns_.Clear();
     }
 
-    protected void updateOptionsByDic(Dictionary<string, TapButtonCallBack> dic)
+    protected virtual void updateOptionsByDic(Dictionary<string, TapButtonCallBack> dic)
     {
         if (rtOfContent_ != null && prefabItem_ != null)
         {

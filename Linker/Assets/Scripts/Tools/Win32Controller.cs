@@ -24,8 +24,27 @@ public class MessageCommon
     public const string STR_MN_PLAY_SCENE_BY_NPCOPID = "PLAY_SCENE_BY_NPCOPID";
     public const string STR_MN_CELL_HELLO = "CELL_HELLO";
     public const string STR_MN_LINKER_HELLO = "LINKER_HELLO";
+
+    public const string STR_MN_HEART_BEAT = "HEART_BEAT";
+    public const string STR_MN_HEART_BEAT_COMPLIE = "HEART_BEAT_COMPLIE";
+
     public string EventName;
 }
+
+[Serializable]
+public class MessageHeartBeat : MessageCommon {
+    public MessageHeartBeat() {
+        EventName = STR_MN_HEART_BEAT;
+    }
+}
+
+[Serializable]
+public class MessageHeartBeatComplie : MessageCommon {
+    public MessageHeartBeatComplie() {
+        EventName = STR_MN_HEART_BEAT_COMPLIE;
+    }
+}
+
 [Serializable]
 public class MessageCellHello : MessageCommon
 {
@@ -149,6 +168,9 @@ public class Win32Controller
             case MessageCommon.STR_MN_LINKER_HELLO:
                 obj = JsonUtility.FromJson<MessageLinkerHello>(strData);
                 break;
+            case MessageCommon.STR_MN_HEART_BEAT_COMPLIE:
+                obj = JsonUtility.FromJson<MessageHeartBeatComplie>(strData);
+                break;
         }
         // todo parse str to aim data
         return obj;
@@ -258,6 +280,13 @@ public class Win32Controller
         this.SendMessage(str);
     }
 
+    public void HeartBeat() {
+        var m = new MessageHeartBeat();
+        var str = JsonUtility.ToJson(m);
+        Debug.Log("HeartBeat:"+str);
+        this.SendMessage(str);
+    }
+
     public void HelloCell() {
         var m = new MessageCellHello();
         var str = JsonUtility.ToJson(m);
@@ -271,5 +300,7 @@ public class Win32Controller
         File.WriteAllText(p,str);
 
     }
-
+    public void SetDeviceFailCallBack(SendFailCallBack cb) {
+        serv_.SetSendFail(cb);
+    }
 }

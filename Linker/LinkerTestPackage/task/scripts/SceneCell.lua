@@ -48,14 +48,17 @@ function SceneCell:initView()
     b:AddListener(Button.EventType.Click,function() 
         print("hit:"..self.editBox_:getText());
         self.linkerManager_ = LinkerManager.new();
-        self.linkerManager_:SetRootNode(self);
-        self.linkerManager_:StartWithIP(self.editBox_:getText());
+        self.linkerManager_:SetRootNode(self.node);
+        self.linkerManager_:SetScene(self);
+        self.linkerManager_:StartWithIP(self.editBox_:getText(),true);
         self:removeUI();
     end);
     self.b_ = b;
 end
 
 function SceneCell:ctor()
+    self.node = cc.Node:create();
+    self:addChild(self.node);
     self:initView();
 end
 

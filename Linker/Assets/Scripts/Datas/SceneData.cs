@@ -473,7 +473,7 @@ public class SceneData : BaseData
                     }
                 }
 
-                var timeStamp = l[l.Count-1];
+                var timeStamp = l[0];
                 op.ExData = "出口:" + timeStamp;
                 var outputData = new  OutputPortData();
                 data_.LinkersInfo.Add(outputData);

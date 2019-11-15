@@ -9,6 +9,9 @@ public class AlertView : MonoBehaviour
     private GameObject myAlert_;
 
     [SerializeField]
+    private GameObject myLoading_;
+
+    [SerializeField]
     private Text myText_;
 
     [SerializeField]
@@ -34,6 +37,17 @@ public class AlertView : MonoBehaviour
         }
     }
 
+    private void closeLoading() {
+        if (myLoading_ != null) {
+            myLoading_.SetActive(false);
+        }
+    }
+    private void showLoading() {
+        if (myLoading_ != null) {
+            myLoading_.SetActive(true);
+        }
+    }
+
 
     // Start is called before the first frame update
     void Start()
@@ -50,5 +64,8 @@ public class AlertView : MonoBehaviour
 
     public void ShowAlert() { showAlertView(); }
     public void ShowAlert(string str) { SetText(str); showAlertView(); }
+
+    public void ShowLoading() { showLoading(); }
+    public void CloseLoading() { closeLoading(); }
 
 }

@@ -25,9 +25,12 @@ function SceneWin:ctor()
     local str = FileUtil.LoadFileContent(g_tConfigTable.sTaskpath.."IpConfig.json");
     print("json:"..str);
     local m = json.decode(str);
+    self.node = cc.Node:create();
+    self:addChild(self.node);
     self.linkerManager_ = LinkerManager.new();
-    self.linkerManager_:SetRootNode(self);
-    self.linkerManager_:StartWithIP(m.IP);
+    self.linkerManager_:SetRootNode(self.node );
+    self.linkerManager_:SetScene(self);
+    self.linkerManager_:StartWithIP(m.IP,false);
 end
 
 return SceneWin;

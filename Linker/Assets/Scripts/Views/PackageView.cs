@@ -129,7 +129,7 @@ public class PackageView : BaseView
             {
                 myChoseOptionTapBar_.gameObject.SetActive(false);
             });
-            var v = myTapBarBtnsGroup_.GetWPByIndex(1);
+            var v = myTapBarBtnsGroup_.GetWPByIndex(2);
             myChoseOptionTapBar_.gameObject.transform.position = v;
         });
 
@@ -204,10 +204,30 @@ public class PackageView : BaseView
                 break;
         }
     }
+    private void initDealBtnWithDic(Dictionary<string,UnityAction> dic) {
+        dic.Add("操作",()=> {
+            myChoseOptionTapBar_.gameObject.SetActive(true);
+            var d = new Dictionary<string, TapButtonCallBack>();
+            d.Add("刷新lua", () =>
+            {
+                Debug.Log("update lua script");
+                GetController<PackageController>().ReloadLuaScript();
+            });
+            myChoseOptionTapBar_.UpdateOptionsByDic(d);
+            myChoseOptionTapBar_.SetBtnCancleEvent(() =>
+            {
+                myChoseOptionTapBar_.gameObject.SetActive(false);
+            });
+            var v = myTapBarBtnsGroup_.GetWPByIndex(1);
+            myChoseOptionTapBar_.gameObject.transform.position = v;
+        });
+    }
+
     private void updateTapBar()
     {
         var d = new Dictionary<string, UnityAction>();
         initDeviceBtnWithDic(d);
+        initDealBtnWithDic(d);
         initResBtnByDic(d);
 
         myTapBarBtnsGroup_.SetEventByDic(d);
