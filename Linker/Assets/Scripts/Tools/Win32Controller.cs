@@ -17,6 +17,7 @@ public class MessageCommon
     public const string STR_MN_RELOAD_RES = "RELOAD_RES";
     public const string STR_MN_RELOAD_RES_COMPLIE = "RELOAD_RES_COMPLIE";
     public const string STR_MN_START_SCENE = "START_SCENE";
+    public const string STR_MN_START_SCENE_COMPLIE = "START_SCENE_COMPLIE";
     public const string STR_MN_STOP_SCENE = "STOP_SCENE";
     public const string STR_MN_PLAY_STATUE_CHANGE = "PLAY_STATUE_CHANGE";
     public const string STR_MN_LOAD_RES = "LOAD_RES";
@@ -86,6 +87,15 @@ public class MessagePlayScene : MessageCommon
     }
     public string SceneID;
     public bool IsReloadDragonBoneData;
+}
+
+[Serializable]
+public class MessagePlaySceneComplie : MessageCommon {
+    public MessagePlaySceneComplie() {
+        EventName = STR_MN_START_SCENE_COMPLIE;
+    }
+    public bool IsPlaySuccess;
+    public string ExData;
 }
 
 [Serializable]
@@ -171,13 +181,15 @@ public class Win32Controller
             case MessageCommon.STR_MN_HEART_BEAT_COMPLIE:
                 obj = JsonUtility.FromJson<MessageHeartBeatComplie>(strData);
                 break;
+            case MessageCommon.STR_MN_START_SCENE_COMPLIE:
+                obj = JsonUtility.FromJson<MessagePlaySceneComplie>(strData);
+                break;
         }
         // todo parse str to aim data
         return obj;
     }
     private void recv(string str)
     {
-        Debug.Log("recv1:" + str);
         MessageCommon mc = null;
         try
         {

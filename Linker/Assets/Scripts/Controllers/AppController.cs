@@ -12,6 +12,8 @@ using System.Net.Sockets;
 
 public delegate void ReloadComplieCallBack(bool result);
 
+public delegate void PlayComplieCallBack();
+
 public class AppController : BaseController {
 
     public static Vector2 VISIBLE_SIZE = new Vector2(1280,720);
@@ -25,6 +27,9 @@ public class AppController : BaseController {
 
 
     private ReloadComplieCallBack cbOfReloadComplie_ = null;
+    private PlayComplieCallBack cbPlayComplie_ = null;
+
+    
 
     private Win32Controller win32Controller_ = null;
     private HttpManager httpManager_ = null;
@@ -59,11 +64,11 @@ public class AppController : BaseController {
     private void startHeartBeat() {
         UnityEngine.Debug.Log("HeartBeat start");
 
-        InvokeRepeating("HeartBeat",2,2);
+        //InvokeRepeating("HeartBeat",2,2);
     }
     private void stopHeartBeat() {
-        UnityEngine.Debug.Log("HeartBeat stop");
-        CancelInvoke();
+       // UnityEngine.Debug.Log("HeartBeat stop");
+       // CancelInvoke();
         //CancelInvoke("HeartBeat");
     }
 
@@ -109,7 +114,10 @@ public class AppController : BaseController {
         }
     }
     // ----- 私有方法 -----
-
+    private void setPlayComplieCallBack(PlayComplieCallBack cb)
+    {
+        cbPlayComplie_ = cb;
+    }
     private void initChildSys() { myPackageController_.SetParentController(this);myProjController_.SetParentController(this);mySceneController_.SetParentController(this); }
 
     private void activeProjSys() {myProjController_.ActiveController();}
@@ -216,6 +224,16 @@ public class AppController : BaseController {
             if (obj != null) {
                 MessageScenePlayStatueChange m = obj as MessageScenePlayStatueChange;
                 GetPackageController().SetSceneRunningStatue(m.SceneID, m.IsPlaying);
+            }
+        });
+
+        win32Controller_.RegisterEvent(MessageCommon.STR_MN_START_SCENE_COMPLIE, (object obj) => {
+            if (obj != null)
+            {
+                MessagePlaySceneComplie m = obj as MessagePlaySceneComplie;
+                if (cbPlayComplie_ != null) {
+                    cbPlayComplie_();
+                }
             }
         });
     }
@@ -354,6 +372,7 @@ public class AppController : BaseController {
     }
 
     public void PlayScene(bool isReloadDragonboneData) {
+        
         if (isReloadDragonboneData)
         {
             playSceneReloadDragonbone();
@@ -361,6 +380,10 @@ public class AppController : BaseController {
         else {
             playScene();
         }
+        setPlayComplieCallBack(()=> {
+            CloseLoadingView();
+            setPlayComplieCallBack(null);
+        });
     }
     
 

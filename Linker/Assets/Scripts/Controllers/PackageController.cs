@@ -185,18 +185,25 @@ public class PackageController : AppChildController {
         GetParentController().UpdateRes();
     }
     public void StartSceneLuaScript() {
+        GetParentController().ShowLoadingView();
+
         UpdateResLuaScript();
         startScene(false);
     }
     public void StartSceneXMLAndJson() {
+        GetParentController().ShowLoadingView();
+
         UpdateResXMLAndJson();
         startScene(true);
     }  
     public void StartSceneConfig() {
+        GetParentController().ShowLoadingView();
+
         updateResConfigs();
         startScene(false);
     }
     public void StartSceneAll() {
+        GetParentController().ShowLoadingView();
         UpdateResAll();
         startScene(true);
     }

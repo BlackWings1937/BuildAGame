@@ -8,6 +8,7 @@ MessageManager.STR_MN_LOAD_RES_STATUE_UPDATE = "LOAD_RES_STATUE_UPDATE";
 MessageManager.STR_MN_CELL_HELLO = "CELL_HELLO";
 MessageManager.STR_MN_LINKER_HELLO = "LINKER_HELLO";
 MessageManager.STR_MN_HEART_BEAT_COMPLIE = "HEART_BEAT_COMPLIE";
+MessageManager.STR_MN_START_SCENE_COMPLIE = "START_SCENE_COMPLIE";
 function MessageManager:ctor()
     self.linkerManager_ = nil;
 end

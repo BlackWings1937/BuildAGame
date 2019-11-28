@@ -18,6 +18,8 @@ function LinkerManager:ctor()
     self.isLoadedDragonBoneData_ = false;
     self.keyOfLoadResXML_ = "LinkerDataDragonboneXML";
     self.keyOfLoadResPng_ = "LinkerDataDragonbonePng";
+
+    g_tConfigTable.LinkerManager = self;
 end
 
 function LinkerManager:recv(str)
@@ -178,7 +180,7 @@ function LinkerManager:UpdateRes(isReloadDragonboneData,cb)
     end
 end
 
-function LinkerManager:StartScene(isReloadDragonboneData)
+function LinkerManager:StartScene(isReloadDragonboneData,cbOfStartComplie)
     if self.isUpdatingRes_  then 
         print("is updating xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
         return ;
@@ -186,6 +188,9 @@ function LinkerManager:StartScene(isReloadDragonboneData)
     self:UpdateRes(isReloadDragonboneData,function() 
         -- todo start scene
         self.packageManager_:StartDefaultScene();
+        if cbOfStartComplie ~= nil then 
+            cbOfStartComplie();
+        end
     end);
 end
 
@@ -212,7 +217,7 @@ function LinkerManager:PlayPlotBySceneIDAndNpcNameAndStartIndex(id,n,i)
  local pathOfPackageInfo = g_tConfigTable.sTaskpath .. "/LinkerData/formatProjData.json";
  self.result_ = self.packageManager_:InitByFile(pathOfPackageInfo);
  self.packageManager_:SetLinkerProjPath(g_tConfigTable.sTaskpath .. "LinkerData");
- self.packageManager_:SetRootNode(self.rootNode_ );
+ self.packageManager_:SetRootNode(self.rootNode_ );   
  self.packageManager_:SetLinkerManager(self);
 
     if self.result_ then 
@@ -286,6 +291,24 @@ function LinkerManager:SMHelloLinker(isCell)
     self.talkToCSharp_:Send(str);
 end
 
+function LinkerManager:SMStartSceneComplie()
+    local m = {}
+    m.EventName = MessageManager.STR_MN_START_SCENE_COMPLIE;
+    m.IsPlaySuccess = true;
+    m.ExData = "";
+    local str = json.encode(m);
+    self.talkToCSharp_:Send(str);
+end
+
+function LinkerManager:SMStartSceneFail(exData)
+    local m = {}
+    m.EventName = MessageManager.STR_MN_START_SCENE_COMPLIE;
+    m.IsPlaySuccess = false;
+    m.ExData = exData;
+    local str = json.encode(m);
+    self.talkToCSharp_:Send(str);
+end
+
 
 -- ----- packagemanger ----- // SceneID
 function LinkerManager:UpdateSceneStatue(sceneID,statue)
@@ -308,6 +331,7 @@ g_tConfigTable.Recv = function(str)
         end, function(e)
             dump(e);
             print(debug.traceback()) 
+            g_tConfigTable.LinkerManager:SMStartSceneFail(debug.traceback());
         end)
 
     end
