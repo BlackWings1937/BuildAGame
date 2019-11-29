@@ -46,10 +46,13 @@ public class GitFilesManager : MonoBehaviour
         return Directory.Exists(floderPath);
     }
 
-    private bool checkGitExist() {
-
+    private bool checkGitExist()
+    {
+        return false;
     }
 
-    private bool checkGitIsClean() { }
+    private bool checkGitIsClean() {
+        return false;
+    }
 
 }
